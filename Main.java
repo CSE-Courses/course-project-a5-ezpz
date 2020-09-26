@@ -1,20 +1,14 @@
-package GUI;
-
-import java.awt.*;
-
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-
-
 public class Main 
 {
 	private JFrame frame;
+	private JFrame gameFr;
 	private JPanel mainPanel;
+	private JPanel mainPanel2;
 	private JButton b1;
 	private JButton b2;
 	private JLabel gameLabel;
 	
-
+	gameFrame f = new gameFrame();
 	
 	public Main() {
 		gui();	
@@ -25,6 +19,7 @@ public class Main
 		//Creating frame
         JFrame.setDefaultLookAndFeelDecorated(true);
         frame = new JFrame("Version 1.0");
+        gameFr = new JFrame("Version 1.0");
         frame.setVisible(true);
         //frame.setSize(600, 400);//setting size of frame 600 width and 400 height.
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);//Allows frame to exit, without it frame will not close
@@ -51,6 +46,36 @@ public class Main
         b2 = new JButton("How To Play"); 
         mainPanel.add(b1);
         mainPanel.add(b2);
+        
+        
+        
+      //Creating Panel for game window
+    	gameFr.add(f);
+    	gameFr.setSize(800,600);
+      	//mainPanel2 = new JPanel();
+      	//mainPanel2.setBackground(Color.WHITE);//setting background of JPanel to be black 
+        //BoxLayout boxlayout2 = new BoxLayout(mainPanel2, BoxLayout.Y_AXIS);//Setting Boxlayout for Jpanel
+        //mainPanel2.setLayout(boxlayout2);//BoxLayout.Y_AXIS adds panel components from top to bottom 
+        //Set border for the panel
+        //mainPanel2.setBorder(new EmptyBorder(new Insets(150, 200, 150, 200)));
+        //mainPanel.setBorder(new EmptyBorder(new Insets(50, 80, 50, 80)));     
+        //gameFr.add(mainPanel2);
+        //gameFr.pack();
+            
+        
+        
+        b1.addActionListener(new java.awt.event.ActionListener(){
+            public void actionPerformed1(ActionEvent e){  
+            		gameFr.setVisible(true);
+               }
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				gameFr.setVisible(true);
+				
+			}    
+        });
        /* 
         //Setting background image as Jlabel
         ImageIcon icon = new ImageIcon("/AmongUs_CSE442/src/GUI/pic.png"); 
