@@ -30,10 +30,10 @@ public class Game {
         for (int i = 0; i < number_of_players; i++){
             if(player_list.get(i).username == username){
                 player_list.get(i).status = "dead";
-                //if impostor dies, crewmates wins. function not added yet
-                /*if(player_list.get(i).role == "impostor"){
+                
+                if(player_list.get(i).role == "impostor"){
                     crewmate_win();
-                }*/
+                }
 
             }
         }
@@ -50,10 +50,17 @@ public class Game {
                 alive_crewmates = alive_crewmates + 1;
             }
         }
-        //if there is only one crewmate left, impostor wins, function not added yet
-        /*if (alive_crewmates == 1){
+        //if there is only one crewmate left, impostor wins
+        if (alive_crewmates == 1){
             impostor_win();
-        }*/
+        }
+    }
+
+    private void impostor_win() {
+    }
+
+    private void crewmate_win(){
+
     }
 
 }
