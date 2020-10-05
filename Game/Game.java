@@ -30,7 +30,7 @@ public class Game {
         for (int i = 0; i < number_of_players; i++){
             if(player_list.get(i).username == username){
                 player_list.get(i).status = "dead";
-                
+
                 if(player_list.get(i).role == "impostor"){
                     crewmate_win();
                 }
@@ -50,17 +50,18 @@ public class Game {
                 alive_crewmates = alive_crewmates + 1;
             }
         }
-        //if there is only one crewmate left, impostor wins
+
         if (alive_crewmates == 1){
             impostor_win();
         }
     }
 
     private void impostor_win() {
+        System.out.println("Impostors Win");
     }
 
     private void crewmate_win(){
-
+        System.out.println("Crewmates Win");
     }
 
 }
