@@ -1,13 +1,23 @@
 package GUI;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
 
+
+import java.awt.event.ActionEvent;
+import java.io.File;
+import java.io.IOException;
+
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
 import GUI.gameFrame;
 
+import sun.audio.AudioStream;
 
 public class Main 
 {
@@ -18,10 +28,17 @@ public class Main
 	private JButton b1;
 	private JButton b2;
 	private JLabel gameLabel;
+	//Global variable for gamescreen once online
 	gameFrame f = new gameFrame();
-
+	//global variables for Home Screen Music
+	File filePath = new File("/Users/husseinatwa/Downloads/AmongUsSoaralotRemix.wav");//locating audiofile from string passed containg location on comp
+	AudioInputStream audioInput;
+	Clip soundClip;
 	
-	public Main() {
+	
+	
+	
+	public Main(){
 		gui();	
 	}
 	
@@ -76,6 +93,7 @@ public class Main
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
+				stopMusic();
 				gameFr.setVisible(true);		
 			} 	
         });
@@ -156,10 +174,31 @@ public class Main
 		//Adding panel with components to frame
 		frame.add(mainPanel);
 		frame.pack();//automatically sizes frame with all its contents to be at an appropriate size if frame.setSize is not used
-	
+        playMusic();
 	}
 	
-	public static void main(String[] args) { 
+	
+	
+	public void playMusic() {
+		try {
+			audioInput = AudioSystem.getAudioInputStream(filePath);
+			soundClip = AudioSystem.getClip();//clip will get audiostream from our audioInput object which gets the audiofile from the file object
+			soundClip.open(audioInput);
+		    soundClip.start();
+			soundClip.loop(Clip.LOOP_CONTINUOUSLY);//continues to play song in loop
+			
+		}catch(Exception ex) {
+			ex.printStackTrace();
+		}
+	}
+	
+	void stopMusic() {
+		soundClip.stop();
+		
+	}
+	
+	
+	public static void main(String[] args){ 
 		new Main();
 		
 	}
