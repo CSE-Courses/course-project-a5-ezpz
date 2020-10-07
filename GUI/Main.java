@@ -1,12 +1,14 @@
 package GUI;
 
-import java.awt.*;
-import java.awt.event.ActionEvent;
+import Game.Game;
+import Game.Player;
+import Game.PlayerList;
+import static Game.PlayerList.player_list;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-
-import GUI.gameFrame;
+import java.awt.*;
+import java.awt.event.ActionEvent;
 
 
 public class Main
@@ -19,6 +21,7 @@ public class Main
 	private JButton b2;
 	private JLabel gameLabel;
 	gameFrame f = new gameFrame();
+
 
 
 	public Main() {
@@ -157,6 +160,53 @@ public class Main
 		frame.add(mainPanel);
 		frame.pack();//automatically sizes frame with all its contents to be at an appropriate size if frame.setSize is not used
 
+	}
+
+	//adds new player with the players username and adds the player to the player_list
+	public static void new_player(String username){
+		Player player = new Player();
+		player.username = username;
+		PlayerList.add_player(player);
+
+	}
+	//changes the status of an alive player to dead. If the player who died was an impostor, crewmates win.
+	public static void playerDead(String username){
+		int number_of_players = player_list.size();
+		for (int i = 0; i < number_of_players; i++){
+			if(player_list.get(i).username == username){
+				player_list.get(i).status = "dead";
+
+				if(player_list.get(i).role == "impostor"){
+					crewmate_win();
+				}
+
+			}
+		}
+		checkDeathWin();
+
+	}
+
+	//checks how many crewmates are alive and if there is only one, impostor wins
+	private static void checkDeathWin() {
+		int number_of_players = player_list.size();
+		int alive_crewmates = 0;
+		for (int i = 0; i < number_of_players; i++){
+			if(player_list.get(i).status == "alive" && player_list.get(i).role == "crewmate"){
+				alive_crewmates = alive_crewmates + 1;
+			}
+		}
+
+		if (alive_crewmates == 1){
+			impostor_win();
+		}
+	}
+
+	private static void impostor_win() {
+		System.out.println("Impostors Win");
+	}
+
+	private static void crewmate_win(){
+		System.out.println("Crewmates Win");
 	}
 
 	public static void main(String[] args) {
