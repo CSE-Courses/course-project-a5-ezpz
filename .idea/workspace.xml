@@ -4,11 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="04d75a81-f905-4813-83ab-f97c1e318826" name="Default Changelist" comment="Add IntelliJ files">
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_10_7_2020_7_09_PM__Default_Changelist_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_10_7_2020_7_09_PM__Default_Changelist_.xml" afterDir="false" />
+    <list default="true" id="04d75a81-f905-4813-83ab-f97c1e318826" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/course-project-a5-ezpz.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/GUI/JUnits.java" beforeDir="false" afterPath="$PROJECT_DIR$/GUI/JUnits.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/course-project-a5-ezpz/GUI/JUnits.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/course-project-a5-ezpz/GUI/JUnits.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -25,7 +24,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="develop" />
+        <entry key="$PROJECT_DIR$" value="simon" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -69,20 +68,7 @@
       <recent name="C:\Users\simon\IdeaProjects\course-project-a5-ezpz" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.JUnits.playersAddedToGame">
-    <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="GUI.Main" />
-      <module name="course-project-a5-ezpz" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="GUI.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
+  <component name="RunManager" selected="JUnit.JUnits.playersAliveAtStart">
     <configuration default="true" type="ArquillianTestNG" factoryName="" nameIsGenerated="true">
       <option name="arquillianRunConfiguration">
         <value>
@@ -127,6 +113,22 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="JUnits.playerWillDie" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="course-project-a5-ezpz" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="GUI.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="GUI" />
+      <option name="MAIN_CLASS_NAME" value="GUI.JUnits" />
+      <option name="METHOD_NAME" value="playerWillDie" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="JUnits.playersAddedToGame" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="course-project-a5-ezpz" />
       <extension name="coverage">
@@ -143,13 +145,29 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="JUnits.playersAliveAtStart" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="course-project-a5-ezpz" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="GUI.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="GUI" />
+      <option name="MAIN_CLASS_NAME" value="GUI.JUnits" />
+      <option name="METHOD_NAME" value="playersAliveAtStart" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="JUnit.JUnits.playersAddedToGame" />
+        <item itemvalue="JUnit.JUnits.playersAliveAtStart" />
+        <item itemvalue="JUnit.JUnits.playerWillDie" />
         <item itemvalue="JUnit.JUnits.OneImpostorChosen" />
-        <item itemvalue="JUnit.JUnits" />
-        <item itemvalue="Application.Main" />
         <item itemvalue="JUnit.JUnits.playersAddedToGame" />
+        <item itemvalue="JUnit.JUnits" />
       </list>
     </recent_temporary>
   </component>
@@ -173,6 +191,7 @@
       <workItem from="1601931001816" duration="239000" />
       <workItem from="1602106019206" duration="6379000" />
       <workItem from="1602113887500" duration="739000" />
+      <workItem from="1602115670992" duration="1912000" />
     </task>
     <task id="LOCAL-00001" summary="Added class files">
       <created>1601247860362</created>
@@ -230,7 +249,14 @@
       <option name="project" value="LOCAL" />
       <updated>1602113300298</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="added developer branch">
+      <created>1602115870252</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1602115870252</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -244,7 +270,8 @@
     <MESSAGE value="Added print statements for impostor_win and crewmate_win methods" />
     <MESSAGE value="Added Game, Player, and PlayerList classes to branch" />
     <MESSAGE value="Add IntelliJ files" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add IntelliJ files" />
+    <MESSAGE value="added developer branch" />
+    <option name="LAST_COMMIT_MESSAGE" value="added developer branch" />
   </component>
   <component name="WindowStateProjectService">
     <state x="249" y="0" key="#Project_Structure" timestamp="1602114397771">
@@ -263,35 +290,35 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="498" y="214" key="#com.intellij.ide.util.TreeClassChooserDialog/0.0.1536.824@0.0.1536.824" timestamp="1602113015062" />
-    <state x="0" y="0" key="CommitChangelistDialog2" timestamp="1602113375889">
+    <state x="0" y="0" key="CommitChangelistDialog2" timestamp="1602115869433">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="1008" y="138" key="CommitChangelistDialog2/-1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1601920939751" />
-    <state x="0" y="0" key="CommitChangelistDialog2/0.0.1536.824@0.0.1536.824" timestamp="1602113375889" />
+    <state x="0" y="0" key="CommitChangelistDialog2/0.0.1536.824@0.0.1536.824" timestamp="1602115869433" />
     <state x="577" y="167" key="FileChooserDialogImpl" timestamp="1602114394797">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="577" y="167" key="FileChooserDialogImpl/0.0.1536.824@0.0.1536.824" timestamp="1602114394797" />
-    <state width="1493" height="210" key="GridCell.Tab.0.bottom" timestamp="1602113868133">
+    <state width="1493" height="210" key="GridCell.Tab.0.bottom" timestamp="1602116684673">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state width="1877" height="282" key="GridCell.Tab.0.bottom/-1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1601931240232" />
-    <state width="1493" height="210" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1602113868133" />
-    <state width="1493" height="210" key="GridCell.Tab.0.center" timestamp="1602113868133">
+    <state width="1493" height="210" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1602116684673" />
+    <state width="1493" height="210" key="GridCell.Tab.0.center" timestamp="1602116684672">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state width="1877" height="282" key="GridCell.Tab.0.center/-1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1601931240232" />
-    <state width="1493" height="210" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1602113868133" />
-    <state width="1493" height="210" key="GridCell.Tab.0.left" timestamp="1602113868133">
+    <state width="1493" height="210" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1602116684672" />
+    <state width="1493" height="210" key="GridCell.Tab.0.left" timestamp="1602116684672">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state width="1877" height="282" key="GridCell.Tab.0.left/-1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1601931240232" />
-    <state width="1493" height="210" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1602113868133" />
-    <state width="1493" height="210" key="GridCell.Tab.0.right" timestamp="1602113868133">
+    <state width="1493" height="210" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1602116684672" />
+    <state width="1493" height="210" key="GridCell.Tab.0.right" timestamp="1602116684673">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state width="1877" height="282" key="GridCell.Tab.0.right/-1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1601931240232" />
-    <state width="1493" height="210" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1602113868133" />
+    <state width="1493" height="210" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1602116684673" />
     <state x="407" y="174" key="MultipleFileMergeDialog" timestamp="1602112163636">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
@@ -309,10 +336,11 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="498" height="446" key="SwitcherDM/-1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1601250434415" />
-    <state x="552" y="253" key="Vcs.Push.Dialog.v2" timestamp="1601917882176">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state x="442" y="200" key="Vcs.Push.Dialog.v2" timestamp="1602115880975">
+      <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="552" y="253" key="Vcs.Push.Dialog.v2/-1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1601917882176" />
+    <state x="442" y="200" key="Vcs.Push.Dialog.v2/0.0.1536.824@0.0.1536.824" timestamp="1602115880975" />
     <state x="776" y="298" key="chooseDestDirectoryDialog" timestamp="1601922461189">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
