@@ -3,6 +3,7 @@ package GUI;
 import java.awt.*;
 
 
+
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
@@ -15,21 +16,22 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
-import GUI.gameFrame;
+import GUI.Game;
+import GUI.Player;
 
 import sun.audio.AudioStream;
 
 public class Main 
 {
 	private JFrame frame;
-	private JFrame gameFr;
+	//private JFrame gameFr;
 	private JPanel mainPanel;
 	private JPanel mainPanel2;
 	private JButton b1;
 	private JButton b2;
 	private JLabel gameLabel;
 	//Global variable for gamescreen once online
-	gameFrame f = new gameFrame();
+	//gameFrame f = new gameFrame();
 	//global variables for Home Screen Music
 	File filePath = new File("/Users/husseinatwa/Downloads/AmongUsSoaralotRemix.wav");//locating audiofile from string passed containg location on comp
 	AudioInputStream audioInput;
@@ -47,7 +49,6 @@ public class Main
 		//Creating frame
         JFrame.setDefaultLookAndFeelDecorated(true);
         frame = new JFrame("Version 1.0");
-        gameFr = new JFrame("Version 1.0");
         frame.setVisible(true);
         //frame.setSize(600, 400);//setting size of frame 600 width and 400 height.
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);//Allows frame to exit, without it frame will not close
@@ -72,20 +73,6 @@ public class Main
         mainPanel.add(b1);
         mainPanel.add(b2);
         
-        
-        
-      //Creating Panel for game window
-    	gameFr.add(f);
-    	gameFr.setSize(800,600);
-      	//mainPanel2 = new JPanel();
-      	//mainPanel2.setBackground(Color.WHITE);//setting background of JPanel to be black 
-        //BoxLayout boxlayout2 = new BoxLayout(mainPanel2, BoxLayout.Y_AXIS);//Setting Boxlayout for Jpanel
-        //mainPanel2.setLayout(boxlayout2);//BoxLayout.Y_AXIS adds panel components from top to bottom 
-        //Set border for the panel
-        //mainPanel2.setBorder(new EmptyBorder(new Insets(150, 200, 150, 200)));
-        //mainPanel.setBorder(new EmptyBorder(new Insets(50, 80, 50, 80)));     
-        //gameFr.add(mainPanel2);
-        //gameFr.pack();
             
         
         //Implementing action listener for "Online" button
@@ -94,7 +81,7 @@ public class Main
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				stopMusic();
-				gameFr.setVisible(true);		
+				Game game = new Game();		
 			} 	
         });
         
@@ -106,7 +93,7 @@ public class Main
 				//pop up how to play frame
 				JFrame howToPlay = new JFrame("How To Play");
 				howToPlay.setVisible(true);
-				howToPlay.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+				//howToPlay.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				
 				//creating jpanel
 				JPanel howP = new JPanel();
