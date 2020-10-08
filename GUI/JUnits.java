@@ -1,28 +1,27 @@
 package GUI;
-import Game.Game;
-import org.junit.Rule;
-import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
+import Game.Game;
+import org.junit.jupiter.api.Test;
 
 import static Game.PlayerList.player_list;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
 
 public class JUnits {
     @Test
     public void playersAddedToGame() {
         Main tester = new Main(); // MyClass is tested
 
-        tester.new_player("playerone");
-        tester.new_player("playertwo");
-        tester.new_player("playerthree");
-        tester.new_player("playerfour");
-        tester.new_player("playerfive");
-        tester.new_player("playersix");
-        tester.new_player("playerseven");
-        tester.new_player("playereight");
-        tester.new_player("playernine");
-        tester.new_player("playerten");
+        Game.new_player("playerone");
+        Game.new_player("playertwo");
+        Game.new_player("playerthree");
+        Game.new_player("playerfour");
+        Game.new_player("playerfive");
+        Game.new_player("playersix");
+        Game.new_player("playerseven");
+        Game.new_player("playereight");
+        Game.new_player("playernine");
+        Game.new_player("playerten");
         assertEquals("playerone", player_list.get(0).username);
         assertEquals("playertwo", player_list.get(1).username);
         assertEquals("playerseven", player_list.get(6).username);
@@ -33,16 +32,16 @@ public class JUnits {
     public void OneImpostorChosen(){
         Main tester = new Main(); // MyClass is tested
 
-        tester.new_player("playerone");
-        tester.new_player("playertwo");
-        tester.new_player("playerthree");
-        tester.new_player("playerfour");
-        tester.new_player("playerfive");
-        tester.new_player("playersix");
-        tester.new_player("playerseven");
-        tester.new_player("playereight");
-        tester.new_player("playernine");
-        tester.new_player("playerten");
+        Game.new_player("playerone");
+        Game.new_player("playertwo");
+        Game.new_player("playerthree");
+        Game.new_player("playerfour");
+        Game.new_player("playerfive");
+        Game.new_player("playersix");
+        Game.new_player("playerseven");
+        Game.new_player("playereight");
+        Game.new_player("playernine");
+        Game.new_player("playerten");
         new Game();
         int impostorCount = 0;
         int crewmateCount = 0;
@@ -63,21 +62,21 @@ public class JUnits {
     public void playerWillDie(){
         Main tester = new Main(); // MyClass is tested
 
-        tester.new_player("playerone");
-        tester.new_player("playertwo");
-        tester.new_player("playerthree");
-        tester.new_player("playerfour");
-        tester.new_player("playerfive");
-        tester.new_player("playersix");
-        tester.new_player("playerseven");
-        tester.new_player("playereight");
-        tester.new_player("playernine");
-        tester.new_player("playerten");
+        Game.new_player("playerone");
+        Game.new_player("playertwo");
+        Game.new_player("playerthree");
+        Game.new_player("playerfour");
+        Game.new_player("playerfive");
+        Game.new_player("playersix");
+        Game.new_player("playerseven");
+        Game.new_player("playereight");
+        Game.new_player("playernine");
+        Game.new_player("playerten");
         new Game();
-        tester.playerDead(player_list.get(0).username);
-        tester.playerDead(player_list.get(3).username);
-        tester.playerDead(player_list.get(7).username);
-        tester.playerDead(player_list.get(9).username);
+        Game.playerDead(player_list.get(0).username);
+        Game.playerDead(player_list.get(3).username);
+        Game.playerDead(player_list.get(7).username);
+        Game.playerDead(player_list.get(9).username);
         assertEquals("dead", player_list.get(0).status);
         assertEquals("dead", player_list.get(3).status);
         assertEquals("dead", player_list.get(7).status);
@@ -90,16 +89,16 @@ public class JUnits {
     public void playersAliveAtStart(){
         Main tester = new Main(); // MyClass is tested
 
-        tester.new_player("playerone");
-        tester.new_player("playertwo");
-        tester.new_player("playerthree");
-        tester.new_player("playerfour");
-        tester.new_player("playerfive");
-        tester.new_player("playersix");
-        tester.new_player("playerseven");
-        tester.new_player("playereight");
-        tester.new_player("playernine");
-        tester.new_player("playerten");
+        Game.new_player("playerone");
+        Game.new_player("playertwo");
+        Game.new_player("playerthree");
+        Game.new_player("playerfour");
+        Game.new_player("playerfive");
+        Game.new_player("playersix");
+        Game.new_player("playerseven");
+        Game.new_player("playereight");
+        Game.new_player("playernine");
+        Game.new_player("playerten");
         new Game();
         for (int i = 0; i < player_list.size(); i++){
             assertEquals("alive", player_list.get(i).status);
@@ -109,31 +108,59 @@ public class JUnits {
 
 
 
-    /*@Test
+    @Test
     public void crewmatesWinIfImposterDies() {
 
 
         Main tester = new Main(); // MyClass is tested
 
-        tester.new_player("playerone");
-        tester.new_player("playertwo");
-        tester.new_player("playerthree");
-        tester.new_player("playerfour");
-        tester.new_player("playerfive");
-        tester.new_player("playersix");
-        tester.new_player("playerseven");
-        tester.new_player("playereight");
-        tester.new_player("playernine");
-        tester.new_player("playerten");
+        Game.new_player("playerone");
+        Game.new_player("playertwo");
+        Game.new_player("playerthree");
+        Game.new_player("playerfour");
+        Game.new_player("playerfive");
+        Game.new_player("playersix");
+        Game.new_player("playerseven");
+        Game.new_player("playereight");
+        Game.new_player("playernine");
+        Game.new_player("playerten");
         new Game();
-
         for (int i = 0; i < player_list.size(); i++){
             if (player_list.get(i).role == "impostor"){
-                tester.playerDead(player_list.get(i).username);
+                Game.playerDead(player_list.get(i).username);
             }
         }
+        assertEquals("Crewmates win", Game.winner);
 
-    }*/
+
+    }
+    @Test
+    public void impostorWinsIfThereIsOneCremateLeft() {
+
+
+        Main tester = new Main(); // MyClass is tested
+
+        Game.new_player("playerone");
+        Game.new_player("playertwo");
+        Game.new_player("playerthree");
+        Game.new_player("playerfour");
+        Game.new_player("playerfive");
+        Game.new_player("playersix");
+        Game.new_player("playerseven");
+        Game.new_player("playereight");
+        Game.new_player("playernine");
+        Game.new_player("playerten");
+        new Game();
+        for (int i = 0; i < player_list.size(); i++){
+            if (player_list.get(i).role != "impostor"){
+                Game.playerDead(player_list.get(i).username);
+            }
+        }
+        assertEquals("Impostor wins", Game.winner);
+
+
+    }
+
 
 
 }
