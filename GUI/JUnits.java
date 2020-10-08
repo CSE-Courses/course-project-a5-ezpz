@@ -8,6 +8,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 public class JUnits {
+
+    //tests to make sure players are added to the game by new_player
     @Test
     public void playersAddedToGame() {
         Main tester = new Main(); // MyClass is tested
@@ -28,6 +30,7 @@ public class JUnits {
         assertEquals("playerten", player_list.get(9).username);
     }
 
+    //tests to ensure that there is only one impostor chosen and every other player is a crewmate
     @Test
     public void OneImpostorChosen(){
         Main tester = new Main(); // MyClass is tested
@@ -57,7 +60,7 @@ public class JUnits {
         assertEquals(1, impostorCount);
     }
 
-
+    //tests playerDead method to make sure only the player used in the argument dies
     @Test
     public void playerWillDie(){
         Main tester = new Main(); // MyClass is tested
@@ -85,6 +88,7 @@ public class JUnits {
         assertEquals("alive", player_list.get(8).status);
     }
 
+    //makes sure all players are alive at the start of a game
     @Test
     public void playersAliveAtStart(){
         Main tester = new Main(); // MyClass is tested
@@ -107,11 +111,9 @@ public class JUnits {
     }
 
 
-
+    //tests to make sure that crewmates win if impostor dies
     @Test
     public void crewmatesWinIfImposterDies() {
-
-
         Main tester = new Main(); // MyClass is tested
 
         Game.new_player("playerone");
@@ -134,10 +136,10 @@ public class JUnits {
 
 
     }
+
+    //tests to make sure the impostor wins if there is only one crewmate alive
     @Test
     public void impostorWinsIfThereIsOneCremateLeft() {
-
-
         Main tester = new Main(); // MyClass is tested
 
         Game.new_player("playerone");
@@ -161,6 +163,142 @@ public class JUnits {
 
     }
 
+    //tests to make sure no one dies if no votes are cast
+    @Test
+    public void nooneDiesIfNooneVotes() {
+        Main tester = new Main(); // MyClass is tested
+
+        Game.new_player("playerone");
+        Game.new_player("playertwo");
+        Game.new_player("playerthree");
+        Game.new_player("playerfour");
+        Game.new_player("playerfive");
+        Game.new_player("playersix");
+        Game.new_player("playerseven");
+        Game.new_player("playereight");
+        Game.new_player("playernine");
+        Game.new_player("playerten");
+        new Game();
+        Game.applyVotes();
+        Game.tallyVotes();
+        for (int i = 0; i < player_list.size(); i++) {
+            assertEquals("alive", player_list.get(i).status);
+        }
+    }
+
+    //tests to make sure no one dies if skip receives the most votes
+    @Test
+    public void noOneDiesIfSkipsReceivesMostVotes() {
+        Main tester = new Main(); // MyClass is tested
+
+        Game.new_player("playerone");
+        Game.new_player("playertwo");
+        Game.new_player("playerthree");
+        Game.new_player("playerfour");
+        Game.new_player("playerfive");
+        Game.new_player("playersix");
+        Game.new_player("playerseven");
+        Game.new_player("playereight");
+        Game.new_player("playernine");
+        Game.new_player("playerten");
+        new Game();
+        player_list.get(1).voted = player_list.get(0).username;
+        player_list.get(0).voted = "skip";
+        player_list.get(2).voted = "skip";
+        player_list.get(3).voted = "skip";
+        Game.applyVotes();
+        Game.tallyVotes();
+        for (int i = 0; i < player_list.size(); i++) {
+            assertEquals("alive", player_list.get(i).status);
+        }
+    }
+
+    //tests to make sure a player dies if they receive the most votes
+    @Test
+    public void playerDiesIfTheyReceiveTheMostVotes() {
+        Main tester = new Main(); // MyClass is tested
+
+        Game.new_player("playerone");
+        Game.new_player("playertwo");
+        Game.new_player("playerthree");
+        Game.new_player("playerfour");
+        Game.new_player("playerfive");
+        Game.new_player("playersix");
+        Game.new_player("playerseven");
+        Game.new_player("playereight");
+        Game.new_player("playernine");
+        Game.new_player("playerten");
+        new Game();
+        player_list.get(1).voted = player_list.get(7).username;
+        player_list.get(4).voted = player_list.get(7).username;
+        player_list.get(2).voted = player_list.get(7).username;
+        player_list.get(3).voted = "skip";
+        Game.applyVotes();
+        Game.tallyVotes();
+        int ind = Game.getPlayerIndex(player_list.get(7).username);
+        for (int i = 0; i < player_list.size(); i++) {
+            if (i == ind){
+                assertEquals("dead", player_list.get(i).status);
+            } else {
+                assertEquals("alive", player_list.get(i).status);
+            }
+        }
+    }
+
+    //tests to make sure crewmates win if the impostor is voted out
+    @Test
+    public void crewmatesWinIfImpostorVotedOut() {
+        Main tester = new Main(); // MyClass is tested
+
+        Game.new_player("playerone");
+        Game.new_player("playertwo");
+        Game.new_player("playerthree");
+        Game.new_player("playerfour");
+        Game.new_player("playerfive");
+        Game.new_player("playersix");
+        Game.new_player("playerseven");
+        Game.new_player("playereight");
+        Game.new_player("playernine");
+        Game.new_player("playerten");
+        new Game();
+        player_list.get(1).voted = player_list.get(0).username;
+        player_list.get(4).voted = player_list.get(0).username;
+        player_list.get(2).voted = player_list.get(0).username;
+        player_list.get(3).voted = "skip";
+        Game.applyVotes();
+        Game.tallyVotes();
+        int ind = Game.getPlayerIndex(player_list.get(0).username);
+        assertEquals("Crewmates win", Game.winner);
+        }
+
+    //tests to make sure no one dies if a vote is tied
+    @Test
+    public void noOneDiesInTiedVote() {
+        Main tester = new Main(); // MyClass is tested
+
+        Game.new_player("playerone");
+        Game.new_player("playertwo");
+        Game.new_player("playerthree");
+        Game.new_player("playerfour");
+        Game.new_player("playerfive");
+        Game.new_player("playersix");
+        Game.new_player("playerseven");
+        Game.new_player("playereight");
+        Game.new_player("playernine");
+        Game.new_player("playerten");
+        new Game();
+        player_list.get(1).voted = player_list.get(6).username;
+        player_list.get(0).voted = player_list.get(6).username;
+        player_list.get(2).voted = player_list.get(7).username;
+        player_list.get(3).voted = player_list.get(7).username;
+        player_list.get(4).voted = player_list.get(8).username;
+        Game.applyVotes();
+        Game.tallyVotes();
+        for (int i = 0; i < player_list.size(); i++) {
+            assertEquals("alive", player_list.get(i).status);
+        }
+    }
 
 
 }
+

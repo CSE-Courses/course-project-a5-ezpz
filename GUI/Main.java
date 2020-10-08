@@ -159,6 +159,7 @@ public class Main
 
 	}
 
+	//creates an instance of Game to start a new game
 	public static void newGame(){
 		new Game();
 	}
