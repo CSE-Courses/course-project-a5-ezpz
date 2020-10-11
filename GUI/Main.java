@@ -10,6 +10,7 @@ import java.awt.event.ActionEvent;
 
 public class Main
 {
+	/*
 	private JFrame frame;
 	private JFrame gameFr;
 	private JPanel mainPanel;
@@ -18,6 +19,15 @@ public class Main
 	private JButton b2;
 	private JLabel gameLabel;
 	gameFrame f = new gameFrame();
+	*/
+
+	private JFrame frame;
+//private static JFrame gameFr;
+private JPanel mainPanel;
+private JPanel mainPanel2;
+private static JButton b1;
+private JButton b2;
+private JLabel gameLabel;
 
 
 
@@ -58,8 +68,8 @@ public class Main
 
 
 		//Creating Panel for game window
-		gameFr.add(f);
-		gameFr.setSize(800,600);
+		//gameFr.add(f);
+		//gameFr.setSize(800,600);
 		//mainPanel2 = new JPanel();
 		//mainPanel2.setBackground(Color.WHITE);//setting background of JPanel to be black
 		//BoxLayout boxlayout2 = new BoxLayout(mainPanel2, BoxLayout.Y_AXIS);//Setting Boxlayout for Jpanel
@@ -72,13 +82,6 @@ public class Main
 
 
 		//Implementing action listener for "Online" button
-		b1.addActionListener(new java.awt.event.ActionListener(){
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				gameFr.setVisible(true);
-			}
-		});
 
 		//Implementing action listener for "How To Play" button
 		b2.addActionListener(new java.awt.event.ActionListener(){
@@ -167,6 +170,14 @@ public class Main
 
 	public static void main(String[] args) {
 		new Main();
+
+		b1.addActionListener(new java.awt.event.ActionListener(){
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					// TODO Auto-generated method stub
+					gameFrame game = new gameFrame();
+			}
+		});
 
 	}
 
