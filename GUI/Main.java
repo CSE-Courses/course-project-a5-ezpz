@@ -40,7 +40,7 @@ private JLabel gameLabel;
 		//Creating frame
 		JFrame.setDefaultLookAndFeelDecorated(true);
 		frame = new JFrame("Version 1.0");
-		gameFr = new JFrame("Version 1.0");
+		//gameFr = new JFrame("Version 1.0");
 		frame.setVisible(true);
 		//frame.setSize(600, 400);//setting size of frame 600 width and 400 height.
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);//Allows frame to exit, without it frame will not close
