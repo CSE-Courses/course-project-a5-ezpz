@@ -20,7 +20,7 @@ public class Game {
 
 
 
-
+    //clears the player_list
     public static void clear_player_list (){
         player_list.clear();
     }
