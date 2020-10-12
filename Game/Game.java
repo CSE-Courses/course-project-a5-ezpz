@@ -1,5 +1,7 @@
 package Game;
 
+import GUI.Main;
+
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -8,6 +10,8 @@ import static Game.PlayerList.player_list;
 public class Game {
     public static String winner = null;
     public static ArrayList<Integer> vote_tracker = new ArrayList<Integer>();
+    public static Boolean vote_state = false;
+
 
     public Game(){
         chooseRoles();
@@ -15,11 +19,10 @@ public class Game {
     }
 
 
-    //adds new player with the players username and adds the player to the player_list
-    public static void new_player(String username){
-        Player player = new Player();
-        player.username = username;
-        PlayerList.add_player(player);
+
+
+    public static void clear_player_list (){
+        player_list.clear();
     }
 
     //clears vote_tracker and then adds a spot in vote_tracker for every player + option to skip
@@ -73,7 +76,9 @@ public class Game {
 
                 if(player_list.get(i).role == "impostor"){
                     crewmate_win();
+
                 }
+                i = number_of_players;
 
             }
         }
@@ -91,10 +96,6 @@ public class Game {
         return -1;
     }
 
-    //stops all players and the game enters a state for voting
-    public static void enterVoting(){
-
-    }
 
     //takes Player and applies their vote to the vote_tracker
     public static void vote(Player voter){
@@ -141,19 +142,50 @@ public class Game {
         setVote_tracker();
     }
 
+    public static Boolean hasEveryPlayerVoted(){
+        for (int i = 0; i < player_list.size(); i++){
+            if (player_list.get(i).status == "alive"){
+                if (player_list.get(i).voted == "no vote"){
+                    return false;
+                }
+            }
+
+        }
+        return true;
+    }
+
+    public static void enterVoting(){
+
+        while (Game.vote_state){
+            //timer for voting or if all players have voted
+            while (!hasEveryPlayerVoted()){
+
+            }
+
+        }
+    }
+
+    public static void reportBody(){
+        vote_state = true;
+        enterVoting();
+    }
+
 
 
     //sets winner to "Impostor wins" and prints
     public static void impostor_win() {
         winner = "Impostor wins";
         System.out.println(winner);
+
     }
 
     //sets winner to "Crewmates win" and prints
     public static void crewmate_win(){
         winner = "Crewmates win";
         System.out.println(winner);
+
     }
+
 
 
 

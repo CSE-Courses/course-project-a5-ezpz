@@ -1,6 +1,8 @@
 package GUI;
 
 import Game.Game;
+import Game.Player;
+import Game.PlayerList;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -40,7 +42,7 @@ private JLabel gameLabel;
 		//Creating frame
 		JFrame.setDefaultLookAndFeelDecorated(true);
 		frame = new JFrame("Version 1.0");
-		gameFr = new JFrame("Version 1.0");
+		//gameFr = new JFrame("Version 1.0");
 		frame.setVisible(true);
 		//frame.setSize(600, 400);//setting size of frame 600 width and 400 height.
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);//Allows frame to exit, without it frame will not close
@@ -162,6 +164,15 @@ private JLabel gameLabel;
 
 	}
 
+	//adds new player with the players username and adds the player to the player_list
+	public static void new_player(String username){
+		Player player = new Player();
+		player.username = username;
+		PlayerList.add_player(player);
+	}
+
+
+
 	//creates an instance of Game to start a new game
 	public static void newGame(){
 		new Game();
@@ -170,6 +181,7 @@ private JLabel gameLabel;
 
 	public static void main(String[] args) {
 		new Main();
+
 
 		b1.addActionListener(new java.awt.event.ActionListener(){
 				@Override
