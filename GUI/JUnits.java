@@ -298,7 +298,19 @@ public class JUnits {
             assertEquals("alive", player_list.get(i).status);
         }
     }
-
+    //tests to make sure prompt mess handles inputs correctly
+    @Test
+    public void num_is_1() { // Input is 1 for message 1
+        Prompt tester = new Prompt(); // Prompt is tested
+            assertEquals("Use the movement keys to do a dance party", tester.mess(1));
+    }
+    //tests to make sure prompt mess handles invalid inputs correctly
+    @Test
+    public void num_is_9() { // Input is 1 for message 9
+        Prompt tester = new Prompt(); // Prompt is tested
+        assertEquals("Use the movement keys to do a dance party", tester.mess(9));
+    }
+    //tests to make sure prompt mess handles inputs correctly
 
 }
 
