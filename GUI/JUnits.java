@@ -118,7 +118,7 @@ public class JUnits {
 
     //tests to make sure that crewmates win if impostor dies
     @Test
-    public void crewmatesWinIfImposterDies() {
+    public void crewmatesWinIfImpostorDies() {
         Main tester = new Main();
 
         tester.new_player("playerone");
@@ -306,6 +306,74 @@ public class JUnits {
         for (int i = 0; i < player_list.size(); i++) {
             assertEquals("alive", player_list.get(i).status);
         }
+        player_list.clear();
+    }
+
+    //tests to make sure reporting a dead body will cause the game to enter the vote state
+    @Test
+    public void reportBodyCausesVote() {
+        Main tester = new Main();
+
+        tester.new_player("playerone");
+        tester.new_player("playertwo");
+        tester.new_player("playerthree");
+        tester.new_player("playerfour");
+        tester.new_player("playerfive");
+        tester.new_player("playersix");
+        tester.new_player("playerseven");
+        tester.new_player("playereight");
+        tester.new_player("playernine");
+        tester.new_player("playerten");
+        tester.newGame();
+        assertEquals(false, Game.has_vote_state_been_true);
+        Game.reportBody();
+        assertEquals(true, Game.has_vote_state_been_true);
+        player_list.clear();
+    }
+
+    //tests to make sure reporting a dead body will cause the game to enter the vote state
+    @Test
+    public void emergencyButtonCauseVote() {
+        Main tester = new Main();
+
+        tester.new_player("playerone");
+        tester.new_player("playertwo");
+        tester.new_player("playerthree");
+        tester.new_player("playerfour");
+        tester.new_player("playerfive");
+        tester.new_player("playersix");
+        tester.new_player("playerseven");
+        tester.new_player("playereight");
+        tester.new_player("playernine");
+        tester.new_player("playerten");
+        tester.newGame();
+        assertEquals(false, Game.has_vote_state_been_true);
+        Game.emergencyButton(player_list.get(0));
+        assertEquals(true, Game.has_vote_state_been_true);
+        player_list.clear();
+    }
+
+    //tests to see if player has an emergency button before and after pressing button, should print"no emergency buttons" when the player has no button
+    @Test
+    public void onlyOneEmergencyButton() {
+        Main tester = new Main();
+
+        tester.new_player("playerone");
+        tester.new_player("playertwo");
+        tester.new_player("playerthree");
+        tester.new_player("playerfour");
+        tester.new_player("playerfive");
+        tester.new_player("playersix");
+        tester.new_player("playerseven");
+        tester.new_player("playereight");
+        tester.new_player("playernine");
+        tester.new_player("playerten");
+        tester.newGame();
+        assertEquals(true, Game.doesPlayerHaveEmergencyButton(player_list.get(0)));
+        Game.emergencyButton(player_list.get(0));
+        assertEquals(false, Game.doesPlayerHaveEmergencyButton(player_list.get(0)));
+        Game.emergencyButton(player_list.get(0));
+
         player_list.clear();
     }
 

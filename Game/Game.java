@@ -11,7 +11,7 @@ public class Game {
     public static String winner = null;
     public static ArrayList<Integer> vote_tracker = new ArrayList<Integer>();
     public static Boolean vote_state = false;
-
+    public static Boolean has_vote_state_been_true = false;
 
     public Game(){
         chooseRoles();
@@ -154,20 +154,45 @@ public class Game {
         return true;
     }
 
+    //enter the voting state and stays until all players have voted or a timer expires (timer will be added later)
     public static void enterVoting(){
+        while (vote_state){
+            /*while (!hasEveryPlayerVoted()  && timer still going ){
+                timer goes down
+            }*/
 
-        while (Game.vote_state){
-            //timer for voting or if all players have voted
-            while (!hasEveryPlayerVoted()){
-
-            }
+            vote_state = false;
 
         }
+        applyVotes();
+        tallyVotes();
+
     }
 
+    //if a body is reported, the game will enter the voting state
     public static void reportBody(){
         vote_state = true;
+        has_vote_state_been_true = true;
         enterVoting();
+    }
+
+    public static Boolean doesPlayerHaveEmergencyButton(Player player){
+        if (player.button_presses > 0){
+            return true;
+        }
+        return false;
+    }
+
+    public static void emergencyButton(Player player){
+        if (doesPlayerHaveEmergencyButton(player)){
+            player.button_presses = player.button_presses - 1;
+            vote_state = true;
+            has_vote_state_been_true = true;
+            enterVoting();
+        }
+        else{
+            System.out.println("no emergency buttons");
+        }
     }
 
 
