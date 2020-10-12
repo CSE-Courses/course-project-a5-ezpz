@@ -6,6 +6,7 @@ public class Player {
     public String role;
     public String status = "alive";
     public String voted = "no vote";
+    public Integer button_presses = 1;
     public Player() {
 
 

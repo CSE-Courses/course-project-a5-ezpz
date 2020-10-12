@@ -3,6 +3,7 @@ package GUI;
 import Game.Game;
 import org.junit.jupiter.api.Test;
 
+
 import static Game.PlayerList.player_list;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -12,40 +13,42 @@ public class JUnits {
     //tests to make sure players are added to the game by new_player
     @Test
     public void playersAddedToGame() {
-        Main tester = new Main(); // MyClass is tested
+        Main tester = new Main();
 
-        Game.new_player("playerone");
-        Game.new_player("playertwo");
-        Game.new_player("playerthree");
-        Game.new_player("playerfour");
-        Game.new_player("playerfive");
-        Game.new_player("playersix");
-        Game.new_player("playerseven");
-        Game.new_player("playereight");
-        Game.new_player("playernine");
-        Game.new_player("playerten");
+        tester.new_player("playerone");
+        tester.new_player("playertwo");
+        tester.new_player("playerthree");
+        tester.new_player("playerfour");
+        tester.new_player("playerfive");
+        tester.new_player("playersix");
+        tester.new_player("playerseven");
+        tester.new_player("playereight");
+        tester.new_player("playernine");
+        tester.new_player("playerten");
+
         assertEquals("playerone", player_list.get(0).username);
         assertEquals("playertwo", player_list.get(1).username);
         assertEquals("playerseven", player_list.get(6).username);
         assertEquals("playerten", player_list.get(9).username);
+        player_list.clear();
     }
 
     //tests to ensure that there is only one impostor chosen and every other player is a crewmate
     @Test
     public void OneImpostorChosen(){
-        Main tester = new Main(); // MyClass is tested
+        Main tester = new Main();
 
-        Game.new_player("playerone");
-        Game.new_player("playertwo");
-        Game.new_player("playerthree");
-        Game.new_player("playerfour");
-        Game.new_player("playerfive");
-        Game.new_player("playersix");
-        Game.new_player("playerseven");
-        Game.new_player("playereight");
-        Game.new_player("playernine");
-        Game.new_player("playerten");
-        new Game();
+        tester.new_player("playerone");
+        tester.new_player("playertwo");
+        tester.new_player("playerthree");
+        tester.new_player("playerfour");
+        tester.new_player("playerfive");
+        tester.new_player("playersix");
+        tester.new_player("playerseven");
+        tester.new_player("playereight");
+        tester.new_player("playernine");
+        tester.new_player("playerten");
+        tester.newGame();
         int impostorCount = 0;
         int crewmateCount = 0;
         for (int i = 0; i < player_list.size(); i++){
@@ -58,24 +61,25 @@ public class JUnits {
         }
         assertEquals(9, crewmateCount);
         assertEquals(1, impostorCount);
+        player_list.clear();
     }
 
     //tests playerDead method to make sure only the player used in the argument dies
     @Test
     public void playerWillDie(){
-        Main tester = new Main(); // MyClass is tested
+        Main tester = new Main();
 
-        Game.new_player("playerone");
-        Game.new_player("playertwo");
-        Game.new_player("playerthree");
-        Game.new_player("playerfour");
-        Game.new_player("playerfive");
-        Game.new_player("playersix");
-        Game.new_player("playerseven");
-        Game.new_player("playereight");
-        Game.new_player("playernine");
-        Game.new_player("playerten");
-        new Game();
+        tester.new_player("playerone");
+        tester.new_player("playertwo");
+        tester.new_player("playerthree");
+        tester.new_player("playerfour");
+        tester.new_player("playerfive");
+        tester.new_player("playersix");
+        tester.new_player("playerseven");
+        tester.new_player("playereight");
+        tester.new_player("playernine");
+        tester.new_player("playerten");
+        tester.newGame();
         Game.playerDead(player_list.get(0).username);
         Game.playerDead(player_list.get(3).username);
         Game.playerDead(player_list.get(7).username);
@@ -86,47 +90,48 @@ public class JUnits {
         assertEquals("dead", player_list.get(9).status);
         assertEquals("alive", player_list.get(2).status);
         assertEquals("alive", player_list.get(8).status);
+        player_list.clear();
     }
 
     //makes sure all players are alive at the start of a game
     @Test
     public void playersAliveAtStart(){
-        Main tester = new Main(); // MyClass is tested
+        Main tester = new Main();
 
-        Game.new_player("playerone");
-        Game.new_player("playertwo");
-        Game.new_player("playerthree");
-        Game.new_player("playerfour");
-        Game.new_player("playerfive");
-        Game.new_player("playersix");
-        Game.new_player("playerseven");
-        Game.new_player("playereight");
-        Game.new_player("playernine");
-        Game.new_player("playerten");
-        new Game();
+        tester.new_player("playerone");
+        tester.new_player("playertwo");
+        tester.new_player("playerthree");
+        tester.new_player("playerfour");
+        tester.new_player("playerfive");
+        tester.new_player("playersix");
+        tester.new_player("playerseven");
+        tester.new_player("playereight");
+        tester.new_player("playernine");
+        tester.new_player("playerten");
+        tester.newGame();
         for (int i = 0; i < player_list.size(); i++){
             assertEquals("alive", player_list.get(i).status);
         }
-
+        player_list.clear();
     }
 
 
     //tests to make sure that crewmates win if impostor dies
     @Test
-    public void crewmatesWinIfImposterDies() {
-        Main tester = new Main(); // MyClass is tested
+    public void crewmatesWinIfImpostorDies() {
+        Main tester = new Main();
 
-        Game.new_player("playerone");
-        Game.new_player("playertwo");
-        Game.new_player("playerthree");
-        Game.new_player("playerfour");
-        Game.new_player("playerfive");
-        Game.new_player("playersix");
-        Game.new_player("playerseven");
-        Game.new_player("playereight");
-        Game.new_player("playernine");
-        Game.new_player("playerten");
-        new Game();
+        tester.new_player("playerone");
+        tester.new_player("playertwo");
+        tester.new_player("playerthree");
+        tester.new_player("playerfour");
+        tester.new_player("playerfive");
+        tester.new_player("playersix");
+        tester.new_player("playerseven");
+        tester.new_player("playereight");
+        tester.new_player("playernine");
+        tester.new_player("playerten");
+        tester.newGame();
         for (int i = 0; i < player_list.size(); i++){
             if (player_list.get(i).role == "impostor"){
                 Game.playerDead(player_list.get(i).username);
@@ -134,25 +139,25 @@ public class JUnits {
         }
         assertEquals("Crewmates win", Game.winner);
 
-
+        player_list.clear();
     }
 
     //tests to make sure the impostor wins if there is only one crewmate alive
     @Test
     public void impostorWinsIfThereIsOneCremateLeft() {
-        Main tester = new Main(); // MyClass is tested
+        Main tester = new Main();
 
-        Game.new_player("playerone");
-        Game.new_player("playertwo");
-        Game.new_player("playerthree");
-        Game.new_player("playerfour");
-        Game.new_player("playerfive");
-        Game.new_player("playersix");
-        Game.new_player("playerseven");
-        Game.new_player("playereight");
-        Game.new_player("playernine");
-        Game.new_player("playerten");
-        new Game();
+        tester.new_player("playerone");
+        tester.new_player("playertwo");
+        tester.new_player("playerthree");
+        tester.new_player("playerfour");
+        tester.new_player("playerfive");
+        tester.new_player("playersix");
+        tester.new_player("playerseven");
+        tester.new_player("playereight");
+        tester.new_player("playernine");
+        tester.new_player("playerten");
+        tester.newGame();
         for (int i = 0; i < player_list.size(); i++){
             if (player_list.get(i).role != "impostor"){
                 Game.playerDead(player_list.get(i).username);
@@ -160,48 +165,49 @@ public class JUnits {
         }
         assertEquals("Impostor wins", Game.winner);
 
-
+        player_list.clear();
     }
 
     //tests to make sure no one dies if no votes are cast
     @Test
     public void nooneDiesIfNooneVotes() {
-        Main tester = new Main(); // MyClass is tested
+        Main tester = new Main();
 
-        Game.new_player("playerone");
-        Game.new_player("playertwo");
-        Game.new_player("playerthree");
-        Game.new_player("playerfour");
-        Game.new_player("playerfive");
-        Game.new_player("playersix");
-        Game.new_player("playerseven");
-        Game.new_player("playereight");
-        Game.new_player("playernine");
-        Game.new_player("playerten");
-        new Game();
+        tester.new_player("playerone");
+        tester.new_player("playertwo");
+        tester.new_player("playerthree");
+        tester.new_player("playerfour");
+        tester.new_player("playerfive");
+        tester.new_player("playersix");
+        tester.new_player("playerseven");
+        tester.new_player("playereight");
+        tester.new_player("playernine");
+        tester.new_player("playerten");
+        tester.newGame();
         Game.applyVotes();
         Game.tallyVotes();
         for (int i = 0; i < player_list.size(); i++) {
             assertEquals("alive", player_list.get(i).status);
         }
+        player_list.clear();
     }
 
     //tests to make sure no one dies if skip receives the most votes
     @Test
     public void noOneDiesIfSkipsReceivesMostVotes() {
-        Main tester = new Main(); // MyClass is tested
+        Main tester = new Main();
 
-        Game.new_player("playerone");
-        Game.new_player("playertwo");
-        Game.new_player("playerthree");
-        Game.new_player("playerfour");
-        Game.new_player("playerfive");
-        Game.new_player("playersix");
-        Game.new_player("playerseven");
-        Game.new_player("playereight");
-        Game.new_player("playernine");
-        Game.new_player("playerten");
-        new Game();
+        tester.new_player("playerone");
+        tester.new_player("playertwo");
+        tester.new_player("playerthree");
+        tester.new_player("playerfour");
+        tester.new_player("playerfive");
+        tester.new_player("playersix");
+        tester.new_player("playerseven");
+        tester.new_player("playereight");
+        tester.new_player("playernine");
+        tester.new_player("playerten");
+        tester.newGame();
         player_list.get(1).voted = player_list.get(0).username;
         player_list.get(0).voted = "skip";
         player_list.get(2).voted = "skip";
@@ -211,24 +217,25 @@ public class JUnits {
         for (int i = 0; i < player_list.size(); i++) {
             assertEquals("alive", player_list.get(i).status);
         }
+        player_list.clear();
     }
 
     //tests to make sure a player dies if they receive the most votes
     @Test
     public void playerDiesIfTheyReceiveTheMostVotes() {
-        Main tester = new Main(); // MyClass is tested
+        Main tester = new Main();
 
-        Game.new_player("playerone");
-        Game.new_player("playertwo");
-        Game.new_player("playerthree");
-        Game.new_player("playerfour");
-        Game.new_player("playerfive");
-        Game.new_player("playersix");
-        Game.new_player("playerseven");
-        Game.new_player("playereight");
-        Game.new_player("playernine");
-        Game.new_player("playerten");
-        new Game();
+        tester.new_player("playerone");
+        tester.new_player("playertwo");
+        tester.new_player("playerthree");
+        tester.new_player("playerfour");
+        tester.new_player("playerfive");
+        tester.new_player("playersix");
+        tester.new_player("playerseven");
+        tester.new_player("playereight");
+        tester.new_player("playernine");
+        tester.new_player("playerten");
+        tester.newGame();
         player_list.get(1).voted = player_list.get(7).username;
         player_list.get(4).voted = player_list.get(7).username;
         player_list.get(2).voted = player_list.get(7).username;
@@ -243,24 +250,25 @@ public class JUnits {
                 assertEquals("alive", player_list.get(i).status);
             }
         }
+        player_list.clear();
     }
 
     //tests to make sure crewmates win if the impostor is voted out
     @Test
     public void crewmatesWinIfImpostorVotedOut() {
-        Main tester = new Main(); // MyClass is tested
+        Main tester = new Main();
 
-        Game.new_player("playerone");
-        Game.new_player("playertwo");
-        Game.new_player("playerthree");
-        Game.new_player("playerfour");
-        Game.new_player("playerfive");
-        Game.new_player("playersix");
-        Game.new_player("playerseven");
-        Game.new_player("playereight");
-        Game.new_player("playernine");
-        Game.new_player("playerten");
-        new Game();
+        tester.new_player("playerone");
+        tester.new_player("playertwo");
+        tester.new_player("playerthree");
+        tester.new_player("playerfour");
+        tester.new_player("playerfive");
+        tester.new_player("playersix");
+        tester.new_player("playerseven");
+        tester.new_player("playereight");
+        tester.new_player("playernine");
+        tester.new_player("playerten");
+        tester.newGame();
         player_list.get(1).voted = player_list.get(0).username;
         player_list.get(4).voted = player_list.get(0).username;
         player_list.get(2).voted = player_list.get(0).username;
@@ -269,24 +277,25 @@ public class JUnits {
         Game.tallyVotes();
         int ind = Game.getPlayerIndex(player_list.get(0).username);
         assertEquals("Crewmates win", Game.winner);
+        player_list.clear();
         }
 
     //tests to make sure no one dies if a vote is tied
     @Test
     public void noOneDiesInTiedVote() {
-        Main tester = new Main(); // MyClass is tested
+        Main tester = new Main();
 
-        Game.new_player("playerone");
-        Game.new_player("playertwo");
-        Game.new_player("playerthree");
-        Game.new_player("playerfour");
-        Game.new_player("playerfive");
-        Game.new_player("playersix");
-        Game.new_player("playerseven");
-        Game.new_player("playereight");
-        Game.new_player("playernine");
-        Game.new_player("playerten");
-        new Game();
+        tester.new_player("playerone");
+        tester.new_player("playertwo");
+        tester.new_player("playerthree");
+        tester.new_player("playerfour");
+        tester.new_player("playerfive");
+        tester.new_player("playersix");
+        tester.new_player("playerseven");
+        tester.new_player("playereight");
+        tester.new_player("playernine");
+        tester.new_player("playerten");
+        tester.newGame();
         player_list.get(1).voted = player_list.get(6).username;
         player_list.get(0).voted = player_list.get(6).username;
         player_list.get(2).voted = player_list.get(7).username;
@@ -297,6 +306,75 @@ public class JUnits {
         for (int i = 0; i < player_list.size(); i++) {
             assertEquals("alive", player_list.get(i).status);
         }
+        player_list.clear();
+    }
+
+    //tests to make sure reporting a dead body will cause the game to enter the vote state
+    @Test
+    public void reportBodyCausesVote() {
+        Main tester = new Main();
+
+        tester.new_player("playerone");
+        tester.new_player("playertwo");
+        tester.new_player("playerthree");
+        tester.new_player("playerfour");
+        tester.new_player("playerfive");
+        tester.new_player("playersix");
+        tester.new_player("playerseven");
+        tester.new_player("playereight");
+        tester.new_player("playernine");
+        tester.new_player("playerten");
+        tester.newGame();
+        assertEquals(false, Game.has_vote_state_been_true);
+        Game.reportBody();
+        assertEquals(true, Game.has_vote_state_been_true);
+        player_list.clear();
+    }
+
+    //tests to make sure reporting a dead body will cause the game to enter the vote state
+    @Test
+    public void emergencyButtonCauseVote() {
+        Main tester = new Main();
+
+        tester.new_player("playerone");
+        tester.new_player("playertwo");
+        tester.new_player("playerthree");
+        tester.new_player("playerfour");
+        tester.new_player("playerfive");
+        tester.new_player("playersix");
+        tester.new_player("playerseven");
+        tester.new_player("playereight");
+        tester.new_player("playernine");
+        tester.new_player("playerten");
+        tester.newGame();
+        assertEquals(false, Game.has_vote_state_been_true);
+        Game.emergencyButton(player_list.get(0));
+        assertEquals(true, Game.has_vote_state_been_true);
+        player_list.clear();
+    }
+
+    //tests to see if player has an emergency button before and after pressing button, should print"no emergency buttons" when the player has no button
+    @Test
+    public void onlyOneEmergencyButton() {
+        Main tester = new Main();
+
+        tester.new_player("playerone");
+        tester.new_player("playertwo");
+        tester.new_player("playerthree");
+        tester.new_player("playerfour");
+        tester.new_player("playerfive");
+        tester.new_player("playersix");
+        tester.new_player("playerseven");
+        tester.new_player("playereight");
+        tester.new_player("playernine");
+        tester.new_player("playerten");
+        tester.newGame();
+        assertEquals(true, Game.doesPlayerHaveEmergencyButton(player_list.get(0)));
+        Game.emergencyButton(player_list.get(0));
+        assertEquals(false, Game.doesPlayerHaveEmergencyButton(player_list.get(0)));
+        Game.emergencyButton(player_list.get(0));
+
+        player_list.clear();
     }
     //tests to make sure prompt mess handles inputs correctly
     @Test

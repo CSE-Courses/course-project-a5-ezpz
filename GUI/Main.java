@@ -1,6 +1,8 @@
 package GUI;
 
 import Game.Game;
+import Game.Player;
+import Game.PlayerList;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -162,6 +164,15 @@ private JLabel gameLabel;
 
 	}
 
+	//adds new player with the players username and adds the player to the player_list
+	public static void new_player(String username){
+		Player player = new Player();
+		player.username = username;
+		PlayerList.add_player(player);
+	}
+
+
+
 	//creates an instance of Game to start a new game
 	public static void newGame(){
 		new Game();
@@ -170,6 +181,7 @@ private JLabel gameLabel;
 
 	public static void main(String[] args) {
 		new Main();
+
 
 		b1.addActionListener(new java.awt.event.ActionListener(){
 				@Override
