@@ -16,6 +16,7 @@ public class Game {
     public Game(){
         chooseRoles();
         setVote_tracker();
+        has_vote_state_been_true = false;
     }
 
 
