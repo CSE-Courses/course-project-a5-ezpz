@@ -14,7 +14,7 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
 import Code.Game;
-import Code.Player;
+import Code.Character;
 
 import sun.audio.AudioStream;
 
