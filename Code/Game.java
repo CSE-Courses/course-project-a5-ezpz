@@ -21,7 +21,7 @@ public class Game extends JFrame{
 	String[] arr = {"blue", "brown", "cyan", "green", "orange", "pink", "purple", "red", "white", "black"};
 	int index = 0;
 	static int max = 10;
-	String background = "/Users/husseinatwa/eclipse-workspace/AmongUs_CSE442/src/Code/stars.jpg";//change this string to whatever the file path is on ur pc
+	String background = "/Users/dylanschillaci/git/course-project-a5-ezpz/course-project-a5-ezpz/Code/stars.jpg";//change this string to whatever the file path is on ur pc
 	JLabel playerAmount;
 	
 	JLabel list;
@@ -101,22 +101,30 @@ public class Game extends JFrame{
 	
 	public class Up extends AbstractAction {
 		public void actionPerformed(ActionEvent e) {
+			if(charLabel.getY() >= -250) {
 			charLabel.setLocation(charLabel.getX(),charLabel.getY()-30);
+			}
 		}
 	}
 	public class Down extends AbstractAction {
 		public void actionPerformed(ActionEvent e) {
+			if(charLabel.getY() <= 250) {
 			charLabel.setLocation(charLabel.getX(),charLabel.getY()+30);
+			}
 		}
 	}
 	public class Left extends AbstractAction {
 		public void actionPerformed(ActionEvent e) {
+			if(charLabel.getX() >= 10) {
 			charLabel.setLocation(charLabel.getX()-30,charLabel.getY());
+			}
 		}
 	}
 	public class Right extends AbstractAction {
 		public void actionPerformed(ActionEvent e) {
+			if(charLabel.getX() <= 800) {
 			charLabel.setLocation(charLabel.getX()+30,charLabel.getY());
+			}
 		}
 	}
 }

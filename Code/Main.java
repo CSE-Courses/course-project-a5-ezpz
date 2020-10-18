@@ -30,11 +30,9 @@ public class Main
 	//Global variable for gamescreen once online
 	//gameFrame f = new gameFrame();
 	//global variables for Home Screen Music
-	File filePath = new File("/Users/husseinatwa/Downloads/AmongUsSoaralotRemix.wav");//locating audiofile from string passed containg location on comp
-	AudioInputStream audioInput;
-	Clip soundClip;
-	
-	
+	//File filePath = new File("/Users/husseinatwa/Downloads/AmongUsSoaralotRemix.wav");//locating audiofile from string passed containg location on comp
+	//AudioInputStream audioInput;
+	//Clip soundClip;
 	
 	
 	public Main(){
@@ -65,7 +63,7 @@ public class Main
 		mainPanel.add(Box.createRigidArea(new Dimension(0, 40)));//(width,height); used to insert spacing between the 2 components of 40pixels
 		
 		//Creating Button components to be placed on JPanel 
-        b1 = new JButton("Online");
+        b1 = new JButton("Play");
         b2 = new JButton("How To Play"); 
         mainPanel.add(b1);
         mainPanel.add(b2);
@@ -77,7 +75,7 @@ public class Main
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				stopMusic();
+				//stopMusic();
 				Game game = new Game();		
 			} 	
         });
@@ -158,18 +156,18 @@ public class Main
 		//Adding panel with components to frame
 		frame.add(mainPanel);
 		frame.pack();//automatically sizes frame with all its contents to be at an appropriate size if frame.setSize is not used
-        playMusic();
+        //playMusic();
 	}
 	
 	
-	
+	/*
 	public void playMusic() {
 		try {
-			audioInput = AudioSystem.getAudioInputStream(filePath);
-			soundClip = AudioSystem.getClip();//clip will get audiostream from our audioInput object which gets the audiofile from the file object
-			soundClip.open(audioInput);
-		    soundClip.start();
-			soundClip.loop(Clip.LOOP_CONTINUOUSLY);//continues to play song in loop
+			//audioInput = AudioSystem.getAudioInputStream(filePath);
+			//soundClip = AudioSystem.getClip();//clip will get audiostream from our audioInput object which gets the audiofile from the file object
+			//soundClip.open(audioInput);
+		    //soundClip.start();
+			//soundClip.loop(Clip.LOOP_CONTINUOUSLY);//continues to play song in loop
 			
 		}catch(Exception ex) {
 			ex.printStackTrace();
@@ -181,7 +179,7 @@ public class Main
 		
 	}
 	
-	
+	*/
 	public static void main(String[] args){ 
 		new Main();
 		
