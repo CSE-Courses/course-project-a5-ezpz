@@ -1,16 +1,18 @@
 package GUI;
 
-import java.awt.*;
-import java.awt.event.ActionEvent;
+import Game.Game;
+import Game.Player;
+import Game.PlayerList;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import java.awt.*;
+import java.awt.event.ActionEvent;
 
-import GUI.gameFrame;
 
-
-public class Main 
+public class Main
 {
+	/*
 	private JFrame frame;
 	private JFrame gameFr;
 	private JPanel mainPanel;
@@ -19,69 +21,72 @@ public class Main
 	private JButton b2;
 	private JLabel gameLabel;
 	gameFrame f = new gameFrame();
+	*/
 
-	
+	private JFrame frame;
+//private static JFrame gameFr;
+private JPanel mainPanel;
+private JPanel mainPanel2;
+private static JButton b1;
+private JButton b2;
+private JLabel gameLabel;
+
+
+
 	public Main() {
-		gui();	
+		gui();
 	}
-	
+
 	public void gui() {
-		
+
 		//Creating frame
-        JFrame.setDefaultLookAndFeelDecorated(true);
-        frame = new JFrame("Version 1.0");
-        gameFr = new JFrame("Version 1.0");
-        frame.setVisible(true);
-        //frame.setSize(600, 400);//setting size of frame 600 width and 400 height.
+		JFrame.setDefaultLookAndFeelDecorated(true);
+		frame = new JFrame("Version 1.0");
+		//gameFr = new JFrame("Version 1.0");
+		frame.setVisible(true);
+		//frame.setSize(600, 400);//setting size of frame 600 width and 400 height.
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);//Allows frame to exit, without it frame will not close
-         
+
 		//Creating Panel
 		mainPanel = new JPanel();
-		mainPanel.setBackground(Color.BLACK);//setting background of JPanel to be black 
-        BoxLayout boxlayout = new BoxLayout(mainPanel, BoxLayout.Y_AXIS);//Setting Boxlayout for Jpanel
-        mainPanel.setLayout(boxlayout);//BoxLayout.Y_AXIS adds panel components from top to bottom 
-        mainPanel.setBorder(new EmptyBorder(new Insets(150, 200, 150, 200)));//Set border for the panel
-        
-        //Creating Label that will contain Game title and adding it to our JPanel
-        gameLabel = new JLabel("AMONG US");
+		mainPanel.setBackground(Color.BLACK);//setting background of JPanel to be black
+		BoxLayout boxlayout = new BoxLayout(mainPanel, BoxLayout.Y_AXIS);//Setting Boxlayout for Jpanel
+		mainPanel.setLayout(boxlayout);//BoxLayout.Y_AXIS adds panel components from top to bottom
+		mainPanel.setBorder(new EmptyBorder(new Insets(150, 200, 150, 200)));//Set border for the panel
+
+		//Creating Label that will contain Game title and adding it to our JPanel
+		gameLabel = new JLabel("AMONG US");
 		gameLabel.setForeground(Color.RED);//setting color of label text to Red
 		gameLabel.setFont(new Font("Phosphate", Font.BOLD, 42));//setting font type and size for label
 		mainPanel.add(gameLabel);
 		mainPanel.add(Box.createRigidArea(new Dimension(0, 40)));//(width,height); used to insert spacing between the 2 components of 40pixels
-		
-		//Creating Button components to be placed on JPanel 
-        b1 = new JButton("Online");
-        b2 = new JButton("How To Play"); 
-        mainPanel.add(b1);
-        mainPanel.add(b2);
-        
-        
-        
-      //Creating Panel for game window
-    	gameFr.add(f);
-    	gameFr.setSize(800,600);
-      	//mainPanel2 = new JPanel();
-      	//mainPanel2.setBackground(Color.WHITE);//setting background of JPanel to be black 
-        //BoxLayout boxlayout2 = new BoxLayout(mainPanel2, BoxLayout.Y_AXIS);//Setting Boxlayout for Jpanel
-        //mainPanel2.setLayout(boxlayout2);//BoxLayout.Y_AXIS adds panel components from top to bottom 
-        //Set border for the panel
-        //mainPanel2.setBorder(new EmptyBorder(new Insets(150, 200, 150, 200)));
-        //mainPanel.setBorder(new EmptyBorder(new Insets(50, 80, 50, 80)));     
-        //gameFr.add(mainPanel2);
-        //gameFr.pack();
-            
-        
-        //Implementing action listener for "Online" button
-        b1.addActionListener(new java.awt.event.ActionListener(){
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				gameFr.setVisible(true);		
-			} 	
-        });
-        
-      //Implementing action listener for "How To Play" button
-        b2.addActionListener(new java.awt.event.ActionListener(){
+
+		//Creating Button components to be placed on JPanel
+		b1 = new JButton("Online");
+		b2 = new JButton("How To Play");
+		mainPanel.add(b1);
+		mainPanel.add(b2);
+
+
+
+		//Creating Panel for game window
+		//gameFr.add(f);
+		//gameFr.setSize(800,600);
+		//mainPanel2 = new JPanel();
+		//mainPanel2.setBackground(Color.WHITE);//setting background of JPanel to be black
+		//BoxLayout boxlayout2 = new BoxLayout(mainPanel2, BoxLayout.Y_AXIS);//Setting Boxlayout for Jpanel
+		//mainPanel2.setLayout(boxlayout2);//BoxLayout.Y_AXIS adds panel components from top to bottom
+		//Set border for the panel
+		//mainPanel2.setBorder(new EmptyBorder(new Insets(150, 200, 150, 200)));
+		//mainPanel.setBorder(new EmptyBorder(new Insets(50, 80, 50, 80)));
+		//gameFr.add(mainPanel2);
+		//gameFr.pack();
+
+
+		//Implementing action listener for "Online" button
+
+		//Implementing action listener for "How To Play" button
+		b2.addActionListener(new java.awt.event.ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
@@ -89,16 +94,16 @@ public class Main
 				JFrame howToPlay = new JFrame("How To Play");
 				howToPlay.setVisible(true);
 				howToPlay.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-				
+
 				//creating jpanel
 				JPanel howP = new JPanel();
-				howP.setBackground(Color.BLACK);//setting background of JPanel to be black 
-		        BoxLayout boxlayout = new BoxLayout(howP, BoxLayout.Y_AXIS);//Setting Boxlayout for Jpanel
-		        howP.setLayout(boxlayout);//BoxLayout.Y_AXIS adds panel components from top to bottom 
-				
-		        //Creating Labels containing rules and adding them to our JPanel
-		        /*Label*/
-		        JLabel label = new JLabel("RULES");
+				howP.setBackground(Color.BLACK);//setting background of JPanel to be black
+				BoxLayout boxlayout = new BoxLayout(howP, BoxLayout.Y_AXIS);//Setting Boxlayout for Jpanel
+				howP.setLayout(boxlayout);//BoxLayout.Y_AXIS adds panel components from top to bottom
+
+				//Creating Labels containing rules and adding them to our JPanel
+				/*Label*/
+				JLabel label = new JLabel("RULES");
 				label.setForeground(Color.RED);
 				label.setFont(new Font("Comic Sans MS", Font.BOLD, 24));
 				howP.add(label);//add to panel
@@ -144,24 +149,48 @@ public class Main
 				rule10.setForeground(Color.WHITE);
 				howP.add(rule10);//add to panel
 				howP.add(Box.createRigidArea(new Dimension(0, 40)));//(width,height); used to insert spacing between the 2 components of 40pixels
-				
+
 				//Adding panel with components to frame
 				howToPlay.add(howP);
-				howToPlay.pack();		
-			} 
-			
-        });
-       
-        
+				howToPlay.pack();
+			}
+
+		});
+
+
 		//Adding panel with components to frame
 		frame.add(mainPanel);
 		frame.pack();//automatically sizes frame with all its contents to be at an appropriate size if frame.setSize is not used
-	
+
 	}
-	
-	public static void main(String[] args) { 
+
+	//adds new player with the players username and adds the player to the player_list
+	public static void new_player(String username){
+		Player player = new Player();
+		player.username = username;
+		PlayerList.add_player(player);
+	}
+
+
+
+	//creates an instance of Game to start a new game
+	public static void newGame(){
+		new Game();
+	}
+
+
+	public static void main(String[] args) {
 		new Main();
-		
+
+
+		b1.addActionListener(new java.awt.event.ActionListener(){
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					// TODO Auto-generated method stub
+					gameFrame game = new gameFrame();
+			}
+		});
+
 	}
-	
+
 }
