@@ -386,7 +386,7 @@ public class JUnits {
     @Test
     public void num_is_9() { // Input is 1 for message 9
         Prompt tester = new Prompt(); // Prompt is tested
-        assertEquals("Use the movement keys to do a dance party", tester.mess(9));
+        assertEquals("o to the left of the screen and race to the right of the screen", tester.mess(9));
     }
     //tests to make sure prompt mess handles inputs correctly
 
