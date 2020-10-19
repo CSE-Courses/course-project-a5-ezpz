@@ -76,6 +76,7 @@ public class Main
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				//stopMusic();
+				Text text = new Text(); // create new instance of messages.
 				Game game = new Game();		
 			} 	
         });
