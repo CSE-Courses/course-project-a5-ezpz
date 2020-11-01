@@ -1,9 +1,6 @@
 import pygame
 from client import Client
 
-
-
-
 #########################################################################################################################################
 class Lobby():
 
@@ -20,9 +17,26 @@ class Lobby():
         #Place background image for lobby
         self.bg_img = pygame.image.load('Images/stars.jpg')
         self.screen.blit(self.bg_img, self.bg_img.get_rect())
+        #myfont = pygame.font.SysFont("monspace", 20)
+        #self.screen.blit(self.button, self.button.get_rect())
+
+class Button():
+    def __init__(self, w, h, x, y, Lobby):
+        self.width = w
+        self.height = h
+        self.posx = x
+        self.posy = y
+        self.screen = pygame.display.set_mode((w, h))
+        self.Lobby = Lobby
+
+    def draw(self):
+        #rect = pygame.draw.rect(self.screen, (0,200,0), (150, 550, 100, 50))
+        #self.screen.blit(rect, (self.posx, self.posy))
+        pygame.draw.rect(self.Lobby.getLobby(), (0, 200, 0), (150, 500, 100, 50))
 
 
-########################################################################################################################################
+
+    ########################################################################################################################################
 class Player():
 
     def __init__(self, startx, starty, w , h, color):
@@ -109,6 +123,7 @@ class Game():
         self.player2 = Player(300, 300, 36, 48, 'Images/orange.png') #Initializing Player class instance at set point(300,300) in map
         self.enemy = Enemy(100, 100, 36, 48, 475, 'Images/blue.png')  # Initializing Player class instance at set point(100,100)
         self.lobby = Lobby(self.width, self.height, "Version 1.0") #Creating Lobby class instance
+        #self.button = Button(100, 100, 50, 50, self.lobby)
 
 
     # will get info from server in a form we can understand so we can then draw the other character
@@ -164,6 +179,11 @@ class Game():
             self.player1.draw(self.lobby.getLobby())
             self.player2.draw(self.lobby.getLobby())
             self.enemy.draw(self.lobby.getLobby())
+            #self.button.draw()
+            pygame.init()
+            font = pygame.font.Font(None, 30)
+            scoretext = font.render("Press 'Enter' when all players have joined.", 1, (255, 255, 255))
+            self.lobby.getLobby().blit(scoretext, (150, 457))
             pygame.display.update()
 
         pygame.quit()
