@@ -17,24 +17,10 @@ class Lobby():
 
     def drawLobbyBackground(self):
         #Place background image for lobby
-        self.bg_img = pygame.image.load('Images/stars.jpg')
+        self.bg_img = pygame.image.load('Images/lobbyShip.png')
         self.screen.blit(self.bg_img, self.bg_img.get_rect())
         #myfont = pygame.font.SysFont("monspace", 20)
         #self.screen.blit(self.button, self.button.get_rect())
-
-class Button():
-    def __init__(self, w, h, x, y, Lobby):
-        self.width = w
-        self.height = h
-        self.posx = x
-        self.posy = y
-        self.screen = pygame.display.set_mode((w, h))
-        self.Lobby = Lobby
-
-    def draw(self):
-        #rect = pygame.draw.rect(self.screen, (0,200,0), (150, 550, 100, 50))
-        #self.screen.blit(rect, (self.posx, self.posy))
-        pygame.draw.rect(self.Lobby.getLobby(), (0, 200, 0), (150, 500, 100, 50))
 
 
 
@@ -62,7 +48,7 @@ class Player():
             self.y = self.y + self.rate
 
     def draw(self, player):
-        player = pygame.image.load(self.color).convert()
+        player = pygame.image.load(self.color).convert_alpha()
         self.screen.blit(player, (self.x,self.y) )# params converted image, starting positions of characters
 
 
@@ -100,18 +86,30 @@ class Enemy():
 
     def draw(self, g):
         self.moveX()
-        player = pygame.image.load(self.color).convert()
+        player = pygame.image.load(self.color).convert_alpha()
         self.screen.blit(player, (self.x, self.y))  # params converted image, starting positions of characters
 
 
+##############################################################################################################################
+
+class Button():
+    def __init__(self, w, h, x, y, Lobby):
+        self.width = w
+        self.height = h
+        self.posx = x
+        self.posy = y
+        self.screen = pygame.display.set_mode((w, h))
+        self.Lobby = Lobby
+
+    def draw(self):
+        #rect = pygame.draw.rect(self.screen, (0,200,0), (150, 550, 100, 50))
+        #self.screen.blit(rect, (self.posx, self.posy))
+        pygame.draw.rect(self.Lobby.getLobby(), (0, 200, 0), (150, 500, 100, 50))
 
 
 
 
-
-
-
-
+##############################################################################################################################
 
 
 class Game():
@@ -123,7 +121,7 @@ class Game():
         self.network = Client()
         self.player1 = Player(40, 40, 36, 48, 'Images/cyan.png') #Initializing Player class instance at set point(40,40) in map
         self.player2 = Player(300, 300, 36, 48, 'Images/orange.png') #Initializing Player class instance at set point(300,300) in map
-        self.enemy = Enemy(100, 100, 36, 48, 475, 'Images/blue.png')  # Initializing Player class instance at set point(100,100)
+        self.enemy = Enemy(100, 100, 36, 48, 200, 'Images/blue.png')  # Initializing Player class instance at set point(100,100)
         self.lobby = Lobby(self.width, self.height, "Version 1.0") #Creating Lobby class instance
         #self.button = Button(100, 100, 50, 50, self.lobby)
 
@@ -217,7 +215,6 @@ class Game():
                 print(p1_input)
                 p1_text = font.render("player 1: ", 1, (255, 255, 255))  # player 1 text
                 #self.lobby.getLobby().blit(p1_text, (150, 2)) # Display
-
                 p1_bytes = bytes("wow", 'ascii')
                 scoretext = font.render(p1_bytes, 1, (255, 255, 255))
                 self.lobby.getLobby().blit(scoretext, (150, 457))
@@ -233,4 +230,4 @@ class Game():
 
 
 
-########################################################################################################################################
+################################################################################################
