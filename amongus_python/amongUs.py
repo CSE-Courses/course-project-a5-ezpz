@@ -1,6 +1,8 @@
 import pygame
+# import signal
 from client import Client
 
+TIMEOUT = 4 # number of seconds until timeout
 #########################################################################################################################################
 class Lobby():
 
@@ -140,10 +142,17 @@ class Game():
         data = str(self.network.id) + ":" + str(self.player1.x) + "," + str(self.player1.y)
         reply = self.network.sendData(data)
         return reply
-
-
+    """
+    def interrupted(signum, frame):
+        # Called when the text input times out
+        print("Interrupted")
+    signal.signal(signal.SIGALRM, interrupted)
+    """
     def run(self):
         running = True
+        msg_bool = False  # boolean for if theres a message
+        p1_input = 'a'
+        p1_bytes = ''
         while running:
             self.clock.tick(60) #once per frame, the program will never running at more than 60 fps.
             # Properly quit (pygame will crash without this)
@@ -154,6 +163,7 @@ class Game():
                 # If closed out, quit program
                 if event.type == pygame.QUIT:
                     running = False
+
 
             #making character move
             keys = pygame.key.get_pressed()
@@ -169,7 +179,13 @@ class Game():
             if keys[pygame.K_DOWN]:
                 if self.player1.y <= self.height - self.player1.rate:
                     self.player1.move(3)
-
+            """     
+            if keys[pygame.K_0]:
+                p1_input = input("enter an input :")
+                # p1_text = font.render("player 1: " + p1_input, 1, (255, 255, 255)) # player 1 text
+                msg_bool = True
+                print(msg_bool)
+            """
             # Send Network data
             self.player2.x, self.player2.y = self.parseData(self.sendData())
             #self.player3.x, self.player3.y = self.parse_data(self.send_data())
@@ -180,10 +196,36 @@ class Game():
             self.player2.draw(self.lobby.getLobby())
             self.enemy.draw(self.lobby.getLobby())
             #self.button.draw()
-            pygame.init()
+            pygame.init() # initialize pygame
             font = pygame.font.Font(None, 30)
             scoretext = font.render("Press 'Enter' when all players have joined.", 1, (255, 255, 255))
             self.lobby.getLobby().blit(scoretext, (150, 457))
+
+            #signal.alarm(TIMEOUT)
+            if keys[pygame.K_0]:
+                p1_input = input("enter an input :")
+            #else:
+                #p1_input = ""
+            print(p1_input) # Test, prints current output
+            p1_text = font.render("player: " + p1_input, 1, (255, 255, 255)) # player 1 text
+            self.lobby.getLobby().blit(p1_text, (150, 2))
+            #signal.alarm(0) # Disable alarm after success
+            """
+            if msg_bool:
+                print(msg_bool)
+                print("delivered")
+                print(p1_input)
+                p1_text = font.render("player 1: ", 1, (255, 255, 255))  # player 1 text
+                #self.lobby.getLobby().blit(p1_text, (150, 2)) # Display
+
+                p1_bytes = bytes("wow", 'ascii')
+                scoretext = font.render(p1_bytes, 1, (255, 255, 255))
+                self.lobby.getLobby().blit(scoretext, (150, 457))
+                msg_bool = False
+                #print(p1_text)
+                #print(msg_bool)
+            """
+
             pygame.display.update()
 
         pygame.quit()
