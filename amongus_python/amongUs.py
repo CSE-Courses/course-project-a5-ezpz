@@ -149,23 +149,26 @@ class Game():
     signal.signal(signal.SIGALRM, interrupted)
     """
     def run(self):
-        running = True
+        lobby_running = True
+
         msg_bool = False  # boolean for if theres a message
         p1_input = 'a'
         p1_bytes = ''
-        while running:
-            self.clock.tick(60) #once per frame, the program will never running at more than 60 fps.
+        while lobby_running:
+            self.clock.tick(60)  # once per frame, the program will never running at more than 60 fps.
             # Properly quit (pygame will crash without this)
             for event in pygame.event.get():
                 # If key pressed is ESC key, quit program
                 if event.type == pygame.K_ESCAPE:
-                    running = False
+                    lobby_running = False
                 # If closed out, quit program
                 if event.type == pygame.QUIT:
-                    running = False
+                    lobby_running = False
+                if event.type == pygame.K_RETURN:
 
+                    lobby_running = False
 
-            #making character move
+            # making character move
             keys = pygame.key.get_pressed()
             if keys[pygame.K_RIGHT]:
                 if self.player1.x <= self.width - self.player1.rate:
@@ -179,6 +182,10 @@ class Game():
             if keys[pygame.K_DOWN]:
                 if self.player1.y <= self.height - self.player1.rate:
                     self.player1.move(3)
+            if keys[pygame.K_RETURN]:
+                return True
+
+
             """     
             if keys[pygame.K_0]:
                 p1_input = input("enter an input :")
@@ -188,28 +195,28 @@ class Game():
             """
             # Send Network data
             self.player2.x, self.player2.y = self.parseData(self.sendData())
-            #self.player3.x, self.player3.y = self.parse_data(self.send_data())
+            # self.player3.x, self.player3.y = self.parse_data(self.send_data())
 
             # Update Lobby
             self.lobby.drawLobbyBackground()
             self.player1.draw(self.lobby.getLobby())
             self.player2.draw(self.lobby.getLobby())
             self.enemy.draw(self.lobby.getLobby())
-            #self.button.draw()
-            pygame.init() # initialize pygame
+            # self.button.draw()
+            pygame.init()  # initialize pygame
             font = pygame.font.Font(None, 30)
             scoretext = font.render("Press 'Enter' when all players have joined.", 1, (255, 255, 255))
             self.lobby.getLobby().blit(scoretext, (150, 457))
 
-            #signal.alarm(TIMEOUT)
+            # signal.alarm(TIMEOUT)
             if keys[pygame.K_0]:
                 p1_input = input("enter an input :")
-            #else:
-                #p1_input = ""
-            print(p1_input) # Test, prints current output
-            p1_text = font.render("player: " + p1_input, 1, (255, 255, 255)) # player 1 text
+            # else:
+            # p1_input = ""
+            print(p1_input)  # Test, prints current output
+            p1_text = font.render("player: " + p1_input, 1, (255, 255, 255))  # player 1 text
             self.lobby.getLobby().blit(p1_text, (150, 2))
-            #signal.alarm(0) # Disable alarm after success
+            # signal.alarm(0) # Disable alarm after success
             """
             if msg_bool:
                 print(msg_bool)
@@ -229,6 +236,100 @@ class Game():
             pygame.display.update()
 
         pygame.quit()
+
+    def game(self):
+        running = True
+
+        msg_bool = False  # boolean for if theres a message
+        p1_input = 'a'
+        p1_bytes = ''
+        while running:
+            self.clock.tick(60)  # once per frame, the program will never running at more than 60 fps.
+            # Properly quit (pygame will crash without this)
+            for event in pygame.event.get():
+                # If key pressed is ESC key, quit program
+                if event.type == pygame.K_ESCAPE:
+                    running = False
+                # If closed out, quit program
+                if event.type == pygame.QUIT:
+                    running = False
+                if event.type == pygame.K_RETURN:
+                    lobby_running = False
+
+            # making character move
+            keys = pygame.key.get_pressed()
+            if keys[pygame.K_RIGHT]:
+                if self.player1.x <= self.width - self.player1.rate:
+                    self.player1.move(0)
+            if keys[pygame.K_LEFT]:
+                if self.player1.x >= self.player1.rate:
+                    self.player1.move(1)
+            if keys[pygame.K_UP]:
+                if self.player1.y >= self.player1.rate:
+                    self.player1.move(2)
+            if keys[pygame.K_DOWN]:
+                if self.player1.y <= self.height - self.player1.rate:
+                    self.player1.move(3)
+            if keys[pygame.K_RETURN]:
+                running = True
+                lobby = False
+
+            """     
+            if keys[pygame.K_0]:
+                p1_input = input("enter an input :")
+                # p1_text = font.render("player 1: " + p1_input, 1, (255, 255, 255)) # player 1 text
+                msg_bool = True
+                print(msg_bool)
+            """
+            # Send Network data
+            self.player2.x, self.player2.y = self.parseData(self.sendData())
+            # self.player3.x, self.player3.y = self.parse_data(self.send_data())
+
+            # Update Lobby
+            self.lobby.drawLobbyBackground()
+            self.player1.draw(self.lobby.getLobby())
+            self.player2.draw(self.lobby.getLobby())
+            self.enemy.draw(self.lobby.getLobby())
+            # self.button.draw()
+            pygame.init()  # initialize pygame
+            font = pygame.font.Font(None, 30)
+            scoretext = font.render("you are in the new GUI", 1, (255, 255, 255))
+            self.lobby.getLobby().blit(scoretext, (150, 457))
+
+            # signal.alarm(TIMEOUT)
+            if keys[pygame.K_0]:
+                p1_input = input("enter an input :")
+            # else:
+            # p1_input = ""
+            print(p1_input)  # Test, prints current output
+            p1_text = font.render("player: " + p1_input, 1, (255, 255, 255))  # player 1 text
+            self.lobby.getLobby().blit(p1_text, (150, 2))
+            # signal.alarm(0) # Disable alarm after success
+            """
+            if msg_bool:
+                print(msg_bool)
+                print("delivered")
+                print(p1_input)
+                p1_text = font.render("player 1: ", 1, (255, 255, 255))  # player 1 text
+                #self.lobby.getLobby().blit(p1_text, (150, 2)) # Display
+
+                p1_bytes = bytes("wow", 'ascii')
+                scoretext = font.render(p1_bytes, 1, (255, 255, 255))
+                self.lobby.getLobby().blit(scoretext, (150, 457))
+                msg_bool = False
+                #print(p1_text)
+                #print(msg_bool)
+            """
+
+            pygame.display.update()
+
+        pygame.quit()
+
+
+
+
+
+
 
 
 
