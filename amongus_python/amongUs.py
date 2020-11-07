@@ -1,3 +1,5 @@
+import sys
+
 import pygame
 # import signal
 from client import Client
@@ -17,31 +19,18 @@ class Lobby():
 
     def drawLobbyBackground(self):
         #Place background image for lobby
-        self.bg_img = pygame.image.load('Images/stars.jpg')
+        self.bg_img = pygame.image.load('Images/lobbyShip.png')
         self.screen.blit(self.bg_img, self.bg_img.get_rect())
         #myfont = pygame.font.SysFont("monspace", 20)
         #self.screen.blit(self.button, self.button.get_rect())
 
-class Button():
-    def __init__(self, w, h, x, y, Lobby):
-        self.width = w
-        self.height = h
-        self.posx = x
-        self.posy = y
-        self.screen = pygame.display.set_mode((w, h))
-        self.Lobby = Lobby
-
-    def draw(self):
-        #rect = pygame.draw.rect(self.screen, (0,200,0), (150, 550, 100, 50))
-        #self.screen.blit(rect, (self.posx, self.posy))
-        pygame.draw.rect(self.Lobby.getLobby(), (0, 200, 0), (150, 500, 100, 50))
-
 
 
     ########################################################################################################################################
-class Player():
+class Player(pygame.sprite.Sprite):
 
-    def __init__(self, startx, starty, w , h, color):
+    def __init__(self, startx, starty, w , h, color, colorDead):
+        pygame.sprite.Sprite.__init__(self)
         self.x = startx
         self.y = starty
         self.rate = 2
@@ -49,6 +38,10 @@ class Player():
         self.width = w #36pixels
         self.screen = pygame.display.set_mode((w, h))
         self.color = color #color is not a string it is a pygame.Surface type containing the .png file that will produce character
+        self.dead = colorDead
+
+        self.images = [pygame.image.load(self.color).convert_alpha(), pygame.image.load(self.dead).convert_alpha()]
+        self.current_image = self.images[0]
 
     #directKey parameter will be used to move player instance in certain direction
     def move(self, directKey):
@@ -62,16 +55,15 @@ class Player():
             self.y = self.y + self.rate
 
     def draw(self, player):
-        player = pygame.image.load(self.color).convert()
-        self.screen.blit(player, (self.x,self.y) )# params converted image, starting positions of characters
-
+        self.screen.blit(self.current_image, (self.x,self.y) )# params converted image, starting positions of characters
 
 
 
 ########################################################################################################################################
-class Enemy():
+class Enemy(pygame.sprite.Sprite):
 
-    def __init__(self, startx, starty, w, h, end, color):
+    def __init__(self, startx, starty, w, h, end, color, colorDead):
+        pygame.sprite.Sprite.__init__(self)
         self.x = startx
         self.y = starty
         self.height = h  # 48pixels
@@ -82,6 +74,10 @@ class Enemy():
         self.rate = 2
         self.screen = pygame.display.set_mode((w, h))
         self.color = color  # color is not a string it is a pygame.Surface type containing the .png file that will produce character
+        self.dead = colorDead
+
+        self.images = [pygame.image.load(self.color).convert_alpha(), pygame.image.load(self.dead).convert_alpha()]
+        self.current_image = self.images[0]
 
     def moveX(self):
         if self.rate > 0:
@@ -99,19 +95,31 @@ class Enemy():
 
 
     def draw(self, g):
-        self.moveX()
-        player = pygame.image.load(self.color).convert()
-        self.screen.blit(player, (self.x, self.y))  # params converted image, starting positions of characters
+        if self.current_image == self.images[0]:
+            self.moveX()
+        self.screen.blit(self.current_image, (self.x, self.y))  # params converted image, starting positions of characters
+
+
+##############################################################################################################################
+
+class Button():
+    def __init__(self, w, h, x, y, Lobby):
+        self.width = w
+        self.height = h
+        self.posx = x
+        self.posy = y
+        self.screen = pygame.display.set_mode((w, h))
+        self.Lobby = Lobby
+
+    def draw(self):
+        #rect = pygame.draw.rect(self.screen, (0,200,0), (150, 550, 100, 50))
+        #self.screen.blit(rect, (self.posx, self.posy))
+        pygame.draw.rect(self.Lobby.getLobby(), (0, 200, 0), (150, 500, 100, 50))
 
 
 
 
-
-
-
-
-
-
+##############################################################################################################################
 
 
 class Game():
@@ -122,9 +130,9 @@ class Game():
         self.width = w
         self.height = h
         self.network = Client()
-        self.player1 = Player(40, 40, 36, 48, 'Images/cyan.png') #Initializing Player class instance at set point(40,40) in map
-        self.player2 = Player(300, 300, 36, 48, 'Images/orange.png') #Initializing Player class instance at set point(300,300) in map
-        self.enemy = Enemy(100, 100, 36, 48, 475, 'Images/blue.png')  # Initializing Player class instance at set point(100,100)
+        self.player1 = Player(40, 40, 36, 48, 'Images/cyan.png', 'Images/cyanDead.png') #Initializing Player class instance at set point(40,40) in map
+        self.player2 = Player(300, 300, 36, 48, 'Images/orange.png', 'Images/orangeDead.png') #Initializing Player class instance at set point(300,300) in map
+        self.enemy1 = Enemy(100, 100, 36, 48, 200, 'Images/blue.png', 'Images/blueDead.png')  # Initializing Player class instance at set point(100,100)
         self.lobby = Lobby(self.width, self.height, "Version 1.0") #Creating Lobby class instance
         #self.button = Button(100, 100, 50, 50, self.lobby)
 
@@ -150,26 +158,29 @@ class Game():
     signal.signal(signal.SIGALRM, interrupted)
     """
     def run(self):
-        lobby_running = True
-
+        running = True
         msg_bool = False  # boolean for if theres a message
         p1_input = 'a'
         p1_bytes = ''
-        while lobby_running:
-            self.clock.tick(60)  # once per frame, the program will never running at more than 60 fps.
+        while running:
+            self.clock.tick(60) #once per frame, the program will never running at more than 60 fps.self.started = True
+
             # Properly quit (pygame will crash without this)
             for event in pygame.event.get():
-                # If key pressed is ESC key, quit program
-                if event.type == pygame.K_ESCAPE:
-                    lobby_running = False
                 # If closed out, quit program
                 if event.type == pygame.QUIT:
-                    lobby_running = False
-                if event.type == pygame.K_RETURN:
-                    self.started = True
-                    lobby_running = False
+                    running = False
+                if event.type == pygame.KEYDOWN:
 
-            # making character move
+                    # If key pressed is ESC key, quit program
+                    if event.key == pygame.K_ESCAPE:
+                        running = False
+                    # If enter is pressed, lobby will close and game will start
+                    if event.key == pygame.K_RETURN:
+                        self.started = True
+                        running = False
+
+            #making character move
             keys = pygame.key.get_pressed()
             if keys[pygame.K_RIGHT]:
                 if self.player1.x <= self.width - self.player1.rate:
@@ -183,10 +194,6 @@ class Game():
             if keys[pygame.K_DOWN]:
                 if self.player1.y <= self.height - self.player1.rate:
                     self.player1.move(3)
-            if keys[pygame.K_RETURN]:
-                return True
-
-
             """     
             if keys[pygame.K_0]:
                 p1_input = input("enter an input :")
@@ -196,28 +203,42 @@ class Game():
             """
             # Send Network data
             self.player2.x, self.player2.y = self.parseData(self.sendData())
-            # self.player3.x, self.player3.y = self.parse_data(self.send_data())
 
             # Update Lobby
             self.lobby.drawLobbyBackground()
             self.player1.draw(self.lobby.getLobby())
             self.player2.draw(self.lobby.getLobby())
-            self.enemy.draw(self.lobby.getLobby())
-            # self.button.draw()
-            pygame.init()  # initialize pygame
-            font = pygame.font.Font(None, 30)
-            scoretext = font.render("Press 'Enter' when all players have joined.", 1, (255, 255, 255))
-            self.lobby.getLobby().blit(scoretext, (150, 457))
+            self.enemy1.draw(self.lobby.getLobby())
 
-            # signal.alarm(TIMEOUT)
+            #ENTER LABEL PLACED IN LOBBY TO ENTER GAME#
+            pygame.init() # initialize pygame
+            font = pygame.font.Font(None, 30)
+            enterLabel = font.render("Press 'Enter' when all players have joined.", 1, (255, 255, 255))
+            self.lobby.getLobby().blit(enterLabel, (150, 457))
+
+            #KILLING CHARACTERS#
+            #press 2 on keyboard to transform player2 to dead image
+            if keys[pygame.K_2]:
+                self.player2.current_image = self.player2.images[1]
+                pygame.display.flip()
+            #press 3 on keyboard to transform 3rd player aka enemy1 to dead image
+            if keys[pygame.K_3]:
+                self.enemy1.current_image = self.enemy1.images[1]
+                pygame.display.flip()
+
+
+
+
+            #CHAT BOX SHIT#
+            #signal.alarm(TIMEOUT)
             if keys[pygame.K_0]:
                 p1_input = input("enter an input :")
-            # else:
-            # p1_input = ""
-            print(p1_input)  # Test, prints current output
-            p1_text = font.render("player: " + p1_input, 1, (255, 255, 255))  # player 1 text
+            #else:
+                #p1_input = ""
+            print(p1_input) # Test, prints current output
+            p1_text = font.render("player: " + p1_input, 1, (255, 255, 255)) # player 1 text
             self.lobby.getLobby().blit(p1_text, (150, 2))
-            # signal.alarm(0) # Disable alarm after success
+            #signal.alarm(0) # Disable alarm after success
             """
             if msg_bool:
                 print(msg_bool)
@@ -235,26 +256,29 @@ class Game():
 
             pygame.display.update()
 
-        pygame.quit()
+        if not self.started:
+            pygame.quit()
+        else:
+            Game.rungame(self)
 
-    def game(self):
+    def rungame(self):
         running = True
-
         msg_bool = False  # boolean for if theres a message
         p1_input = 'a'
         p1_bytes = ''
         while running:
-            self.clock.tick(60)  # once per frame, the program will never running at more than 60 fps.
+            self.clock.tick(
+                60)  # once per frame, the program will never running at more than 60 fps.self.started = True
+
             # Properly quit (pygame will crash without this)
             for event in pygame.event.get():
-                # If key pressed is ESC key, quit program
-                if event.type == pygame.K_ESCAPE:
-                    running = False
                 # If closed out, quit program
                 if event.type == pygame.QUIT:
                     running = False
-                if event.type == pygame.K_RETURN:
-                    lobby_running = False
+                if event.type == pygame.KEYDOWN:
+                    # If key pressed is ESC key, quit program
+                    if event.key == pygame.K_ESCAPE:
+                        running = False
 
             # making character move
             keys = pygame.key.get_pressed()
@@ -270,10 +294,6 @@ class Game():
             if keys[pygame.K_DOWN]:
                 if self.player1.y <= self.height - self.player1.rate:
                     self.player1.move(3)
-            if keys[pygame.K_RETURN]:
-                running = True
-                lobby = False
-
             """     
             if keys[pygame.K_0]:
                 p1_input = input("enter an input :")
@@ -283,19 +303,30 @@ class Game():
             """
             # Send Network data
             self.player2.x, self.player2.y = self.parseData(self.sendData())
-            # self.player3.x, self.player3.y = self.parse_data(self.send_data())
 
             # Update Lobby
             self.lobby.drawLobbyBackground()
             self.player1.draw(self.lobby.getLobby())
             self.player2.draw(self.lobby.getLobby())
-            self.enemy.draw(self.lobby.getLobby())
-            # self.button.draw()
+            self.enemy1.draw(self.lobby.getLobby())
+
+            # ENTER LABEL PLACED IN LOBBY TO ENTER GAME#
             pygame.init()  # initialize pygame
             font = pygame.font.Font(None, 30)
-            scoretext = font.render("you are in the new GUI", 1, (255, 255, 255))
-            self.lobby.getLobby().blit(scoretext, (150, 457))
+            enterLabel = font.render("in new GUI, still making map", 1, (255, 255, 255))
+            self.lobby.getLobby().blit(enterLabel, (150, 457))
 
+            # KILLING CHARACTERS#
+            # press 2 on keyboard to transform player2 to dead image
+            if keys[pygame.K_2]:
+                self.player2.current_image = self.player2.images[1]
+                pygame.display.flip()
+            # press 3 on keyboard to transform 3rd player aka enemy1 to dead image
+            if keys[pygame.K_3]:
+                self.enemy1.current_image = self.enemy1.images[1]
+                pygame.display.flip()
+
+            # CHAT BOX SHIT#
             # signal.alarm(TIMEOUT)
             if keys[pygame.K_0]:
                 p1_input = input("enter an input :")
