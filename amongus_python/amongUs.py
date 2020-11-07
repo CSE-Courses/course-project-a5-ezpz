@@ -116,6 +116,7 @@ class Enemy():
 
 class Game():
     clock = pygame.time.Clock()  # create an object to help track time
+    started = False
 
     def __init__(self, w, h):
         self.width = w
@@ -165,7 +166,7 @@ class Game():
                 if event.type == pygame.QUIT:
                     lobby_running = False
                 if event.type == pygame.K_RETURN:
-
+                    self.started = True
                     lobby_running = False
 
             # making character move
@@ -224,7 +225,6 @@ class Game():
                 print(p1_input)
                 p1_text = font.render("player 1: ", 1, (255, 255, 255))  # player 1 text
                 #self.lobby.getLobby().blit(p1_text, (150, 2)) # Display
-
                 p1_bytes = bytes("wow", 'ascii')
                 scoretext = font.render(p1_bytes, 1, (255, 255, 255))
                 self.lobby.getLobby().blit(scoretext, (150, 457))
@@ -312,7 +312,6 @@ class Game():
                 print(p1_input)
                 p1_text = font.render("player 1: ", 1, (255, 255, 255))  # player 1 text
                 #self.lobby.getLobby().blit(p1_text, (150, 2)) # Display
-
                 p1_bytes = bytes("wow", 'ascii')
                 scoretext = font.render(p1_bytes, 1, (255, 255, 255))
                 self.lobby.getLobby().blit(scoretext, (150, 457))
@@ -324,6 +323,7 @@ class Game():
             pygame.display.update()
 
         pygame.quit()
+
 
 
 
