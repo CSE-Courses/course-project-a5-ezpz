@@ -6,7 +6,7 @@ class Client:
     def __init__(self):
         self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM) #creating new TCP socket
         self.port = 2004
-        self.host = "192.168.1.190" #cheshire ip is 128.205.32.39 mine is 192.168.1.190
+        self.host = "68.180.84.246" #cheshire ip is 128.205.32.39 mine is 192.168.1.190
         self.addr = (self.host, self.port)
         self.id = self.link()
 
