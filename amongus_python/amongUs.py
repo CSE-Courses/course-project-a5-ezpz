@@ -27,6 +27,24 @@ class Lobby():
 
 
     ########################################################################################################################################
+
+class Map():
+
+    def __init__(self, w, h, name="None"):
+        self.screen = pygame.display.set_mode((w, h))
+        pygame.display.set_caption(name)
+        self.width = w
+        self.height = h
+
+    def getMap(self):
+        return self.screen
+
+    def drawMapBackground(self):
+        self.screen.fill((0, 0, 1))
+
+
+
+
 class Player(pygame.sprite.Sprite):
 
     def __init__(self, startx, starty, w , h, color, colorDead):
@@ -126,9 +144,11 @@ class Game():
     clock = pygame.time.Clock()  # create an object to help track time
     started = False
 
-    def __init__(self, w, h):
+    def __init__(self, w, h, mapw, maph):
         self.width = w
         self.height = h
+        self.mapwidth = mapw
+        self.mapheight = maph
         self.network = Client()
         self.player1 = Player(40, 40, 36, 48, 'Images/cyan.png', 'Images/cyanDead.png') #Initializing Player class instance at set point(40,40) in map
         self.player2 = Player(300, 300, 36, 48, 'Images/orange.png', 'Images/orangeDead.png') #Initializing Player class instance at set point(300,300) in map
@@ -263,12 +283,12 @@ class Game():
 
     def rungame(self):
         running = True
+        self.map = Map(self.mapwidth, self.mapheight, "Version 1.0")
         msg_bool = False  # boolean for if theres a message
         p1_input = 'a'
         p1_bytes = ''
         while running:
-            self.clock.tick(
-                60)  # once per frame, the program will never running at more than 60 fps.self.started = True
+            self.clock.tick(60)  # once per frame, the program will never running at more than 60 fps.self.started = True
 
             # Properly quit (pygame will crash without this)
             for event in pygame.event.get():
@@ -304,17 +324,17 @@ class Game():
             # Send Network data
             self.player2.x, self.player2.y = self.parseData(self.sendData())
 
-            # Update Lobby
-            self.lobby.drawLobbyBackground()
-            self.player1.draw(self.lobby.getLobby())
-            self.player2.draw(self.lobby.getLobby())
-            self.enemy1.draw(self.lobby.getLobby())
+            # Update map
+            self.map.drawMapBackground()
+            self.player1.draw(self.map.getMap())
+            self.player2.draw(self.map.getMap())
+            self.enemy1.draw(self.map.getMap())
 
             # ENTER LABEL PLACED IN LOBBY TO ENTER GAME#
             pygame.init()  # initialize pygame
             font = pygame.font.Font(None, 30)
             enterLabel = font.render("in new GUI, still making map", 1, (255, 255, 255))
-            self.lobby.getLobby().blit(enterLabel, (150, 457))
+            self.map.getMap().blit(enterLabel, (150, 457))
 
             # KILLING CHARACTERS#
             # press 2 on keyboard to transform player2 to dead image
