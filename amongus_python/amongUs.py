@@ -439,6 +439,45 @@ class Game():
             p1_text = font.render("player: " + p1_input, 1, (255, 255, 255))  # player 1 text
             self.map.getMap().blit(p1_text, (15, 20))
             # signal.alarm(0) # Disable alarm after success
+            # Code for Displaying the mission prompts
+            mission = 1
+            mision_prompt = 'mission: '
+            mission_text = ''
+            if (mission == 1):
+                print("mission: 1")
+                mission_prompt = "Move to your colored circle"
+                self.draw.circle(self.lobby.getLobby(), (255, 0, 0), (150, 50), 25) # Red circle
+                self.draw.circle(self.lobby.getLobby(), (0, 0, 255), (150, 150), 25)  # Blue circle
+                self.draw.circle(self.lobby.getLobby(), (255, 140, 0), (250, 50), 25)  # Orange circle
+                self.draw.circle(self.lobby.getLobby(), (0, 255, 255), (250, 150), 25)  # cyan circle
+
+            elif (mission == 2):
+                print("mission: 2")
+                mission_prompt = "Go to the bottom right corner of the screen"
+            elif (mission == 3):
+                print("mission: 3")
+                mission_prompt = "Use the movement keys to do a dance party"
+            elif (mission == 4):
+                print("mission: 4")
+                mission_prompt = "Type your favorite color in the chat"
+            elif (mission == 5):
+                print("mission: 5")
+                mission_prompt = "Type a meaningful number in the cha"
+            elif (mission == 6):
+                print("mission: 6")
+                mission_prompt = "Type your favorite beverage in the chat"
+            elif (mission == 7):
+                print("mission: 7")
+                mission_prompt = "Simon says; go to the corresponding colors when instructed"
+            elif (mission == 8):
+                print("mission: 8")
+                mission_prompt = "Stand in a line"
+            else :
+                print("mission: 9")
+                mission_prompt = "Go to the left of the screen and race to the right of the screen"
+
+            mission_text = font.render(mission_prompt, 1, (255, 255, 255))  # player 1 text
+            self.lobby.getLobby().blit(mission_text, (350, 500))
             """
             if msg_bool:
                 print(msg_bool)
