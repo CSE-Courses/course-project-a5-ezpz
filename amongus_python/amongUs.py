@@ -21,11 +21,12 @@ class Lobby():
         return self.screen
 
     def drawLobbyBackground(self):
-        # Place background image for lobby
+        #Place background image for lobby
+        self.screen.fill((0, 0, 1))
         self.bg_img = pygame.image.load('Images/lobbyShip.png')
         self.screen.blit(self.bg_img, self.bg_img.get_rect())
-        # myfont = pygame.font.SysFont("monspace", 20)
-        # self.screen.blit(self.button, self.button.get_rect())
+        #myfont = pygame.font.SysFont("monspace", 20)
+        #self.screen.blit(self.button, self.button.get_rect())
 
     def drawLobbyBackground2(self):
         # Place background image for lobby
@@ -35,6 +36,86 @@ class Lobby():
         # self.screen.blit(self.button, self.button.get_rect())
 
     ########################################################################################################################################
+
+
+class Map():
+
+    def __init__(self, w, h, name="None"):
+        self.screen = pygame.display.set_mode((w, h))
+        pygame.display.set_caption(name)
+        self.width = w
+        self.height = h
+
+    def getMap(self):
+        return self.screen
+
+    #makes window black and then draws the map walls
+    def drawMapBackground(self):
+        #fills window with black
+        self.screen.fill((0, 0, 1))
+        #walls holds every wall instance
+        walls = pygame.sprite.Group()
+        #walls at borders of window
+        wall = Wall(1356, 0, 10, 768)
+        walls.add(wall)
+        wall = Wall(0, 758, 1366, 10)
+        walls.add(wall)
+        wall = Wall(0, 0, 10, 768)
+        walls.add(wall)
+        wall = Wall(0, 0, 1366, 10)
+        walls.add(wall)
+        #top left room (spawn)
+        wall = Wall(0, 192, 80, 10)
+        walls.add(wall)
+        wall = Wall(145, 192, 80, 10)
+        walls.add(wall)
+        wall = Wall(225, 0, 10, 202)
+        walls.add(wall)
+        #top right room
+        wall = Wall(960, 160, 406, 10)
+        walls.add(wall)
+        wall = Wall(960, 60, 10, 110)
+        walls.add(wall)
+        #middle room
+        wall = Wall(350, 250, 200, 10)
+        walls.add(wall)
+        wall = Wall(620, 250, 390, 10)
+        walls.add(wall)
+        wall = Wall(350, 250, 10, 350)
+        walls.add(wall)
+        wall = Wall(350, 590, 590, 10)
+        walls.add(wall)
+        wall = Wall(1000, 250, 10, 350)
+        walls.add(wall)
+        #bottom right room
+        wall = Wall(1100, 590, 140, 10)
+        walls.add(wall)
+        wall = Wall(1310, 590, 56, 10)
+        walls.add(wall)
+        wall = Wall(1100, 590, 10, 178)
+        walls.add(wall)
+        #bottom left room
+        wall = Wall(0, 330, 120, 10)
+        walls.add(wall)
+        wall = Wall(110, 330, 10, 348)
+        walls.add(wall)
+        wall = Wall(110, 670, 700, 10)
+        walls.add(wall)
+        wall = Wall(800, 670, 10, 30)
+        walls.add(wall)
+
+        walls.draw(self.screen)
+
+
+# wall class that takes coordinates, width, and height to make rectangle
+class Wall(pygame.sprite.Sprite):
+    def __init__(self, x, y, w, h):
+        super(Wall, self).__init__()
+        self.image = pygame.Surface([w, h])
+        self.image.fill((192, 192, 192))
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
 
 
 class Player(pygame.sprite.Sprite):
@@ -132,11 +213,14 @@ class Button():
 
 class Game():
     clock = pygame.time.Clock()  # create an object to help track time
+    #started will be true if enter is pressed to start the game
     started = False
 
-    def __init__(self, w, h):
+    def __init__(self, w, h, mapw, maph):
         self.width = w
         self.height = h
+        self.mapwidth = mapw
+        self.mapheight = maph
         self.network = Client()
         self.player1 = Player(40, 40, 36, 48, 'Images/cyan.png',
                               'Images/cyanDead.png')  # Initializing Player class instance at set point(40,40) in map
@@ -223,8 +307,8 @@ class Game():
             self.player2.draw(self.lobby.getLobby())
             self.enemy1.draw(self.lobby.getLobby())
 
-            # ENTER LABEL PLACED IN LOBBY TO ENTER GAME#
-            pygame.init()  # initialize pygame
+            #ENTER LABEL PLACED IN LOBBY TO ENTER GAME#
+            pygame.init() # initialize pygame
             pygame.mixer.init()
             pygame.mixer.music.load('Images/audio.wav')
             pygame.mixer.music.play(0)
@@ -232,8 +316,9 @@ class Game():
             enterLabel = font.render("Press 'Enter' when all players have joined.", 1, (255, 255, 255))
             self.lobby.getLobby().blit(enterLabel, (150, 457))
 
-            # KILLING CHARACTERS#
-            # press 2 on keyboard to transform player2 to dead image
+
+            #KILLING CHARACTERS#
+            #press 2 on keyboard to transform player2 to dead image
             if keys[pygame.K_2]:
                 self.player2.current_image = self.player2.images[1]
                 pygame.display.flip()
@@ -246,12 +331,13 @@ class Game():
             # signal.alarm(TIMEOUT)
             if keys[pygame.K_0]:
                 p1_input = input("enter an input :")
-            # else:
-            # p1_input = ""
-            print(p1_input)  # Test, prints current output
-            p1_text = font.render("player: " + p1_input, 1, (255, 255, 255))  # player 1 text
-            self.lobby.getLobby().blit(p1_text, (150, 2))
-            # signal.alarm(0) # Disable alarm after success
+            #else:
+                #p1_input = ""
+            print(p1_input) # Test, prints current output
+            p1_text = font.render("player: " + p1_input, 1, (255, 255, 255)) # player 1 text
+            self.lobby.getLobby().blit(p1_text, (15, 20))
+            #signal.alarm(0) # Disable alarm after success
+
             """
             if msg_bool:
                 print(msg_bool)
@@ -274,14 +360,17 @@ class Game():
         else:
             Game.rungame(self)
 
+    #runs the actual game
     def rungame(self):
+
         running = True
+        #creates the game map
+        self.map = Map(self.mapwidth, self.mapheight, "Version 1.0")
         msg_bool = False  # boolean for if theres a message
         p1_input = 'a'
         p1_bytes = ''
         while running:
-            self.clock.tick(
-                60)  # once per frame, the program will never running at more than 60 fps.self.started = True
+            self.clock.tick(60)  # once per frame, the program will never running at more than 60 fps.self.started = True
 
             # Properly quit (pygame will crash without this)
             for event in pygame.event.get():
@@ -317,17 +406,18 @@ class Game():
             # Send Network data
             self.player2.x, self.player2.y = self.parseData(self.sendData())
 
-            # Update Lobby
-            self.lobby.drawLobbyBackground2()
-            self.player1.draw(self.lobby.getLobby())
-            self.player2.draw(self.lobby.getLobby())
-            self.enemy1.draw(self.lobby.getLobby())
+            # Update map
+            self.map.drawMapBackground()
+            self.player1.draw(self.map.getMap())
+            self.player2.draw(self.map.getMap())
+            self.enemy1.draw(self.map.getMap())
 
             # ENTER LABEL PLACED IN LOBBY TO ENTER GAME#
             pygame.init()  # initialize pygame
             font = pygame.font.Font(None, 30)
-            enterLabel = font.render("in new GUI, still making map", 1, (255, 255, 255))
-            self.lobby.getLobby().blit(enterLabel, (150, 457))
+            enterLabel = font.render("", 1, (255, 255, 255))
+            self.map.getMap().blit(enterLabel, (500, 457))
+
 
             # KILLING CHARACTERS#
             # press 2 on keyboard to transform player2 to dead image
@@ -347,7 +437,7 @@ class Game():
             # p1_input = ""
             print(p1_input)  # Test, prints current output
             p1_text = font.render("player: " + p1_input, 1, (255, 255, 255))  # player 1 text
-            self.lobby.getLobby().blit(p1_text, (150, 2))
+            self.map.getMap().blit(p1_text, (15, 20))
             # signal.alarm(0) # Disable alarm after success
             """
             if msg_bool:
