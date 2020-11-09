@@ -3,8 +3,11 @@ import sys
 import pygame
 # import signal
 from client import Client
+from pygame import mixer
 
-TIMEOUT = 4 # number of seconds until timeout
+TIMEOUT = 4  # number of seconds until timeout
+
+
 #########################################################################################################################################
 class Lobby():
 
@@ -18,45 +21,52 @@ class Lobby():
         return self.screen
 
     def drawLobbyBackground(self):
-        #Place background image for lobby
+        # Place background image for lobby
         self.bg_img = pygame.image.load('Images/lobbyShip.png')
         self.screen.blit(self.bg_img, self.bg_img.get_rect())
-        #myfont = pygame.font.SysFont("monspace", 20)
-        #self.screen.blit(self.button, self.button.get_rect())
+        # myfont = pygame.font.SysFont("monspace", 20)
+        # self.screen.blit(self.button, self.button.get_rect())
 
-
+    def drawLobbyBackground2(self):
+        # Place background image for lobby
+        self.bg_img = pygame.image.load('Images/starz.png')
+        self.screen.blit(self.bg_img, self.bg_img.get_rect())
+        # myfont = pygame.font.SysFont("monspace", 20)
+        # self.screen.blit(self.button, self.button.get_rect())
 
     ########################################################################################################################################
+
+
 class Player(pygame.sprite.Sprite):
 
-    def __init__(self, startx, starty, w , h, color, colorDead):
+    def __init__(self, startx, starty, w, h, color, colorDead):
         pygame.sprite.Sprite.__init__(self)
         self.x = startx
         self.y = starty
         self.rate = 2
-        self.height = h #48pixels
-        self.width = w #36pixels
+        self.height = h  # 48pixels
+        self.width = w  # 36pixels
         self.screen = pygame.display.set_mode((w, h))
-        self.color = color #color is not a string it is a pygame.Surface type containing the .png file that will produce character
+        self.color = color  # color is not a string it is a pygame.Surface type containing the .png file that will produce character
         self.dead = colorDead
 
         self.images = [pygame.image.load(self.color).convert_alpha(), pygame.image.load(self.dead).convert_alpha()]
         self.current_image = self.images[0]
 
-    #directKey parameter will be used to move player instance in certain direction
+    # directKey parameter will be used to move player instance in certain direction
     def move(self, directKey):
-        if directKey == 0:#right
+        if directKey == 0:  # right
             self.x = self.x + self.rate
-        elif directKey == 1:#left
+        elif directKey == 1:  # left
             self.x = self.x - self.rate
-        elif directKey == 2:#up
+        elif directKey == 2:  # up
             self.y = self.y - self.rate
-        else:#down
+        else:  # down
             self.y = self.y + self.rate
 
     def draw(self, player):
-        self.screen.blit(self.current_image, (self.x,self.y) )# params converted image, starting positions of characters
-
+        self.screen.blit(self.current_image,
+                         (self.x, self.y))  # params converted image, starting positions of characters
 
 
 ########################################################################################################################################
@@ -69,7 +79,7 @@ class Enemy(pygame.sprite.Sprite):
         self.height = h  # 48pixels
         self.width = w  # 36pixels
         self.end = end
-        self.path = [self.x, self.end] #represents where we are starting and where we are ending
+        self.path = [self.x, self.end]  # represents where we are starting and where we are ending
         self.walkCount = 0
         self.rate = 2
         self.screen = pygame.display.set_mode((w, h))
@@ -93,11 +103,11 @@ class Enemy(pygame.sprite.Sprite):
                 self.rate = self.rate * -1
                 self.walkCount = 0
 
-
     def draw(self, g):
         if self.current_image == self.images[0]:
             self.moveX()
-        self.screen.blit(self.current_image, (self.x, self.y))  # params converted image, starting positions of characters
+        self.screen.blit(self.current_image,
+                         (self.x, self.y))  # params converted image, starting positions of characters
 
 
 ##############################################################################################################################
@@ -112,11 +122,9 @@ class Button():
         self.Lobby = Lobby
 
     def draw(self):
-        #rect = pygame.draw.rect(self.screen, (0,200,0), (150, 550, 100, 50))
-        #self.screen.blit(rect, (self.posx, self.posy))
+        # rect = pygame.draw.rect(self.screen, (0,200,0), (150, 550, 100, 50))
+        # self.screen.blit(rect, (self.posx, self.posy))
         pygame.draw.rect(self.Lobby.getLobby(), (0, 200, 0), (150, 500, 100, 50))
-
-
 
 
 ##############################################################################################################################
@@ -130,12 +138,14 @@ class Game():
         self.width = w
         self.height = h
         self.network = Client()
-        self.player1 = Player(40, 40, 36, 48, 'Images/cyan.png', 'Images/cyanDead.png') #Initializing Player class instance at set point(40,40) in map
-        self.player2 = Player(300, 300, 36, 48, 'Images/orange.png', 'Images/orangeDead.png') #Initializing Player class instance at set point(300,300) in map
-        self.enemy1 = Enemy(100, 100, 36, 48, 200, 'Images/blue.png', 'Images/blueDead.png')  # Initializing Player class instance at set point(100,100)
-        self.lobby = Lobby(self.width, self.height, "Version 1.0") #Creating Lobby class instance
-        #self.button = Button(100, 100, 50, 50, self.lobby)
-
+        self.player1 = Player(40, 40, 36, 48, 'Images/cyan.png',
+                              'Images/cyanDead.png')  # Initializing Player class instance at set point(40,40) in map
+        self.player2 = Player(300, 300, 36, 48, 'Images/orange.png',
+                              'Images/orangeDead.png')  # Initializing Player class instance at set point(300,300) in map
+        self.enemy1 = Enemy(100, 100, 36, 48, 200, 'Images/blue.png',
+                            'Images/blueDead.png')  # Initializing Player class instance at set point(100,100)
+        self.lobby = Lobby(self.width, self.height, "Version 1.0")  # Creating Lobby class instance
+        # self.button = Button(100, 100, 50, 50, self.lobby)
 
     # will get info from server in a form we can understand so we can then draw the other character
     @staticmethod
@@ -151,19 +161,22 @@ class Game():
         data = str(self.network.id) + ":" + str(self.player1.x) + "," + str(self.player1.y)
         reply = self.network.sendData(data)
         return reply
+
     """
     def interrupted(signum, frame):
         # Called when the text input times out
         print("Interrupted")
     signal.signal(signal.SIGALRM, interrupted)
     """
+
     def run(self):
         running = True
         msg_bool = False  # boolean for if theres a message
         p1_input = 'a'
         p1_bytes = ''
         while running:
-            self.clock.tick(60) #once per frame, the program will never running at more than 60 fps.self.started = True
+            self.clock.tick(
+                60)  # once per frame, the program will never running at more than 60 fps.self.started = True
 
             # Properly quit (pygame will crash without this)
             for event in pygame.event.get():
@@ -180,7 +193,7 @@ class Game():
                         self.started = True
                         running = False
 
-            #making character move
+            # making character move
             keys = pygame.key.get_pressed()
             if keys[pygame.K_RIGHT]:
                 if self.player1.x <= self.width - self.player1.rate:
@@ -210,35 +223,35 @@ class Game():
             self.player2.draw(self.lobby.getLobby())
             self.enemy1.draw(self.lobby.getLobby())
 
-            #ENTER LABEL PLACED IN LOBBY TO ENTER GAME#
-            pygame.init() # initialize pygame
+            # ENTER LABEL PLACED IN LOBBY TO ENTER GAME#
+            pygame.init()  # initialize pygame
+            pygame.mixer.init()
+            pygame.mixer.music.load('Images/audio.wav')
+            pygame.mixer.music.play(0)
             font = pygame.font.Font(None, 30)
             enterLabel = font.render("Press 'Enter' when all players have joined.", 1, (255, 255, 255))
             self.lobby.getLobby().blit(enterLabel, (150, 457))
 
-            #KILLING CHARACTERS#
-            #press 2 on keyboard to transform player2 to dead image
+            # KILLING CHARACTERS#
+            # press 2 on keyboard to transform player2 to dead image
             if keys[pygame.K_2]:
                 self.player2.current_image = self.player2.images[1]
                 pygame.display.flip()
-            #press 3 on keyboard to transform 3rd player aka enemy1 to dead image
+            # press 3 on keyboard to transform 3rd player aka enemy1 to dead image
             if keys[pygame.K_3]:
                 self.enemy1.current_image = self.enemy1.images[1]
                 pygame.display.flip()
 
-
-
-
-            #CHAT BOX SHIT#
-            #signal.alarm(TIMEOUT)
+            # CHAT BOX SHIT#
+            # signal.alarm(TIMEOUT)
             if keys[pygame.K_0]:
                 p1_input = input("enter an input :")
-            #else:
-                #p1_input = ""
-            print(p1_input) # Test, prints current output
-            p1_text = font.render("player: " + p1_input, 1, (255, 255, 255)) # player 1 text
+            # else:
+            # p1_input = ""
+            print(p1_input)  # Test, prints current output
+            p1_text = font.render("player: " + p1_input, 1, (255, 255, 255))  # player 1 text
             self.lobby.getLobby().blit(p1_text, (150, 2))
-            #signal.alarm(0) # Disable alarm after success
+            # signal.alarm(0) # Disable alarm after success
             """
             if msg_bool:
                 print(msg_bool)
@@ -305,7 +318,7 @@ class Game():
             self.player2.x, self.player2.y = self.parseData(self.sendData())
 
             # Update Lobby
-            self.lobby.drawLobbyBackground()
+            self.lobby.drawLobbyBackground2()
             self.player1.draw(self.lobby.getLobby())
             self.player2.draw(self.lobby.getLobby())
             self.enemy1.draw(self.lobby.getLobby())
@@ -356,13 +369,4 @@ class Game():
         pygame.quit()
 
 
-
-
-
-
-
-
-
-
-
-########################################################################################################################################
+################################################################################################################################################################################################################################################################################
