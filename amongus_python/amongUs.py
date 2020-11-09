@@ -24,7 +24,7 @@ class Lobby():
         #Place background image for lobby
         self.screen.fill((0, 0, 1))
         self.bg_img = pygame.image.load('Images/lobbyShip.png')
-        self.screen.blit(self.bg_img, self.bg_img.get_rect())
+        self.screen.blit(self.bg_img, (375,0), self.bg_img.get_rect())
         #myfont = pygame.font.SysFont("monspace", 20)
         #self.screen.blit(self.button, self.button.get_rect())
 
@@ -35,7 +35,7 @@ class Lobby():
         # myfont = pygame.font.SysFont("monspace", 20)
         # self.screen.blit(self.button, self.button.get_rect())
 
-    ########################################################################################################################################
+########################################################################################################################################
 
 
 class Map():
@@ -106,7 +106,7 @@ class Map():
 
         walls.draw(self.screen)
 
-
+########################################################################################################################################
 # wall class that takes coordinates, width, and height to make rectangle
 class Wall(pygame.sprite.Sprite):
     def __init__(self, x, y, w, h):
@@ -117,7 +117,7 @@ class Wall(pygame.sprite.Sprite):
         self.rect.x = x
         self.rect.y = y
 
-
+########################################################################################################################################
 class Player(pygame.sprite.Sprite):
 
     def __init__(self, startx, starty, w, h, color, colorDead):
@@ -146,8 +146,7 @@ class Player(pygame.sprite.Sprite):
             self.y = self.y + self.rate
 
     def draw(self, player):
-        self.screen.blit(self.current_image,
-                         (self.x, self.y))  # params converted image, starting positions of characters
+        self.screen.blit(self.current_image, (self.x, self.y))  # params converted image, starting positions of characters
 
 
 ########################################################################################################################################
@@ -187,8 +186,7 @@ class Enemy(pygame.sprite.Sprite):
     def draw(self, g):
         if self.current_image == self.images[0]:
             self.moveX()
-        self.screen.blit(self.current_image,
-                         (self.x, self.y))  # params converted image, starting positions of characters
+        self.screen.blit(self.current_image, (self.x, self.y))  # params converted image, starting positions of characters
 
 
 ##############################################################################################################################
@@ -222,12 +220,9 @@ class Game():
         self.mapwidth = mapw
         self.mapheight = maph
         self.network = Client()
-        self.player1 = Player(40, 40, 36, 48, 'Images/cyan.png',
-                              'Images/cyanDead.png')  # Initializing Player class instance at set point(40,40) in map
-        self.player2 = Player(300, 300, 36, 48, 'Images/orange.png',
-                              'Images/orangeDead.png')  # Initializing Player class instance at set point(300,300) in map
-        self.enemy1 = Enemy(100, 100, 36, 48, 200, 'Images/blue.png',
-                            'Images/blueDead.png')  # Initializing Player class instance at set point(100,100)
+        self.player1 = Player(435, 75, 36, 48, 'Images/cyan.png', 'Images/cyanDead.png')  # Initializing Player class instance at set point(40,40) in map
+        self.player2 = Player(450, 50, 36, 48, 'Images/orange.png', 'Images/orangeDead.png')  # Initializing Player class instance at set point(300,300) in map
+        self.enemy1 = Enemy(435, 150, 36, 48, 495, 'Images/blue.png', 'Images/blueDead.png')  # Initializing Player class instance at set point(100,100)
         self.lobby = Lobby(self.width, self.height, "Version 1.0")  # Creating Lobby class instance
         # self.button = Button(100, 100, 50, 50, self.lobby)
 
@@ -259,8 +254,7 @@ class Game():
         p1_input = 'a'
         p1_bytes = ''
         while running:
-            self.clock.tick(
-                60)  # once per frame, the program will never running at more than 60 fps.self.started = True
+            self.clock.tick(60)  # once per frame, the program will never running at more than 60 fps.self.started = True
 
             # Properly quit (pygame will crash without this)
             for event in pygame.event.get():
@@ -314,7 +308,7 @@ class Game():
             pygame.mixer.music.play(0)
             font = pygame.font.Font(None, 30)
             enterLabel = font.render("Press 'Enter' when all players have joined.", 1, (255, 255, 255))
-            self.lobby.getLobby().blit(enterLabel, (150, 457))
+            self.lobby.getLobby().blit(enterLabel, (495, 457))
 
 
             #KILLING CHARACTERS#
@@ -498,4 +492,6 @@ class Game():
         pygame.quit()
 
 
-################################################################################################################################################################################################################################################################################
+
+
+#########################################################################################################################################################################################################################################
