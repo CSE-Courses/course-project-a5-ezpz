@@ -118,6 +118,9 @@ class Wall(pygame.sprite.Sprite):
         self.rect.y = y
 
 
+
+
+
 class Player(pygame.sprite.Sprite):
 
     def __init__(self, startx, starty, w, h, color, colorDead):
@@ -309,9 +312,9 @@ class Game():
 
             #ENTER LABEL PLACED IN LOBBY TO ENTER GAME#
             pygame.init() # initialize pygame
-            pygame.mixer.init()
-            pygame.mixer.music.load('Images/audio.wav')
-            pygame.mixer.music.play(0)
+            #pygame.mixer.init()
+            #pygame.mixer.music.load('Images/audio.wav')
+            #pygame.mixer.music.play(0)
             font = pygame.font.Font(None, 30)
             enterLabel = font.render("Press 'Enter' when all players have joined.", 1, (255, 255, 255))
             self.lobby.getLobby().blit(enterLabel, (150, 457))
@@ -446,10 +449,10 @@ class Game():
             if (mission == 1):
                 print("mission: 1")
                 mission_prompt = "Move to your colored circle"
-                self.draw.circle(self.lobby.getLobby(), (255, 0, 0), (150, 50), 25) # Red circle
-                self.draw.circle(self.lobby.getLobby(), (0, 0, 255), (150, 150), 25)  # Blue circle
-                self.draw.circle(self.lobby.getLobby(), (255, 140, 0), (250, 50), 25)  # Orange circle
-                self.draw.circle(self.lobby.getLobby(), (0, 255, 255), (250, 150), 25)  # cyan circle
+                pygame.draw.circle(self.lobby.getLobby(), (255, 0, 0), (700, 300), 25) # Red circle
+                pygame.draw.circle(self.lobby.getLobby(), (0, 0, 255), (700, 400), 25)  # Blue circle
+                pygame.draw.circle(self.lobby.getLobby(), (255, 140, 0), (800, 300), 25)  # Orange circle
+                pygame.draw.circle(self.lobby.getLobby(), (0, 255, 255), (800, 400), 25)  # cyan circle
 
             elif (mission == 2):
                 print("mission: 2")
@@ -477,7 +480,7 @@ class Game():
                 mission_prompt = "Go to the left of the screen and race to the right of the screen"
 
             mission_text = font.render(mission_prompt, 1, (255, 255, 255))  # player 1 text
-            self.lobby.getLobby().blit(mission_text, (350, 500))
+            self.lobby.getLobby().blit(mission_text, (625, 475))
             """
             if msg_bool:
                 print(msg_bool)
