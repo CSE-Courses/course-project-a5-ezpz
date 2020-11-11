@@ -336,12 +336,14 @@ class Game():
             enterLabel = font.render("Press 'Enter' when all players have joined.", 1, (255, 255, 255))
             self.lobby.getLobby().blit(enterLabel, (495, 457))
 
+
             #FADING OUT JOINED LABELS IF NUM KEY 1 PRESSED
             if keys[pygame.K_1]:
                 self.botLabel.current = self.botLabel.colors[1]
                 self.p1Label.current = self.p1Label.colors[1]
                 self.p2Label.current = self.p2Label.colors[1]
                 pygame.display.flip()
+
 
 
             #KILLING CHARACTERS#
