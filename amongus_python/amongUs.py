@@ -1,9 +1,8 @@
 import sys
-
 import pygame
-# import signal
 from client import Client
 from pygame import mixer
+
 
 TIMEOUT = 4  # number of seconds until timeout
 
@@ -24,7 +23,7 @@ class Lobby():
         #Place background image for lobby
         self.screen.fill((0, 0, 1))
         self.bg_img = pygame.image.load('Images/lobbyShip.png')
-        self.screen.blit(self.bg_img, self.bg_img.get_rect())
+        self.screen.blit(self.bg_img, (375,0), self.bg_img.get_rect())
         #myfont = pygame.font.SysFont("monspace", 20)
         #self.screen.blit(self.button, self.button.get_rect())
 
@@ -35,7 +34,7 @@ class Lobby():
         # myfont = pygame.font.SysFont("monspace", 20)
         # self.screen.blit(self.button, self.button.get_rect())
 
-    ########################################################################################################################################
+########################################################################################################################################
 
 
 class Map():
@@ -106,7 +105,7 @@ class Map():
 
         walls.draw(self.screen)
 
-
+########################################################################################################################################
 # wall class that takes coordinates, width, and height to make rectangle
 class Wall(pygame.sprite.Sprite):
     def __init__(self, x, y, w, h):
@@ -117,7 +116,7 @@ class Wall(pygame.sprite.Sprite):
         self.rect.x = x
         self.rect.y = y
 
-
+########################################################################################################################################
 class Player(pygame.sprite.Sprite):
 
     def __init__(self, startx, starty, w, h, color, colorDead):
@@ -146,8 +145,7 @@ class Player(pygame.sprite.Sprite):
             self.y = self.y + self.rate
 
     def draw(self, player):
-        self.screen.blit(self.current_image,
-                         (self.x, self.y))  # params converted image, starting positions of characters
+        self.screen.blit(self.current_image, (self.x, self.y))  # params converted image, starting positions of characters
 
 
 ########################################################################################################################################
@@ -187,8 +185,7 @@ class Enemy(pygame.sprite.Sprite):
     def draw(self, g):
         if self.current_image == self.images[0]:
             self.moveX()
-        self.screen.blit(self.current_image,
-                         (self.x, self.y))  # params converted image, starting positions of characters
+        self.screen.blit(self.current_image, (self.x, self.y))  # params converted image, starting positions of characters
 
 
 ##############################################################################################################################
@@ -207,6 +204,25 @@ class Button():
         # self.screen.blit(rect, (self.posx, self.posy))
         pygame.draw.rect(self.Lobby.getLobby(), (0, 200, 0), (150, 500, 100, 50))
 
+##############################################################################################################################
+
+class Label():
+    def __init__(self, xCoord, yCoord, text, fontSize, Lobby):
+        self.x = xCoord
+        self.y = yCoord
+        self.text = text
+        self.size = fontSize
+        self.lobby = Lobby
+
+        self.colors = [ (255, 255, 255), (0, 0, 0)]
+        self.current = self.colors[0]
+
+
+    def draw(self):
+        font = pygame.font.Font(None, self.size)
+        label = font.render(self.text, 1, self.current)
+        self.lobby.getLobby().blit(label, (self.x, self.y))
+
 
 ##############################################################################################################################
 
@@ -222,13 +238,13 @@ class Game():
         self.mapwidth = mapw
         self.mapheight = maph
         self.network = Client()
-        self.player1 = Player(40, 40, 36, 48, 'Images/cyan.png',
-                              'Images/cyanDead.png')  # Initializing Player class instance at set point(40,40) in map
-        self.player2 = Player(300, 300, 36, 48, 'Images/orange.png',
-                              'Images/orangeDead.png')  # Initializing Player class instance at set point(300,300) in map
-        self.enemy1 = Enemy(100, 100, 36, 48, 200, 'Images/blue.png',
-                            'Images/blueDead.png')  # Initializing Player class instance at set point(100,100)
+        self.player1 = Player(435, 75, 36, 48, 'Images/cyan.png', 'Images/cyanDead.png')  # Initializing Player class instance at set point(40,40) in map
+        self.player2 = Player(450, 50, 36, 48, 'Images/orange.png', 'Images/orangeDead.png')  # Initializing Player class instance at set point(300,300) in map
+        self.enemy1 = Enemy(435, 150, 36, 48, 495, 'Images/blue.png', 'Images/blueDead.png')  # Initializing Player class instance at set point(100,100)
         self.lobby = Lobby(self.width, self.height, "Version 1.0")  # Creating Lobby class instance
+        self.botLabel = Label(1030, 300, "BlueBot in game", 20, self.lobby)
+        self.p1Label = Label(1030, 315, "Player1 has joined", 20, self.lobby)
+        self.p2Label = Label(1030, 330, "Player2 has joined", 20, self.lobby)
         # self.button = Button(100, 100, 50, 50, self.lobby)
 
     # will get info from server in a form we can understand so we can then draw the other character
@@ -259,8 +275,7 @@ class Game():
         p1_input = 'a'
         p1_bytes = ''
         while running:
-            self.clock.tick(
-                60)  # once per frame, the program will never running at more than 60 fps.self.started = True
+            self.clock.tick(60)  # once per frame, the program will never running at more than 60 fps.self.started = True
 
             # Properly quit (pygame will crash without this)
             for event in pygame.event.get():
@@ -302,19 +317,31 @@ class Game():
             self.player2.x, self.player2.y = self.parseData(self.sendData())
 
             # Update Lobby
+            pygame.init()  # initialize pygame, needed to create fonts, etc.
             self.lobby.drawLobbyBackground()
             self.player1.draw(self.lobby.getLobby())
             self.player2.draw(self.lobby.getLobby())
             self.enemy1.draw(self.lobby.getLobby())
+            #Joined labels for each player that state player has entered lobby
+            self.botLabel.draw()
+            self.p1Label.draw()
+            self.p2Label.draw()
 
             #ENTER LABEL PLACED IN LOBBY TO ENTER GAME#
-            pygame.init() # initialize pygame
+            #pygame.init()
             pygame.mixer.init()
             pygame.mixer.music.load('Images/audio.wav')
             pygame.mixer.music.play(0)
             font = pygame.font.Font(None, 30)
             enterLabel = font.render("Press 'Enter' when all players have joined.", 1, (255, 255, 255))
-            self.lobby.getLobby().blit(enterLabel, (150, 457))
+            self.lobby.getLobby().blit(enterLabel, (495, 457))
+
+            #FADING OUT JOINED LABELS IF NUM KEY 1 PRESSED
+            if keys[pygame.K_1]:
+                self.botLabel.current = self.botLabel.colors[1]
+                self.p1Label.current = self.p1Label.colors[1]
+                self.p2Label.current = self.p2Label.colors[1]
+                pygame.display.flip()
 
 
             #KILLING CHARACTERS#
@@ -329,6 +356,7 @@ class Game():
 
             # CHAT BOX SHIT#
             # signal.alarm(TIMEOUT)
+            font = pygame.font.Font(None, 30)
             if keys[pygame.K_0]:
                 p1_input = input("enter an input :")
             #else:
@@ -359,6 +387,11 @@ class Game():
             pygame.quit()
         else:
             Game.rungame(self)
+
+
+
+
+
 
     #runs the actual game
     def rungame(self):
@@ -498,4 +531,6 @@ class Game():
         pygame.quit()
 
 
-################################################################################################################################################################################################################################################################################
+
+
+#########################################################################################################################################################################################################################################
