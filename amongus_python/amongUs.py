@@ -191,13 +191,14 @@ class Enemy(pygame.sprite.Sprite):
 ##############################################################################################################################
 
 class Button():
-    def __init__(self, w, h, x, y, Lobby):
+    def __init__(self, w, h, x, y, Lobby, text=""):
         self.width = w
         self.height = h
         self.posx = x
         self.posy = y
         self.screen = pygame.display.set_mode((w, h))
         self.Lobby = Lobby
+        self.text = text
 
     def draw(self):
         # rect = pygame.draw.rect(self.screen, (0,200,0), (150, 550, 100, 50))
@@ -245,7 +246,11 @@ class Game():
         self.botLabel = Label(1030, 300, "BlueBot in game", 20, self.lobby)
         self.p1Label = Label(1030, 315, "Player1 has joined", 20, self.lobby)
         self.p2Label = Label(1030, 330, "Player2 has joined", 20, self.lobby)
-        # self.button = Button(100, 100, 50, 50, self.lobby)
+
+        self.button1 = Button(100, 100, 950, 350, self.lobby, "red") #voting buttons
+        self.button2 = Button(100, 100, 950, 400, self.lobby, "blue")
+        self.button3 = Button(100, 100, 950, 450, self.lobby, "cyan")
+        self.button4 = Button(100, 100, 950, 500, self.lobby, "orange")
 
     # will get info from server in a form we can understand so we can then draw the other character
     @staticmethod
@@ -472,7 +477,8 @@ class Game():
             # p1_input = ""
             print(p1_input)  # Test, prints current output
             p1_text = font.render("player: " + p1_input, 1, (255, 255, 255))  # player 1 text
-            self.map.getMap().blit(p1_text, (15, 20))
+            self.map.getMap().blit(p1_text, (15, 620))
+
             # signal.alarm(0) # Disable alarm after success
             # Code for Displaying the mission prompts
             mission = 1
@@ -513,6 +519,10 @@ class Game():
 
             mission_text = font.render(mission_prompt, 1, (255, 255, 255))  # player 1 text
             self.lobby.getLobby().blit(mission_text, (625, 475))
+
+            vote_text = font.render("vote", 1, (255, 255, 255))  # voting text
+            self.map.getMap().blit(vote_text, (800, 200))
+
             """
             if msg_bool:
                 print(msg_bool)
