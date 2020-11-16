@@ -2,6 +2,8 @@ import sys
 import pygame
 from client import Client
 from pygame import mixer
+import random
+
 
 
 TIMEOUT = 4  # number of seconds until timeout
@@ -121,6 +123,7 @@ class Map():
 
 
 
+
         walls.draw(self.screen)
 
 ########################################################################################################################################
@@ -147,6 +150,10 @@ class Player(pygame.sprite.Sprite):
         self.screen = pygame.display.set_mode((w, h))
         self.color = color  # color is not a string it is a pygame.Surface type containing the .png file that will produce character
         self.dead = colorDead
+        self.voted = "no vote"
+        self.status = "alive"
+        self.username = "player 1"
+        self.role = "crewmate"
 
         self.images = [pygame.image.load(self.color).convert_alpha(), pygame.image.load(self.dead).convert_alpha()]
         self.current_image = self.images[0]
@@ -208,6 +215,7 @@ class Enemy(pygame.sprite.Sprite):
 
 ##############################################################################################################################
 
+
 class Button():
     def __init__(self, w, h, x, y, Lobby, text=""):
         self.width = w
@@ -265,12 +273,16 @@ class Game():
         self.p1Label = Label(1030, 315, "Player1 has joined", 20, self.lobby)
         self.p2Label = Label(1030, 330, "Player2 has joined", 20, self.lobby)
 
+        self.player_list = []
+        self.vote_tracker = []
+
         """
         self.button1 = Button(100, 100, 950, 350, self.lobby, "red") #voting buttons
         self.button2 = Button(100, 100, 950, 400, self.lobby, "blue")
         self.button3 = Button(100, 100, 950, 450, self.lobby, "cyan")
         self.button4 = Button(100, 100, 950, 500, self.lobby, "orange")
         """
+
 
     # will get info from server in a form we can understand so we can then draw the other character
     @staticmethod
@@ -294,8 +306,93 @@ class Game():
     signal.signal(signal.SIGALRM, interrupted)
     """
 
+    def add_player(self, player):
+        self.player_list.append(player)
+
+    def assign_roles(self):
+        random.shuffle(self.player_list)
+        self.player_list[0].role = "impostor"
+
+    def playerDead(self, username):
+        index = self.getPlayerIndex(username)
+        self.player_list[index].status = "dead"
+        if (self.player_list[index].role == "impostor"):
+            self.crewmate_win()
+        self.checkDeathWin()
+
+
+    def set_vote_tracker(self):
+        if len(self.vote_tracker) == 0:
+            self.vote_tracker.clear()
+        players = len(self.player_list)
+        i = 0
+        while (not (i == players)):
+            self.vote_tracker.append(0)
+
+    def getPlayerIndex (self, username):
+        return self.player_list.index(username)
+
+    def vote(self, voter):
+        if (voter.voted == "skip"):
+            self.vote_tracker[len(self.player_list) + 1] = self.vote_tracker[len(self.player_list) + 1] + 1
+            voter.voted = "no vote"
+        elif (voter.voted == "no vote"):
+            voter.voted = "no vote"
+        else:
+            self.vote_tracker[self.getPlayerIndex(voter.voted)] = self.vote_tracker[self.getPlayerIndex(voter.voted)] + 1
+
+    def applyVotes(self):
+        i = 0
+        while (not (i == len(self.player_list))):
+            if (self.player_list[i].status == "alive"):
+                self.vote(self.player_list[i])
+            i = i + 1
+
+    def tallyVotes(self):
+        tied = True
+        current_champ = 0
+        current_champ_votes = 0
+        i = 0
+        while (i < len(self.vote_tracker)):
+            if (self.vote_tracker[i] > current_champ_votes):
+                current_champ = i
+                current_champ_votes = self.vote_tracker[i]
+                tied = False
+                i= i + 1
+            elif (self.vote_tracker[i] == current_champ_votes):
+                tied = True
+                i = i + 1
+            else:
+                i = i + 1
+        if (not tied and not (current_champ == len(self.player_list))):
+            self.playerDead(self.player_list[current_champ].username)
+
+    def checkDeathWin(self, username):
+        number_of_players = len(self.player_list)
+        alive_crewmates = 0
+        i = 0
+        while (i < number_of_players):
+            if (self.player_list[i].status == "alive" and self.player_list[i].role == "crewmate"):
+                alive_crewmates = alive_crewmates + 1
+            i = i + 1
+        if (alive_crewmates == 1):
+            self.impostor_win()
+
+    def crewmate_win(self):
+        print("crewmates win")
+
+    def impostor_win(self):
+        print("impostor win")
+
+
+
+
+
     def run(self):
         running = True
+        self.add_player(self.player1)
+        self.add_player(self.player2)
+        self.assign_roles()
         msg_bool = False  # boolean for if theres a message
         p1_input = 'a'
         p1_bytes = ''
@@ -354,11 +451,13 @@ class Game():
 
             #ENTER LABEL PLACED IN LOBBY TO ENTER GAME#
             #pygame.init()
+
             """
             pygame.mixer.init()
             pygame.mixer.music.load('Images/audio.wav')
             pygame.mixer.music.play(0)
             """
+
             font = pygame.font.Font(None, 30)
             enterLabel = font.render("Press 'Enter' when all players have joined.", 1, (255, 255, 255))
             self.lobby.getLobby().blit(enterLabel, (495, 457))
@@ -437,6 +536,7 @@ class Game():
         """
 
         msg_bool = False  # boolean for if theres a message
+        self.assign_roles()
         p1_input = 'a'
         p1_bytes = ''
         start_ticks = pygame.time.get_ticks()  # start timer
@@ -551,6 +651,7 @@ class Game():
                 mission_prompt = "Go to the left of the screen and race to the right of the screen"
 
             mission_text = font.render(mission_prompt, 1, (255, 255, 255))  # player 1 text
+
             self.lobby.getLobby().blit(mission_text, (625, 800))
             if ((vote%2) == 0):
                 vote_text = font.render("vote", 1, (255, 255, 255))  # player 1 text
@@ -587,6 +688,7 @@ class Game():
 
 
 
+
             """
             if msg_bool:
                 print(msg_bool)
@@ -604,9 +706,11 @@ class Game():
 
             pygame.display.update()
 
+
         pygame.quit()
 
 
 
 
 #########################################################################################################################################################################################################################################
+
