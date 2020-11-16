@@ -439,6 +439,9 @@ class Game():
         msg_bool = False  # boolean for if theres a message
         p1_input = 'a'
         p1_bytes = ''
+        start_ticks = pygame.time.get_ticks()  # start timer
+        max_time = 30 # set max time
+        vote = 2
         while running:
             self.clock.tick(60)  # once per frame, the program will never running at more than 60 fps.self.started = True
 
@@ -549,9 +552,12 @@ class Game():
 
             mission_text = font.render(mission_prompt, 1, (255, 255, 255))  # player 1 text
             self.lobby.getLobby().blit(mission_text, (625, 800))
-
-            vote_text = font.render("vote", 1, (255, 255, 255))  # player 1 text
-            self.lobby.getLobby().blit(vote_text, (1530, 200))
+            if ((vote%2) == 0):
+                vote_text = font.render("vote", 1, (255, 255, 255))  # player 1 text
+                self.lobby.getLobby().blit(vote_text, (1530, 200))
+            else:
+                vote_text = font.render("vote", 1, (0, 255, 0))  # player 1 text
+                self.lobby.getLobby().blit(vote_text, (1530, 200))
 
 
             # Voting labels
@@ -563,6 +569,23 @@ class Game():
             self.lobby.getLobby().blit(cyan_text, (1530, 360))
             orange_text = font.render("orange", 1, (255, 255, 255))  # player 1 text
             self.lobby.getLobby().blit(orange_text, (1530, 410))
+
+            # Timer
+            seconds = (pygame.time.get_ticks()-start_ticks)/1000 # calculate how many seconds
+
+            # print(seconds) #print how many seconds
+            print(int(max_time - seconds)) # debug
+            diff = int(max_time - seconds)
+            if (diff < 0):
+                # start_ticks = 0
+                max_time += 30
+                vote += 1
+            time_diff = "timer: " + str(diff)
+            timer_text = font.render(time_diff, 1, (255, 255, 255))  # player 1 text
+            self.lobby.getLobby().blit(timer_text, (1500, 150))
+
+
+
 
             """
             if msg_bool:
