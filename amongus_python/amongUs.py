@@ -5,8 +5,13 @@ from pygame import mixer
 
 
 TIMEOUT = 4  # number of seconds until timeout
+clock = pygame.time.Clock()
 
+# timer
+current_time = 0
 
+current_time = pygame.time.get_ticks()
+print(current_time)
 #########################################################################################################################################
 class Lobby():
 
@@ -102,6 +107,19 @@ class Map():
         walls.add(wall)
         wall = Wall(800, 670, 10, 30)
         walls.add(wall)
+        """
+        self.button1 = Button(100, 100, 950, 350, Game.map, "red")  # voting buttons
+        self.button2 = Button(100, 100, 950, 400, Game.map, "blue")
+        self.button3 = Button(100, 100, 950, 450, Game.map, "cyan")
+        self.button4 = Button(100, 100, 950, 500, Game.map, "orange")
+        """
+        # Voting boxes
+        pygame.draw.rect(self.screen, (50, 50, 50), [1500, 250, 140, 40])
+        pygame.draw.rect(self.screen, (50, 50, 50), [1500, 300, 140, 40])
+        pygame.draw.rect(self.screen, (50, 50, 50), [1500, 350, 140, 40])
+        pygame.draw.rect(self.screen, (50, 50, 50), [1500, 400, 140, 40])
+
+
 
         walls.draw(self.screen)
 
@@ -247,10 +265,12 @@ class Game():
         self.p1Label = Label(1030, 315, "Player1 has joined", 20, self.lobby)
         self.p2Label = Label(1030, 330, "Player2 has joined", 20, self.lobby)
 
+        """
         self.button1 = Button(100, 100, 950, 350, self.lobby, "red") #voting buttons
         self.button2 = Button(100, 100, 950, 400, self.lobby, "blue")
         self.button3 = Button(100, 100, 950, 450, self.lobby, "cyan")
         self.button4 = Button(100, 100, 950, 500, self.lobby, "orange")
+        """
 
     # will get info from server in a form we can understand so we can then draw the other character
     @staticmethod
@@ -334,9 +354,11 @@ class Game():
 
             #ENTER LABEL PLACED IN LOBBY TO ENTER GAME#
             #pygame.init()
+            """
             pygame.mixer.init()
             pygame.mixer.music.load('Images/audio.wav')
             pygame.mixer.music.play(0)
+            """
             font = pygame.font.Font(None, 30)
             enterLabel = font.render("Press 'Enter' when all players have joined.", 1, (255, 255, 255))
             self.lobby.getLobby().blit(enterLabel, (495, 457))
@@ -403,9 +425,17 @@ class Game():
     #runs the actual game
     def rungame(self):
 
+
         running = True
         #creates the game map
         self.map = Map(self.mapwidth, self.mapheight, "Version 1.0")
+        """
+        self.button1 = Button(100, 100, 950, 350, self.map, "red")  # voting buttons
+        self.button2 = Button(100, 100, 950, 400, self.map, "blue")
+        self.button3 = Button(100, 100, 950, 450, self.map, "cyan")
+        self.button4 = Button(100, 100, 950, 500, self.map, "orange")
+        """
+
         msg_bool = False  # boolean for if theres a message
         p1_input = 'a'
         p1_bytes = ''
@@ -477,7 +507,7 @@ class Game():
             # p1_input = ""
             print(p1_input)  # Test, prints current output
             p1_text = font.render("player: " + p1_input, 1, (255, 255, 255))  # player 1 text
-            self.map.getMap().blit(p1_text, (15, 620))
+            self.map.getMap().blit(p1_text, (15, 800))
 
             # signal.alarm(0) # Disable alarm after success
             # Code for Displaying the mission prompts
@@ -518,10 +548,21 @@ class Game():
                 mission_prompt = "Go to the left of the screen and race to the right of the screen"
 
             mission_text = font.render(mission_prompt, 1, (255, 255, 255))  # player 1 text
-            self.lobby.getLobby().blit(mission_text, (625, 475))
+            self.lobby.getLobby().blit(mission_text, (625, 800))
 
-            vote_text = font.render("vote", 1, (255, 255, 255))  # voting text
-            self.map.getMap().blit(vote_text, (800, 200))
+            vote_text = font.render("vote", 1, (255, 255, 255))  # player 1 text
+            self.lobby.getLobby().blit(vote_text, (1530, 200))
+
+
+            # Voting labels
+            red_text = font.render("red", 1, (255, 255, 255))  # player 1 text
+            self.lobby.getLobby().blit(red_text, (1530, 260))
+            blue_text = font.render("blue", 1, (255, 255, 255))  # player 1 text
+            self.lobby.getLobby().blit(blue_text, (1530, 310))
+            cyan_text = font.render("cyan", 1, (255, 255, 255))  # player 1 text
+            self.lobby.getLobby().blit(cyan_text, (1530, 360))
+            orange_text = font.render("orange", 1, (255, 255, 255))  # player 1 text
+            self.lobby.getLobby().blit(orange_text, (1530, 410))
 
             """
             if msg_bool:
