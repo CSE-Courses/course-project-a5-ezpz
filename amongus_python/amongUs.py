@@ -115,6 +115,7 @@ class Map():
         self.button3 = Button(100, 100, 950, 450, Game.map, "cyan")
         self.button4 = Button(100, 100, 950, 500, Game.map, "orange")
         """
+
         # Voting boxes
         pygame.draw.rect(self.screen, (50, 50, 50), [1500, 250, 140, 40])
         pygame.draw.rect(self.screen, (50, 50, 50), [1500, 300, 140, 40])
@@ -392,6 +393,7 @@ class Game():
         running = True
         self.add_player(self.player1)
         self.add_player(self.player2)
+        # self.add_player(self.enemy1)
         self.assign_roles()
         msg_bool = False  # boolean for if theres a message
         p1_input = 'a'
@@ -482,6 +484,7 @@ class Game():
                 self.enemy1.current_image = self.enemy1.images[1]
                 pygame.display.flip()
 
+
             # CHAT BOX SHIT#
             # signal.alarm(TIMEOUT)
             font = pygame.font.Font(None, 30)
@@ -517,12 +520,11 @@ class Game():
             Game.rungame(self)
 
 
-
-
-
-
+    global isBlueDead
+    isBlueDead = False  # Boolean to check if blue is dead
     #runs the actual game
     def rungame(self):
+        global isBlueDead
 
 
         running = True
@@ -601,6 +603,9 @@ class Game():
             if keys[pygame.K_3]:
                 self.enemy1.current_image = self.enemy1.images[1]
                 pygame.display.flip()
+                isBlueDead = True # set boolean to true
+            print("Is blue dead")
+            print(isBlueDead)
 
             # CHAT BOX SHIT#
             # signal.alarm(TIMEOUT)
@@ -653,13 +658,6 @@ class Game():
             mission_text = font.render(mission_prompt, 1, (255, 255, 255))  # player 1 text
 
             self.lobby.getLobby().blit(mission_text, (625, 800))
-            if ((vote%2) == 0):
-                vote_text = font.render("vote", 1, (255, 255, 255))  # player 1 text
-                self.lobby.getLobby().blit(vote_text, (1530, 200))
-            else:
-                vote_text = font.render("vote", 1, (0, 255, 0))  # player 1 text
-                self.lobby.getLobby().blit(vote_text, (1530, 200))
-
 
             # Voting labels
             red_text = font.render("red", 1, (255, 255, 255))  # player 1 text
@@ -670,6 +668,36 @@ class Game():
             self.lobby.getLobby().blit(cyan_text, (1530, 360))
             orange_text = font.render("orange", 1, (255, 255, 255))  # player 1 text
             self.lobby.getLobby().blit(orange_text, (1530, 410))
+
+            if ((vote%2) == 0):
+                vote_text = font.render("vote", 1, (255, 255, 255))  # player 1 text
+                self.lobby.getLobby().blit(vote_text, (1530, 200))
+
+            else:
+                vote_text = font.render("vote", 1, (0, 255, 0))  # set vote text to green
+                self.lobby.getLobby().blit(vote_text, (1530, 200))
+                number_of_players = len(self.player_list)
+                alive_players = 0
+                i = 0
+                while (i < number_of_players):
+                    if (self.player_list[i].status == "alive"):
+                        alive_players = alive_players + 1
+                        print(self.player_list[i].color)
+                        if(self.player_list[i].color == "Images/cyan.png" ):
+                            cyan_text = font.render("cyan", 1, (0, 255, 255))  # player 1 text
+                            self.lobby.getLobby().blit(cyan_text, (1530, 360))
+                        elif(self.player_list[i].color == "Images/orange.png" ):
+                            orange_text = font.render("orange", 1, (255, 160, 0))  # player 1 text
+                            self.lobby.getLobby().blit(orange_text, (1530, 410))
+                        if not isBlueDead:
+                            blue_text = font.render("blue", 1, (0, 0, 255))  # player 1 text
+                            self.lobby.getLobby().blit(blue_text, (1530, 310))
+
+                    i = i + 1
+
+
+
+
 
             # Timer
             seconds = (pygame.time.get_ticks()-start_ticks)/1000 # calculate how many seconds
