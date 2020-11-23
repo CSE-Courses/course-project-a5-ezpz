@@ -3,7 +3,7 @@ import pygame
 from client import Client
 from pygame import mixer
 import random
-import os
+
 
 
 
@@ -110,13 +110,16 @@ class Map():
         wall = Wall(110, 670, 700, 10)
         self.walls.append(wall)
         wall = Wall(800, 670, 10, 30)
+
         self.walls.append(wall)
+
         """
         self.button1 = Button(100, 100, 950, 350, Game.map, "red")  # voting buttons
         self.button2 = Button(100, 100, 950, 400, Game.map, "blue")
         self.button3 = Button(100, 100, 950, 450, Game.map, "cyan")
         self.button4 = Button(100, 100, 950, 500, Game.map, "orange")
         """
+
 
         # Voting boxes
         pygame.draw.rect(self.screen, (50, 50, 50), [1500, 250, 140, 40])
@@ -128,6 +131,7 @@ class Map():
 
         for wall in self.walls:
             pygame.draw.rect(self.screen, ((192, 192, 192)), wall.rect)
+
 
 
 ########################################################################################################################################
@@ -143,8 +147,10 @@ class Wall(object):
 
 
 
+
 ########################################################################################################################################
 class Player(object):
+
 
     def __init__(self, startx, starty, w, h, color, colorDead):
         #pygame.sprite.Sprite.__init__(self)
@@ -161,7 +167,9 @@ class Player(object):
         self.status = "alive"
         self.username = "player 1"
         self.role = "crewmate"
+
         self.place = object
+
 
         self.images = [pygame.image.load(self.color).convert_alpha(), pygame.image.load(self.dead).convert_alpha()]
         self.current_image = self.images[0]
@@ -190,7 +198,9 @@ class Player(object):
 
 
     def draw(self, player):
+
         self.screen.blit(self.current_image, (self.rect.x, self.rect.y))  # params converted image, starting positions of characters
+
 
 
 ########################################################################################################################################
@@ -290,8 +300,10 @@ class Game():
         self.player2 = Player(450, 50, 36, 48, 'Images/orange.png', 'Images/orangeDead.png')  # Initializing Player class instance at set point(300,300) in map
         self.enemy1 = Enemy(435, 150, 36, 48, 495, 'Images/blue.png', 'Images/blueDead.png')  # Initializing Player class instance at set point(100,100)
         self.lobby = Lobby(self.width, self.height, "Version 1.0")  # Creating Lobby class instance
+
         self.player1.place = self.lobby
         self.player2.place = self.lobby
+
         self.botLabel = Label(1030, 300, "BlueBot in game", 20, self.lobby)
         self.p1Label = Label(1030, 315, "Player1 has joined", 20, self.lobby)
         self.p2Label = Label(1030, 330, "Player2 has joined", 20, self.lobby)
@@ -551,8 +563,10 @@ class Game():
         running = True
         #creates the game map
         self.map = Map(self.mapwidth, self.mapheight, "Version 1.0")
+
         self.player1.place = self.map
         self.player2.place = self.map
+
         """
         self.button1 = Button(100, 100, 950, 350, self.map, "red")  # voting buttons
         self.button2 = Button(100, 100, 950, 400, self.map, "blue")
@@ -764,3 +778,4 @@ class Game():
 
 
 #########################################################################################################################################################################################################################################
+
