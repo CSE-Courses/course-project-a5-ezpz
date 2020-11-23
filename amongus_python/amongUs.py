@@ -31,8 +31,17 @@ class Lobby():
     def drawLobbyBackground(self):
         #Place background image for lobby
         self.screen.fill((0, 0, 1))
-        self.bg_img = pygame.image.load('Images/lobbyShip.png')
+        self.bg_img = pygame.image.load('Images/lobbyShip.png') #653x584
         self.screen.blit(self.bg_img, (375,0), self.bg_img.get_rect())
+        #draw walls for lobby
+        wall = Wall(365, 0, 10, 584) #left wall
+        self.walls.append(wall)
+        wall = Wall(1038, 0, 10, 584) #right wall
+        self.walls.append(wall)
+        wall = Wall(375, 584, 653, 10) #bottom wall
+        self.walls.append(wall)
+        for wall in self.walls:
+            pygame.draw.rect(self.screen, ((0, 0, 1)), wall.rect)
         #myfont = pygame.font.SysFont("monspace", 20)
         #self.screen.blit(self.button, self.button.get_rect())
 
@@ -177,6 +186,7 @@ class Player(object):
         else:  # down
             self.rect.y = self.rect.y + self.rate
 
+        #checks for wall collision and stops player if necessary
         for wall in self.place.walls:
             if self.rect.colliderect(wall.rect):
                 if (directKey == 0):
@@ -277,7 +287,7 @@ class Label():
 class Game():
     clock = pygame.time.Clock()  # create an object to help track time
     #started will be true if enter is pressed to start the game
-    started = True
+    started = False
 
 
     def __init__(self, w, h, mapw, maph):
@@ -535,6 +545,7 @@ class Game():
             """
             pygame.display.update()
 
+        #started will be true if enter has been pressed
         if not self.started:
             pygame.quit()
         else:
@@ -551,8 +562,11 @@ class Game():
         running = True
         #creates the game map
         self.map = Map(self.mapwidth, self.mapheight, "Version 1.0")
+        #place gets accurate walls
         self.player1.place = self.map
         self.player2.place = self.map
+        self.player1.rect.x = 30
+        self.player1.rect.y = 30
         """
         self.button1 = Button(100, 100, 950, 350, self.map, "red")  # voting buttons
         self.button2 = Button(100, 100, 950, 400, self.map, "blue")
