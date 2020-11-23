@@ -2,7 +2,7 @@
 import socket
 from _thread import * #supposed to be _thread but python 2.7 uses thread so to run in terminal remove underscore
 
-position = ["0:(0,0)", "1:(50,50)"]
+position = ["0:(435,75)", "1:(450,50)"]
 clientID = "0" #0 represents first clinet
 
 def clientThread(conn):
@@ -52,7 +52,7 @@ s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 #defining server and port
 port = 2004 #Port to listen on and accept connections
-serverName = '' #name of server, if empty string is passed the server accpets connections on all IPv4 interfaces
+serverName = 'cheshire.cse.buffalo.edu' #name of server, if empty string is passed the server accpets connections on all IPv4 interfaces
 serverIP = socket.gethostbyname(serverName) #getting ip addresss of cheshire.cse.buffalo.edu
 
 #binding server to my port
