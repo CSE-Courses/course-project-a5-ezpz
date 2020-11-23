@@ -6,6 +6,7 @@ import random
 
 
 
+
 TIMEOUT = 4  # number of seconds until timeout
 clock = pygame.time.Clock()
 
@@ -22,6 +23,7 @@ class Lobby():
         pygame.display.set_caption(name)
         self.width = w
         self.height = h
+        self.walls = []
 
     def getLobby(self):
         return self.screen
@@ -51,6 +53,7 @@ class Map():
         pygame.display.set_caption(name)
         self.width = w
         self.height = h
+        self.walls = []
 
     def getMap(self):
         return self.screen
@@ -60,61 +63,63 @@ class Map():
         #fills window with black
         self.screen.fill((0, 0, 1))
         #walls holds every wall instance
-        walls = pygame.sprite.Group()
         #walls at borders of window
         wall = Wall(1356, 0, 10, 768)
-        walls.add(wall)
+        self.walls.append(wall)
         wall = Wall(0, 758, 1366, 10)
-        walls.add(wall)
+        self.walls.append(wall)
         wall = Wall(0, 0, 10, 768)
-        walls.add(wall)
+        self.walls.append(wall)
         wall = Wall(0, 0, 1366, 10)
-        walls.add(wall)
+        self.walls.append(wall)
         #top left room (spawn)
         wall = Wall(0, 192, 80, 10)
-        walls.add(wall)
+        self.walls.append(wall)
         wall = Wall(145, 192, 80, 10)
-        walls.add(wall)
+        self.walls.append(wall)
         wall = Wall(225, 0, 10, 202)
-        walls.add(wall)
+        self.walls.append(wall)
         #top right room
         wall = Wall(960, 160, 406, 10)
-        walls.add(wall)
+        self.walls.append(wall)
         wall = Wall(960, 60, 10, 110)
-        walls.add(wall)
+        self.walls.append(wall)
         #middle room
         wall = Wall(350, 250, 200, 10)
-        walls.add(wall)
+        self.walls.append(wall)
         wall = Wall(620, 250, 390, 10)
-        walls.add(wall)
+        self.walls.append(wall)
         wall = Wall(350, 250, 10, 350)
-        walls.add(wall)
+        self.walls.append(wall)
         wall = Wall(350, 590, 590, 10)
-        walls.add(wall)
+        self.walls.append(wall)
         wall = Wall(1000, 250, 10, 350)
-        walls.add(wall)
+        self.walls.append(wall)
         #bottom right room
         wall = Wall(1100, 590, 140, 10)
-        walls.add(wall)
+        self.walls.append(wall)
         wall = Wall(1310, 590, 56, 10)
-        walls.add(wall)
+        self.walls.append(wall)
         wall = Wall(1100, 590, 10, 178)
-        walls.add(wall)
+        self.walls.append(wall)
         #bottom left room
         wall = Wall(0, 330, 120, 10)
-        walls.add(wall)
+        self.walls.append(wall)
         wall = Wall(110, 330, 10, 348)
-        walls.add(wall)
+        self.walls.append(wall)
         wall = Wall(110, 670, 700, 10)
-        walls.add(wall)
+        self.walls.append(wall)
         wall = Wall(800, 670, 10, 30)
-        walls.add(wall)
+
+        self.walls.append(wall)
+
         """
         self.button1 = Button(100, 100, 950, 350, Game.map, "red")  # voting buttons
         self.button2 = Button(100, 100, 950, 400, Game.map, "blue")
         self.button3 = Button(100, 100, 950, 450, Game.map, "cyan")
         self.button4 = Button(100, 100, 950, 500, Game.map, "orange")
         """
+
 
         # Voting boxes
         pygame.draw.rect(self.screen, (50, 50, 50), [1500, 250, 140, 40])
@@ -124,12 +129,14 @@ class Map():
 
 
 
+        for wall in self.walls:
+            pygame.draw.rect(self.screen, ((192, 192, 192)), wall.rect)
 
-        walls.draw(self.screen)
+
 
 ########################################################################################################################################
 # wall class that takes coordinates, width, and height to make rectangle
-class Wall(pygame.sprite.Sprite):
+class Wall(object):
     def __init__(self, x, y, w, h):
         super(Wall, self).__init__()
         self.image = pygame.Surface([w, h])
@@ -138,13 +145,18 @@ class Wall(pygame.sprite.Sprite):
         self.rect.x = x
         self.rect.y = y
 
+
+
+
 ########################################################################################################################################
-class Player(pygame.sprite.Sprite):
+class Player(object):
+
 
     def __init__(self, startx, starty, w, h, color, colorDead):
-        pygame.sprite.Sprite.__init__(self)
-        self.x = startx
-        self.y = starty
+        #pygame.sprite.Sprite.__init__(self)
+        self.rect = pygame.Rect(w, w, h, h)
+        self.rect.x = startx
+        self.rect.y = starty
         self.rate = 2
         self.height = h  # 48pixels
         self.width = w  # 36pixels
@@ -156,22 +168,39 @@ class Player(pygame.sprite.Sprite):
         self.username = "player 1"
         self.role = "crewmate"
 
+        self.place = object
+
+
         self.images = [pygame.image.load(self.color).convert_alpha(), pygame.image.load(self.dead).convert_alpha()]
         self.current_image = self.images[0]
 
     # directKey parameter will be used to move player instance in certain direction
     def move(self, directKey):
         if directKey == 0:  # right
-            self.x = self.x + self.rate
+            self.rect.x = self.rect.x + self.rate
         elif directKey == 1:  # left
-            self.x = self.x - self.rate
+            self.rect.x = self.rect.x - self.rate
         elif directKey == 2:  # up
-            self.y = self.y - self.rate
+            self.rect.y = self.rect.y - self.rate
         else:  # down
-            self.y = self.y + self.rate
+            self.rect.y = self.rect.y + self.rate
+
+        for wall in self.place.walls:
+            if self.rect.colliderect(wall.rect):
+                if (directKey == 0):
+                    self.rect.right = wall.rect.left
+                if (directKey == 1):
+                    self.rect.left = wall.rect.right
+                if (directKey == 2):
+                    self.rect.top = wall.rect.bottom
+                if (directKey == 3):
+                    self.rect.bottom = wall.rect.top
+
 
     def draw(self, player):
-        self.screen.blit(self.current_image, (self.x, self.y))  # params converted image, starting positions of characters
+
+        self.screen.blit(self.current_image, (self.rect.x, self.rect.y))  # params converted image, starting positions of characters
+
 
 
 ########################################################################################################################################
@@ -258,7 +287,8 @@ class Label():
 class Game():
     clock = pygame.time.Clock()  # create an object to help track time
     #started will be true if enter is pressed to start the game
-    started = False
+    started = True
+
 
     def __init__(self, w, h, mapw, maph):
         self.width = w
@@ -270,6 +300,10 @@ class Game():
         self.player2 = Player(450, 50, 36, 48, 'Images/orange.png', 'Images/orangeDead.png')  # Initializing Player class instance at set point(300,300) in map
         self.enemy1 = Enemy(435, 150, 36, 48, 495, 'Images/blue.png', 'Images/blueDead.png')  # Initializing Player class instance at set point(100,100)
         self.lobby = Lobby(self.width, self.height, "Version 1.0")  # Creating Lobby class instance
+
+        self.player1.place = self.lobby
+        self.player2.place = self.lobby
+
         self.botLabel = Label(1030, 300, "BlueBot in game", 20, self.lobby)
         self.p1Label = Label(1030, 315, "Player1 has joined", 20, self.lobby)
         self.p2Label = Label(1030, 330, "Player2 has joined", 20, self.lobby)
@@ -296,7 +330,7 @@ class Game():
 
     # this is what will send ur current position in certain form to the server
     def sendData(self):
-        data = str(self.network.id) + ":" + str(self.player1.x) + "," + str(self.player1.y)
+        data = str(self.network.id) + ":" + str(self.player1.rect.x) + "," + str(self.player1.rect.y)
         reply = self.network.sendData(data)
         return reply
 
@@ -419,16 +453,16 @@ class Game():
             # making character move
             keys = pygame.key.get_pressed()
             if keys[pygame.K_RIGHT]:
-                if self.player1.x <= self.width - self.player1.rate:
+                if self.player1.rect.x <= self.width - self.player1.rate:
                     self.player1.move(0)
             if keys[pygame.K_LEFT]:
-                if self.player1.x >= self.player1.rate:
+                if self.player1.rect.x >= self.player1.rate:
                     self.player1.move(1)
             if keys[pygame.K_UP]:
-                if self.player1.y >= self.player1.rate:
+                if self.player1.rect.y >= self.player1.rate:
                     self.player1.move(2)
             if keys[pygame.K_DOWN]:
-                if self.player1.y <= self.height - self.player1.rate:
+                if self.player1.rect.y <= self.height - self.player1.rate:
                     self.player1.move(3)
             """     
             if keys[pygame.K_0]:
@@ -438,7 +472,7 @@ class Game():
                 print(msg_bool)
             """
             # Send Network data
-            self.player2.x, self.player2.y = self.parseData(self.sendData())
+            self.player2.rect.x, self.player2.rect.y = self.parseData(self.sendData())
 
             # Update Lobby
             pygame.init()  # initialize pygame, needed to create fonts, etc.
@@ -511,7 +545,6 @@ class Game():
                 #print(p1_text)
                 #print(msg_bool)
             """
-
             pygame.display.update()
 
         if not self.started:
@@ -530,6 +563,10 @@ class Game():
         running = True
         #creates the game map
         self.map = Map(self.mapwidth, self.mapheight, "Version 1.0")
+
+        self.player1.place = self.map
+        self.player2.place = self.map
+
         """
         self.button1 = Button(100, 100, 950, 350, self.map, "red")  # voting buttons
         self.button2 = Button(100, 100, 950, 400, self.map, "blue")
@@ -560,16 +597,16 @@ class Game():
             # making character move
             keys = pygame.key.get_pressed()
             if keys[pygame.K_RIGHT]:
-                if self.player1.x <= self.width - self.player1.rate:
+                if self.player1.rect.x <= self.width - self.player1.rate:
                     self.player1.move(0)
             if keys[pygame.K_LEFT]:
-                if self.player1.x >= self.player1.rate:
+                if self.player1.rect.x >= self.player1.rate:
                     self.player1.move(1)
             if keys[pygame.K_UP]:
-                if self.player1.y >= self.player1.rate:
+                if self.player1.rect.y >= self.player1.rate:
                     self.player1.move(2)
             if keys[pygame.K_DOWN]:
-                if self.player1.y <= self.height - self.player1.rate:
+                if self.player1.rect.y <= self.height - self.player1.rate:
                     self.player1.move(3)
             """     
             if keys[pygame.K_0]:
@@ -579,7 +616,7 @@ class Game():
                 print(msg_bool)
             """
             # Send Network data
-            self.player2.x, self.player2.y = self.parseData(self.sendData())
+            self.player2.rect.x, self.player2.rect.y = self.parseData(self.sendData())
 
             # Update map
             self.map.drawMapBackground()
