@@ -597,6 +597,7 @@ class Game():
         start_ticks = pygame.time.get_ticks()  # start timer
         max_time = 30 # set max time
         vote = 2
+        labelx = 50
         while running:
             self.clock.tick(60)  # once per frame, the program will never running at more than 60 fps.self.started = True
 
@@ -645,6 +646,10 @@ class Game():
             font = pygame.font.Font(None, 30)
             enterLabel = font.render("", 1, (255, 255, 255))
             self.map.getMap().blit(enterLabel, (500, 457))
+
+            eLabel = font.render(self.player1.role, 1, (255, 255, 255))
+            self.map.getMap().blit(eLabel, (500, labelx))
+            labelx = labelx - 3
 
 
             # KILLING CHARACTERS#
@@ -805,4 +810,4 @@ class Game():
 
         #########################################################################################################################################################################################################################################
 
-
+################################################################################################################################################################################################################################################################################
