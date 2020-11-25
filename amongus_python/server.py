@@ -2,7 +2,7 @@
 import socket
 from _thread import * #supposed to be _thread but python 2.7 uses thread so to run in terminal remove underscore
 
-position = ["0:(0,0)", "1:(50,50)"]
+position = ["0:(435,75)", "1:(450,50)"]
 clientID = "0" #0 represents first clinet
 
 def clientThread(conn):
@@ -28,8 +28,10 @@ def clientThread(conn):
                     other = 1
                     other2 = 2
                 elif client == 1:
-                    other = 0
+                    other = 2
                     other2 = 2
+                elif client == 2: # p3
+                    other = 0 # p3
                 else:
                     other = 0
                     other2 = 1
@@ -62,7 +64,8 @@ except socket.error as err:
     print(str(err))
 
 # Listening for connections to the server. Rn set at a max of 2 connections
-s.listen(2)
+#s.listen(2)
+s.listen(3) # p3
 print("Server is ready and listening for connections")
 
 #This loop is responsible for getting all the different connections and for each connection we start a new thread
