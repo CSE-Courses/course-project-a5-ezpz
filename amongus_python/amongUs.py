@@ -5,8 +5,6 @@ from pygame import mixer
 import random
 
 
-
-
 TIMEOUT = 4  # number of seconds until timeout
 clock = pygame.time.Clock()
 
@@ -16,6 +14,7 @@ current_time = 0
 current_time = pygame.time.get_ticks()
 print(current_time)
 #########################################################################################################################################
+
 class Lobby():
 
     def __init__(self, w, h, name="None"):
@@ -51,7 +50,6 @@ class Lobby():
         self.screen.blit(self.bg_img, self.bg_img.get_rect())
 
 ########################################################################################################################################
-
 
 class Map():
 
@@ -142,10 +140,8 @@ class Map():
 
 
 ########################################################################################################################################
+
 # wall class that takes coordinates, width, and height to make rectangle
-
-
-
 class Wall(object):
     def __init__(self, x, y, w, h):
         super(Wall, self).__init__()
@@ -159,8 +155,8 @@ class Wall(object):
 
 
 ########################################################################################################################################
-class Player(object):
 
+class Player(object):
 
     def __init__(self, startx, starty, w, h, color, colorDead):
         #pygame.sprite.Sprite.__init__(self)
@@ -213,11 +209,12 @@ class Player(object):
     def draw(self, player):
         self.screen.blit(self.current_image, (self.rect.x, self.rect.y))  # params converted image, starting positions of characters
         self.hitbox = (self.rect.x, self.rect.y, 36, 49)
-        pygame.draw.rect(self.screen, (0, 0, 0), self.hitbox, 2)
+        #pygame.draw.rect(self.screen, (255, 0, 0), self.hitbox, 2)
 
 
 
 ########################################################################################################################################
+
 class Enemy(pygame.sprite.Sprite):
 
     def __init__(self, startx, starty, w, h, end, color, colorDead):
@@ -256,7 +253,31 @@ class Enemy(pygame.sprite.Sprite):
             self.moveX()
         self.screen.blit(self.current_image, (self.x, self.y))  # params converted image, starting positions of characters
 
+##############################################################################################################################
 
+class Jewel(pygame.sprite.Sprite):
+
+    def __init__(self, startx, starty, w, h, jewelImg, takenImg):
+        pygame.sprite.Sprite.__init__(self)
+        self.x = startx
+        self.y = starty
+        self.height = h  #45pixels
+        self.width = w  #45pixels
+        self.screen = pygame.display.set_mode((w, h))
+        self.gem = jewelImg
+        self.collected = takenImg
+        self.images = [pygame.image.load(self.gem).convert_alpha(), pygame.image.load(self.collected).convert_alpha()]
+        self.current_image = self.images[0]
+
+        self.hitbox = (self.x, self.y, 45, 45)
+
+
+    def draw(self, player):
+        if self.current_image == self.images[0]:
+            self.screen.blit(self.current_image, (self.x, self.y))
+            #pygame.draw.rect(self.screen, (225, 0, 0), self.hitbox, 2)
+        else:
+            self.screen.blit(self.current_image, (550, 10))
 ##############################################################################################################################
 
 class Boulder(pygame.sprite.Sprite):
@@ -273,10 +294,13 @@ class Boulder(pygame.sprite.Sprite):
         self.images = [pygame.image.load(self.obstacle).convert_alpha(), pygame.image.load(self.destroyed).convert_alpha()]
         self.current_image = self.images[0]
 
+        self.hitbox = (self.x, self.y, 72, 72)
+
 
     def draw(self, player):
         if self.current_image == self.images[0]:
             self.screen.blit(self.current_image, (self.x, self.y))
+            #pygame.draw.rect(self.screen, (225, 0, 0), self.hitbox, 2)
         else:
             self.screen.blit(self.current_image, (550, 10))
 
@@ -305,7 +329,7 @@ class Alien(pygame.sprite.Sprite):
         if self.current_image == self.images[0]:
             self.screen.blit(self.current_image, (self.x, self.y))
             self.hitbox = (self.x, self.y, 40, 30)
-            pygame.draw.rect(self.screen, (0, 0, 0), self.hitbox, 2)
+            #pygame.draw.rect(self.screen, (0, 0, 0), self.hitbox, 2)
         else:
             self.screen.blit(self.current_image, (550, 10))
             #self.hitbox = (self.x, self.y, 40, 30)
@@ -330,7 +354,6 @@ class projectile(object):
 
 
 ##############################################################################################################################
-
 
 class Button():
     def __init__(self, w, h, x, y, Lobby, text=""):
@@ -377,7 +400,7 @@ class Game():
 
     # Take in name and use as global variable
     global playername
-    playername = input("Player name:")
+    playername = input("Player1 name:")
     global playername2
     playername2 = input("Player2 name:")
 
@@ -392,6 +415,7 @@ class Game():
         self.player2 = Player(450, 50, 36, 48, 'Images/orange.png', 'Images/orangeDead.png')  # Initializing Player class instance at set point(300,300) in map
         self.enemy1 = Enemy(435, 150, 36, 48, 495, 'Images/blue.png', 'Images/blueDead.png')  # Initializing Player class instance at set point(100,100)
         self.boulder = Boulder(550, 200, 72, 72, 'Images/boulder.png', 'Images/gone.png')
+        self.jewel = Jewel(50, 375, 50, 50, 'Images/jewel.png', 'Images/gone.png')
         self.alien = Alien(1000, 25, 40, 29, 'Images/alien.png', 'Images/gone.png')
         self.alien2 = Alien(1060, 25, 40, 29, 'Images/alien.png', 'Images/gone.png')
         self.alien3 = Alien(1120, 25, 40, 29, 'Images/alien.png', 'Images/gone.png')
@@ -600,8 +624,8 @@ class Game():
             if keys[pygame.K_DOWN]:
                 if self.player1.rect.y <= self.height - self.player1.rate:
                     self.player1.move(3)
-            if keys[pygame.K_1]:
-                playername = "Dylan"
+            #if keys[pygame.K_1]:
+             #   playername = "Dylan"
 
             """     
             if keys[pygame.K_0]:
@@ -653,20 +677,6 @@ class Game():
             self.lobby.getLobby().blit(p1_text, (15, 20))
             #signal.alarm(0) # Disable alarm after success
 
-            """
-            if msg_bool:
-                print(msg_bool)
-                print("delivered")
-                print(p1_input)
-                p1_text = font.render("player 1: ", 1, (255, 255, 255))  # player 1 text
-                #self.lobby.getLobby().blit(p1_text, (150, 2)) # Display
-                p1_bytes = bytes("wow", 'ascii')
-                scoretext = font.render(p1_bytes, 1, (255, 255, 255))
-                self.lobby.getLobby().blit(scoretext, (150, 457))
-                msg_bool = False
-                #print(p1_text)
-                #print(msg_bool)
-            """
             pygame.display.update()
 
         #started will be true if enter has been pressed
@@ -674,6 +684,10 @@ class Game():
             pygame.quit()
         else:
             Game.rungame(self)
+
+
+
+
 
 
     global isBlueDead
@@ -694,7 +708,6 @@ class Game():
         self.player2.place = self.map
         self.player1.rect.x = 30
         self.player1.rect.y = 30
-
         """
         self.button1 = Button(100, 100, 950, 350, self.map, "red")  # voting buttons
         self.button2 = Button(100, 100, 950, 400, self.map, "blue")
@@ -711,15 +724,12 @@ class Game():
         vote = 2
         labelx = 80
 
-        # Declaring global variable for coloring of jewel mission
-        global jewelColor
-        jewelColor = (0, 255, 0)
         # Declaring array storing bullets
         bullets = []
         shotLoop = 0  # bullet cool down
 
         while running:
-            self.clock.tick(60)  # once per frame, the program will never running at more than 60 fps.self.started = True
+            self.clock.tick(100)  # once per frame, the program will never running at more than 60 fps.self.started = True
             # setting basic timer for projectiles
             if shotLoop > 0:
                 shotLoop += 1
@@ -762,8 +772,7 @@ class Game():
                     bullet.x += bullet.vel
                 else:
                     bullets.pop(bullets.index(bullet))
-#########################################BULLET   CODE     END##################################################################
-
+#########################################BULLET   CODE     END####################################################################
 
             # making character move
             keys = pygame.key.get_pressed()
@@ -799,10 +808,7 @@ class Game():
             self.player1.draw(self.map.getMap())
             self.player2.draw(self.map.getMap())
             self.enemy1.draw(self.map.getMap())
-            self.boulder.draw(self.map.getMap())
-            self.alien.draw(self.map.getMap())
-            self.alien2.draw(self.map.getMap())
-            self.alien3.draw(self.map.getMap())
+
 
             #DRAWING BULLETS TO APPEAR IN GAME
             for bullet in bullets:
@@ -843,13 +849,45 @@ class Game():
 
 
 ###########################################   CREWMATE TASKS ################################################################
-            # Drawing find the jewel mission
-            if keys[pygame.K_1]:
-                jewelColor = (0, 0, 0)
-            pygame.draw.polygon(self.lobby.getLobby(), jewelColor, ((25, 375), (50, 400), (75, 375), (65, 365), (35, 365)))
+            self.boulder.draw(self.map.getMap())
+            self.jewel.draw(self.map.getMap())
+            self.alien.draw(self.map.getMap())
+            self.alien2.draw(self.map.getMap())
+            self.alien3.draw(self.map.getMap())
+
+            ############CODE FOR JEWEL MISSION######################
+            # ADDING COLLISON DETECTION w/ player1
+            if self.jewel.current_image == self.jewel.images[0]:
+                if self.player1.hitbox[1] < self.jewel.hitbox[1] + self.jewel.hitbox[3] and self.player1.hitbox[1] + self.player1.hitbox[3] > self.jewel.hitbox[1]:
+                    if self.player1.hitbox[0] + self.player1.hitbox[2] > self.jewel.hitbox[0] and self.player1.hitbox[0] < self.jewel.hitbox[0] + self.jewel.hitbox[2]:
+                        self.jewel.current_image = self.jewel.images[1]
+            # ADDING COLLISON DETECTION w/ player2
+            if self.jewel.current_image == self.jewel.images[0]:
+                if self.player2.hitbox[1] < self.jewel.hitbox[1] + self.jewel.hitbox[3] and self.player2.hitbox[1] + self.player2.hitbox[3] > self.jewel.hitbox[1]:
+                    if self.player2.hitbox[0] + self.player2.hitbox[2] > self.jewel.hitbox[0] and self.player2.hitbox[0] < self.jewel.hitbox[0] + self.jewel.hitbox[2]:
+                        self.jewel.current_image = self.jewel.images[1]
+            ###########################################################
+
+
+
+
+            ############CODE FOR BOULDER/OBSTACLE MISSON######################
+            # ADDING COLLISON DETECTION w/ player1. Will cause player 1 to move up when colliding with Obstacle. Need to use the X key to destroy obstacle and be able to move
+            if self.boulder.current_image == self.boulder.images[0]:
+                if self.player1.hitbox[1] < self.boulder.hitbox[1] + self.boulder.hitbox[3] and self.player1.hitbox[1] + self.player1.hitbox[3] > self.boulder.hitbox[1]:
+                    if self.player1.hitbox[0] + self.player1.hitbox[2] > self.boulder.hitbox[0] and self.player1.hitbox[0] < self.boulder.hitbox[0] + self.boulder.hitbox[2]:
+                        self.player1.move(2)
+            # ADDING COLLISON DETECTION w/ player2
+            if self.boulder.current_image == self.boulder.images[0]:
+                if self.player2.hitbox[1] < self.boulder.hitbox[1] + self.boulder.hitbox[3] and self.player2.hitbox[1] + self.player2.hitbox[3] > self.boulder.hitbox[1]:
+                    if self.player2.hitbox[0] + self.player2.hitbox[2] > self.boulder.hitbox[0] and self.player2.hitbox[0] < self.boulder.hitbox[0] + self.boulder.hitbox[2]:
+                        self.player2.move(2)
             # Destroy boulder obstacle
             if keys[pygame.K_x]:
                 self.boulder.current_image = self.boulder.images[1]
+            ###########################################################
+
+
 
             # signal.alarm(0) # Disable alarm after success
             # Code for Displaying the mission prompts
