@@ -49,8 +49,6 @@ class Lobby():
         # Place background image for lobby
         self.bg_img = pygame.image.load('Images/starz.png')
         self.screen.blit(self.bg_img, self.bg_img.get_rect())
-        # myfont = pygame.font.SysFont("monspace", 20)
-        # self.screen.blit(self.button, self.button.get_rect())
 
 ########################################################################################################################################
 
@@ -145,6 +143,9 @@ class Map():
 
 ########################################################################################################################################
 # wall class that takes coordinates, width, and height to make rectangle
+
+
+
 class Wall(object):
     def __init__(self, x, y, w, h):
         super(Wall, self).__init__()
@@ -183,6 +184,8 @@ class Player(object):
         self.images = [pygame.image.load(self.color).convert_alpha(), pygame.image.load(self.dead).convert_alpha()]
         self.current_image = self.images[0]
 
+        self.hitbox = (self.rect.x, self.rect.y, 36, 49)
+
     # directKey parameter will be used to move player instance in certain direction
     def move(self, directKey):
         if directKey == 0:  # right
@@ -208,8 +211,9 @@ class Player(object):
 
 
     def draw(self, player):
-
         self.screen.blit(self.current_image, (self.rect.x, self.rect.y))  # params converted image, starting positions of characters
+        self.hitbox = (self.rect.x, self.rect.y, 36, 49)
+        pygame.draw.rect(self.screen, (0, 0, 0), self.hitbox, 2)
 
 
 
@@ -251,6 +255,78 @@ class Enemy(pygame.sprite.Sprite):
         if self.current_image == self.images[0]:
             self.moveX()
         self.screen.blit(self.current_image, (self.x, self.y))  # params converted image, starting positions of characters
+
+
+##############################################################################################################################
+
+class Boulder(pygame.sprite.Sprite):
+
+    def __init__(self, startx, starty, w, h, obstacle, destroyed):
+        pygame.sprite.Sprite.__init__(self)
+        self.x = startx
+        self.y = starty
+        self.height = h  #72pixels
+        self.width = w  #72pixels
+        self.screen = pygame.display.set_mode((w, h))
+        self.obstacle = obstacle
+        self.destroyed = destroyed
+        self.images = [pygame.image.load(self.obstacle).convert_alpha(), pygame.image.load(self.destroyed).convert_alpha()]
+        self.current_image = self.images[0]
+
+
+    def draw(self, player):
+        if self.current_image == self.images[0]:
+            self.screen.blit(self.current_image, (self.x, self.y))
+        else:
+            self.screen.blit(self.current_image, (550, 10))
+
+
+
+##############################################################################################################################
+
+class Alien(pygame.sprite.Sprite):
+
+    def __init__(self, startx, starty, w, h, obstacle, destroyed):
+        pygame.sprite.Sprite.__init__(self)
+        self.x = startx
+        self.y = starty
+        self.height = h  # 29pixels
+        self.width = w  # 40pixels
+        self.screen = pygame.display.set_mode((w, h))
+        self.obstacle = obstacle
+        self.destroyed = destroyed
+        self.images = [pygame.image.load(self.obstacle).convert_alpha(), pygame.image.load(self.destroyed).convert_alpha()]
+        self.current_image = self.images[0]
+
+        self.hitbox = (self.x, self.y, 40, 30)
+
+
+    def draw(self, player):
+        if self.current_image == self.images[0]:
+            self.screen.blit(self.current_image, (self.x, self.y))
+            self.hitbox = (self.x, self.y, 40, 30)
+            pygame.draw.rect(self.screen, (0, 0, 0), self.hitbox, 2)
+        else:
+            self.screen.blit(self.current_image, (550, 10))
+            #self.hitbox = (self.x, self.y, 40, 30)
+            #pygame.draw.rect(self.screen, (255, 0, 0), self.hitbox, 2)
+
+##############################################################################################################################
+
+class projectile(object):
+
+    def __init__(self, x, y, radius, color, facing, window):
+        self.x = x
+        self.y = y
+        self.radius = radius
+        self.color = color
+        self.facing = facing
+        self.vel = 8 * facing
+        self.window = window
+
+    def draw(self):
+        pygame.draw.circle(self.window, self.color, (self.x,self.y), self.radius)
+
 
 
 ##############################################################################################################################
@@ -299,6 +375,12 @@ class Game():
     #started will be true if enter is pressed to start the game
     started = False
 
+    # Take in name and use as global variable
+    global playername
+    playername = input("Player name:")
+    global playername2
+    playername2 = input("Player2 name:")
+
 
     def __init__(self, w, h, mapw, maph):
         self.width = w
@@ -309,14 +391,16 @@ class Game():
         self.player1 = Player(435, 75, 36, 48, 'Images/cyan.png', 'Images/cyanDead.png')  # Initializing Player class instance at set point(40,40) in map
         self.player2 = Player(450, 50, 36, 48, 'Images/orange.png', 'Images/orangeDead.png')  # Initializing Player class instance at set point(300,300) in map
         self.enemy1 = Enemy(435, 150, 36, 48, 495, 'Images/blue.png', 'Images/blueDead.png')  # Initializing Player class instance at set point(100,100)
+        self.boulder = Boulder(550, 200, 72, 72, 'Images/boulder.png', 'Images/gone.png')
+        self.alien = Alien(1000, 25, 40, 29, 'Images/alien.png', 'Images/gone.png')
+        self.alien2 = Alien(1060, 25, 40, 29, 'Images/alien.png', 'Images/gone.png')
+        self.alien3 = Alien(1120, 25, 40, 29, 'Images/alien.png', 'Images/gone.png')
         self.lobby = Lobby(self.width, self.height, "Version 1.0")  # Creating Lobby class instance
 
         self.player1.place = self.lobby
         self.player2.place = self.lobby
 
-        self.botLabel = Label(1030, 300, "BlueBot in game", 20, self.lobby)
         self.p1Label = Label(1030, 315, "Player1 has joined", 20, self.lobby)
-        self.p2Label = Label(1030, 330, "Player2 has joined", 20, self.lobby)
 
         self.player_list = []
         self.vote_tracker = []
@@ -430,10 +514,51 @@ class Game():
         print("impostor win")
 
 
+    def cheshire(self):
+        running = True
+        while running:
+            self.clock.tick(60)  # once per frame, the program will never running at more than 60 fps.self.started = True
+            # Properly quit (pygame will crash without this)
+            for event in pygame.event.get():
+                # If closed out, quit program
+                if event.type == pygame.QUIT:
+                    running = False
+                if event.type == pygame.KEYDOWN:
+
+                    # If key pressed is ESC key, quit program
+                    if event.key == pygame.K_ESCAPE:
+                        running = False
+                    # If enter is pressed, lobby will close and game will start
+                    if event.key == pygame.K_RETURN:
+                        self.started = True
+                        running = False
+
+            # making character move
+            keys = pygame.key.get_pressed()
+            if keys[pygame.K_UP]:
+                Game.run(self)
+
+            #Update Lobby
+            pygame.init()  # initialize pygame, needed to create fonts, etc.
+            self.lobby.drawLobbyBackground2()
+            # ENTER LABEL PLACED IN LOBBY TO ENTER GAME#
+            font = pygame.font.Font(None, 30)
+            enterLabel2 = font.render("Among Us 9.0", 1, (255, 255, 255))
+            enterLabel = font.render("Press the Up key to connect to server: cheshire.", 1, (255, 255, 255))
+            self.lobby.getLobby().blit(enterLabel, (400, 300))
+            self.lobby.getLobby().blit(enterLabel2, (400, 50))
+
+            pygame.display.update()
+
+        if not self.started:
+            pygame.quit()
+        else:
+            Game.run(self)
 
 
 
     def run(self):
+        global playername
         running = True
         self.add_player(self.player1)
         self.add_player(self.player2)
@@ -442,6 +567,7 @@ class Game():
         msg_bool = False  # boolean for if theres a message
         p1_input = 'a'
         p1_bytes = ''
+
         while running:
             self.clock.tick(60)  # once per frame, the program will never running at more than 60 fps.self.started = True
 
@@ -474,6 +600,9 @@ class Game():
             if keys[pygame.K_DOWN]:
                 if self.player1.rect.y <= self.height - self.player1.rate:
                     self.player1.move(3)
+            if keys[pygame.K_1]:
+                playername = "Dylan"
+
             """     
             if keys[pygame.K_0]:
                 p1_input = input("enter an input :")
@@ -490,44 +619,27 @@ class Game():
             self.player1.draw(self.lobby.getLobby())
             self.player2.draw(self.lobby.getLobby())
             self.enemy1.draw(self.lobby.getLobby())
-            #Joined labels for each player that state player has entered lobby
-            self.botLabel.draw()
-            self.p1Label.draw()
-            self.p2Label.draw()
 
-            #ENTER LABEL PLACED IN LOBBY TO ENTER GAME#
-            #pygame.init()
+
+            # Displaying last player joined
+            font = pygame.font.Font(None, 20)
+            text = font.render(playername + " is playing as CYAN", 1, (255, 255, 255))  # player 1 text
+            self.lobby.getLobby().blit(text, (15, 600))
+            text = font.render(playername2 + " is playing as ORANGE", 1, (255, 255, 255))  # player 2 text
+            self.lobby.getLobby().blit(text, (15, 625))
+
+
+
 
             """
             pygame.mixer.init()
             pygame.mixer.music.load('Images/audio.wav')
             pygame.mixer.music.play(0)
             """
-
+            #ENTER LABEL PLACED IN LOBBY TO ENTER GAME#
             font = pygame.font.Font(None, 30)
             enterLabel = font.render("Press 'Enter' when all players have joined.", 1, (255, 255, 255))
             self.lobby.getLobby().blit(enterLabel, (495, 457))
-
-
-            #FADING OUT JOINED LABELS IF NUM KEY 1 PRESSED
-            if keys[pygame.K_1]:
-                self.botLabel.current = self.botLabel.colors[1]
-                self.p1Label.current = self.p1Label.colors[1]
-                self.p2Label.current = self.p2Label.colors[1]
-                pygame.display.flip()
-
-
-
-            #KILLING CHARACTERS#
-            #press 2 on keyboard to transform player2 to dead image
-            if keys[pygame.K_2]:
-                self.player2.current_image = self.player2.images[1]
-                pygame.display.flip()
-            # press 3 on keyboard to transform 3rd player aka enemy1 to dead image
-            if keys[pygame.K_3]:
-                self.enemy1.current_image = self.enemy1.images[1]
-                pygame.display.flip()
-
 
             # CHAT BOX SHIT#
             # signal.alarm(TIMEOUT)
@@ -536,7 +648,7 @@ class Game():
                 p1_input = input("enter an input :")
             #else:
                 #p1_input = ""
-            print(p1_input) # Test, prints current output
+            #print(p1_input) # Test, prints current output
             p1_text = font.render("player: " + p1_input, 1, (255, 255, 255)) # player 1 text
             self.lobby.getLobby().blit(p1_text, (15, 20))
             #signal.alarm(0) # Disable alarm after success
@@ -597,9 +709,22 @@ class Game():
         start_ticks = pygame.time.get_ticks()  # start timer
         max_time = 30 # set max time
         vote = 2
-        labelx = 50
+        labelx = 80
+
+        # Declaring global variable for coloring of jewel mission
+        global jewelColor
+        jewelColor = (0, 255, 0)
+        # Declaring array storing bullets
+        bullets = []
+        shotLoop = 0  # bullet cool down
+
         while running:
             self.clock.tick(60)  # once per frame, the program will never running at more than 60 fps.self.started = True
+            # setting basic timer for projectiles
+            if shotLoop > 0:
+                shotLoop += 1
+            if shotLoop > 3:
+                shotLoop = 0
 
             # Properly quit (pygame will crash without this)
             for event in pygame.event.get():
@@ -611,8 +736,42 @@ class Game():
                     if event.key == pygame.K_ESCAPE:
                         running = False
 
+##############################################CODE FOR CONTROLLING BULLETS#########################################################
+            # KEEPING TRACK OF BULLET DISTANCE TRAVELED ALLOWED
+            for bullet in bullets:
+                # ADDING COLLISON DETECTION FOR THE 3 ALIENS
+                if self.alien.current_image == self.alien.images[0]:
+                    if bullet.y - bullet.radius < self.alien.hitbox[1] + self.alien.hitbox[3] and bullet.y + bullet.radius > self.alien.hitbox[1]:  # checks if we are above the bottom and below the top of the rectangle
+                        if bullet.x + bullet.radius > self.alien.hitbox[0] and bullet.x - bullet.radius < self.alien.hitbox[0] + self.alien.hitbox[2]:
+                            self.alien.current_image = self.alien.images[1] #Change alien image to alienGone image
+                            bullets.pop(bullets.index(bullet))
+
+                if self.alien2.current_image == self.alien2.images[0]:
+                    if bullet.y - bullet.radius < self.alien2.hitbox[1] + self.alien2.hitbox[3] and bullet.y + bullet.radius > self.alien2.hitbox[1]:  # checks if we are above the bottom and below the top of the rectangle
+                        if bullet.x + bullet.radius > self.alien2.hitbox[0] and bullet.x - bullet.radius < self.alien2.hitbox[0] + self.alien2.hitbox[2]:
+                            self.alien2.current_image = self.alien2.images[1]  # Change alien image to alienGone image
+                            bullets.pop(bullets.index(bullet))
+
+                if self.alien3.current_image == self.alien3.images[0]:
+                    if bullet.y - bullet.radius < self.alien3.hitbox[1] + self.alien3.hitbox[3] and bullet.y + bullet.radius > self.alien3.hitbox[1]:  # checks if we are above the bottom and below the top of the rectangle
+                        if bullet.x + bullet.radius > self.alien3.hitbox[0] and bullet.x - bullet.radius < self.alien3.hitbox[0] + self.alien3.hitbox[2]:
+                            self.alien3.current_image = self.alien3.images[1]  # Change alien image to alienGone image
+                            bullets.pop(bullets.index(bullet))
+
+                if bullet.x < 1700 and bullet.x > 0:
+                    bullet.x += bullet.vel
+                else:
+                    bullets.pop(bullets.index(bullet))
+#########################################BULLET   CODE     END##################################################################
+
+
             # making character move
             keys = pygame.key.get_pressed()
+            if keys[pygame.K_SPACE] and shotLoop == 0: #allow user to shoot projectile if bullet cooldown is met
+                if len(bullets) < 5:
+                    bullets.append(projectile(self.player1.rect.x, self.player1.rect.y, 6, (255,0,0), 1, self.lobby.getLobby()))
+                shotLoop = 1
+
             if keys[pygame.K_RIGHT]:
                 if self.player1.rect.x <= self.width - self.player1.rate:
                     self.player1.move(0)
@@ -640,6 +799,14 @@ class Game():
             self.player1.draw(self.map.getMap())
             self.player2.draw(self.map.getMap())
             self.enemy1.draw(self.map.getMap())
+            self.boulder.draw(self.map.getMap())
+            self.alien.draw(self.map.getMap())
+            self.alien2.draw(self.map.getMap())
+            self.alien3.draw(self.map.getMap())
+
+            #DRAWING BULLETS TO APPEAR IN GAME
+            for bullet in bullets:
+                bullet.draw()
 
             # ENTER LABEL PLACED IN LOBBY TO ENTER GAME#
             pygame.init()  # initialize pygame
@@ -648,22 +815,21 @@ class Game():
             self.map.getMap().blit(enterLabel, (500, 457))
 
             eLabel = font.render(self.player1.role, 1, (255, 255, 255))
-            self.map.getMap().blit(eLabel, (500, labelx))
-            labelx = labelx - 3
+            self.map.getMap().blit(eLabel, (550, labelx))
+            labelx = labelx - 1
 
 
             # KILLING CHARACTERS#
             # press 2 on keyboard to transform player2 to dead image
             if keys[pygame.K_2]:
                 self.player2.current_image = self.player2.images[1]
-                pygame.display.flip()
             # press 3 on keyboard to transform 3rd player aka enemy1 to dead image
             if keys[pygame.K_3]:
                 self.enemy1.current_image = self.enemy1.images[1]
-                pygame.display.flip()
+                #pygame.display.flip()
                 isBlueDead = True # set boolean to true
-            print("Is blue dead")
-            print(isBlueDead)
+            #print("Is blue dead")
+            #print(isBlueDead)
 
             # CHAT BOX SHIT#
             # signal.alarm(TIMEOUT)
@@ -671,19 +837,28 @@ class Game():
                 p1_input = input("enter an input :")
             # else:
             # p1_input = ""
-            print(p1_input)  # Test, prints current output
+            #print(p1_input)  # Test, prints current output
             p1_text = font.render("player: " + p1_input, 1, (255, 255, 255))  # player 1 text
             self.map.getMap().blit(p1_text, (15, 800))
 
+
+###########################################   CREWMATE TASKS ################################################################
+            # Drawing find the jewel mission
+            if keys[pygame.K_1]:
+                jewelColor = (0, 0, 0)
+            pygame.draw.polygon(self.lobby.getLobby(), jewelColor, ((25, 375), (50, 400), (75, 375), (65, 365), (35, 365)))
+            # Destroy boulder obstacle
+            if keys[pygame.K_x]:
+                self.boulder.current_image = self.boulder.images[1]
+
             # signal.alarm(0) # Disable alarm after success
             # Code for Displaying the mission prompts
-            mission = 7
+            mission = 1
             mision_prompt = 'mission: '
             mission_text = ''
             random_num = 1  # for simon says assignment
-
             if (mission == 1):
-                print("mission: 1")
+                #print("mission: 1")
                 mission_prompt = "Move to your colored circle"
                 pygame.draw.circle(self.lobby.getLobby(), (255, 0, 0), (700, 300), 25)  # Red circle
                 pygame.draw.circle(self.lobby.getLobby(), (0, 0, 255), (700, 400), 25)  # Blue circle
@@ -779,7 +954,7 @@ class Game():
             seconds = (pygame.time.get_ticks() - start_ticks) / 1000  # calculate how many seconds
 
             # print(seconds) #print how many seconds
-            print(int(max_time - seconds))  # debug
+            #print(int(max_time - seconds))  # debug
             diff = int(max_time - seconds)
             if (diff < 0):
                 # start_ticks = 0
@@ -808,6 +983,4 @@ class Game():
 
         pygame.quit()
 
-        #########################################################################################################################################################################################################################################
-
-################################################################################################################################################################################################################################################################################
+#############################################################################################################################################
