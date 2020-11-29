@@ -30,7 +30,7 @@ class Lobby():
     def drawLobbyBackground(self):
         #Place background image for lobby
         self.screen.fill((0, 0, 1))
-        self.bg_img = pygame.image.load('Images/lobbyShip.png') #653x584
+        self.bg_img = pygame.image.load('Images/lobbyShip.png').convert() #653x584
         self.screen.blit(self.bg_img, (375,0), self.bg_img.get_rect())
         #draw walls for lobby
         wall = Wall(365, 0, 10, 584) #left wall
@@ -46,7 +46,7 @@ class Lobby():
 
     def drawLobbyBackground2(self):
         # Place background image for lobby
-        self.bg_img = pygame.image.load('Images/starz.png')
+        self.bg_img = pygame.image.load('Images/starz.png').convert()
         self.screen.blit(self.bg_img, self.bg_img.get_rect())
 
 ########################################################################################################################################
