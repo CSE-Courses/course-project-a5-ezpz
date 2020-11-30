@@ -3,6 +3,9 @@ import pygame
 from client import Client
 from pygame import mixer
 import random
+import os
+
+
 
 
 TIMEOUT = 4  # number of seconds until timeout
@@ -60,14 +63,15 @@ class Map():
         self.height = h
         self.walls = []
 
+
     def getMap(self):
         return self.screen
 
     #makes window black and then draws the map walls
     def drawMapBackground(self):
         #fills window with black
-        self.screen.fill((0, 0, 1))
         #walls holds every wall instance
+        self.screen.fill((0, 0, 1))
         #walls at borders of window
         wall = Wall(1356, 0, 10, 768)
         self.walls.append(wall)
@@ -422,6 +426,7 @@ class Game():
         self.player1.place = self.lobby
         self.player2.place = self.lobby
 
+
         self.p1Label = Label(1030, 315, "Player1 has joined", 20, self.lobby)
 
         self.player_list = []
@@ -717,6 +722,7 @@ class Game():
         #creates the game map
         self.map = Map(self.mapwidth, self.mapheight, "Version 1.0")
 
+
         #place gets accurate walls
         self.player1.place = self.map
         self.player2.place = self.map
@@ -740,7 +746,7 @@ class Game():
 
         # Declaring array storing bullets
         bullets = []
-        shotLoop = 0  # bullet cool down
+        shotLoop = 0  # bullet cool down]
 
         while running:
             self.clock.tick(100)  # once per frame, the program will never running at more than 60 fps.self.started = True
@@ -749,6 +755,8 @@ class Game():
                 shotLoop += 1
             if shotLoop > 3:
                 shotLoop = 0
+            self.map.drawMapBackground()
+
 
             # Properly quit (pygame will crash without this)
             for event in pygame.event.get():
@@ -818,7 +826,7 @@ class Game():
             self.player2.rect.x, self.player2.rect.y = self.parseData(self.sendData())
 
             # Update map
-            self.map.drawMapBackground()
+
             self.player1.draw(self.map.getMap())
             self.player2.draw(self.map.getMap())
             self.enemy1.draw(self.map.getMap())
@@ -829,7 +837,7 @@ class Game():
                 bullet.draw()
 
             # ENTER LABEL PLACED IN LOBBY TO ENTER GAME#
-            pygame.init()  # initialize pygame
+              # initialize pygame
             font = pygame.font.Font(None, 30)
             enterLabel = font.render("", 1, (255, 255, 255))
             self.map.getMap().blit(enterLabel, (500, 457))
@@ -974,6 +982,8 @@ class Game():
             self.mission_write_y = 520 #1380 for x
             self.current_mission_write = 0
 
+
+            #mission list on side of screen
             #looks more complicated than it is. Only things that change are string and if
             #second line needed, increment mission_write_y by 20 between lines and 40 between missions
             #will have to adjust later when missions changed
@@ -1050,6 +1060,20 @@ class Game():
                 self.lobby.getLobby().blit(vote_text, (1530, 200))
                 number_of_players = len(self.player_list)
                 alive_players = 0
+                for event in pygame.event.get():
+                    mousecor = pygame.mouse.get_pos()
+                    mouseXcor = mousecor[0]
+                    mouseYcor = mousecor[1]
+                    if event.type == pygame.MOUSEBUTTONDOWN:
+                        if 1500 < mouseXcor < 1640 and 250 < mouseYcor < 290:
+                            self.player1.voted = "red"
+                        elif 1500 < mouseXcor < 1640 and 300 < mouseYcor < 340:
+                            self.player1.voted = "blue"
+                        elif 1500 < mouseXcor < 1640 and 350 < mouseYcor < 390:
+                            self.player1.voted = "cyan"
+                        elif 1500 < mouseXcor < 1640 and 400 < mouseYcor < 440:
+                            self.player1.voted = "orange"
+
                 i = 0
                 while (i < number_of_players):
                     if (self.player_list[i].status == "alive"):
@@ -1064,6 +1088,7 @@ class Game():
                         if not isBlueDead:
                             blue_text = font.render("blue", 1, (0, 0, 255))  # player 1 text
                             self.lobby.getLobby().blit(blue_text, (1530, 310))
+
                     i = i + 1
 
             # Timer
@@ -1094,7 +1119,8 @@ class Game():
                 #print(p1_text)
                 #print(msg_bool)
             """
-
+            #just for test, comment out other prints when using this
+            #print(self.player1.voted)
             pygame.display.update()
 
         pygame.quit()
