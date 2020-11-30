@@ -71,7 +71,8 @@ class Map():
     def drawMapBackground(self):
         #fills window with black
         #walls holds every wall instance
-        self.screen.fill((0, 0, 1))
+        #self.screen.fill((0, 0, 1))
+
         #walls at borders of window
         wall = Wall(1356, 0, 10, 768)
         self.walls.append(wall)
@@ -425,6 +426,9 @@ class Game():
         self.missions = []
         self.player1.place = self.lobby
         self.player2.place = self.lobby
+        self.crewmateWin = False
+        self.impostorWin = False
+
 
 
         self.p1Label = Label(1030, 315, "Player1 has joined", 20, self.lobby)
@@ -551,10 +555,18 @@ class Game():
     #crewmate winning screen
     def crewmate_win(self):
         print("crewmates win")
+        self.map.getMap().fill((0, 0, 1))
+        font = pygame.font.Font(None, 100)
+        win_text = font.render("Crewmates win!", 1, (0, 255, 255))
+        self.map.getMap().blit(win_text, (600, 350))
 
     #impostor winning screen
     def impostor_win(self):
         print("impostor win")
+        self.map.getMap().fill((0, 0, 1))
+        font = pygame.font.Font(None, 100)
+        win_text = font.render("Impostor wins!", 1, (255, 0, 0))
+        self.map.getMap().blit(win_text, (600, 350))
 
 
     def cheshire(self):
@@ -708,6 +720,7 @@ class Game():
 
 
 
+
     global isBlueDead
     isBlueDead = False  # Boolean to check if blue is dead
     #runs the actual game
@@ -721,6 +734,7 @@ class Game():
         running = True
         #creates the game map
         self.map = Map(self.mapwidth, self.mapheight, "Version 1.0")
+        self.map.drawMapBackground()
 
 
         #place gets accurate walls
@@ -755,7 +769,70 @@ class Game():
                 shotLoop += 1
             if shotLoop > 3:
                 shotLoop = 0
-            self.map.drawMapBackground()
+
+            #self.map.drawMapBackground()
+            # fills window with black
+            # walls holds every wall instance
+            # self.screen.fill((0, 0, 1))
+            # walls at borders of window
+            self.map.getMap().fill((0,0,1))
+            self.walls = []
+            wall = Wall(1356, 0, 10, 768)
+            self.walls.append(wall)
+            wall = Wall(0, 758, 1366, 10)
+            self.walls.append(wall)
+            wall = Wall(0, 0, 10, 768)
+            self.walls.append(wall)
+            wall = Wall(0, 0, 1366, 10)
+            self.walls.append(wall)
+            # top left room (spawn)
+            wall = Wall(0, 192, 80, 10)
+            self.walls.append(wall)
+            wall = Wall(145, 192, 80, 10)
+            self.walls.append(wall)
+            wall = Wall(225, 0, 10, 202)
+            self.walls.append(wall)
+            # top right room
+            wall = Wall(960, 160, 406, 10)
+            self.walls.append(wall)
+            wall = Wall(960, 60, 10, 110)
+            self.walls.append(wall)
+            # middle room
+            wall = Wall(350, 250, 200, 10)
+            self.walls.append(wall)
+            wall = Wall(620, 250, 390, 10)
+            self.walls.append(wall)
+            wall = Wall(350, 250, 10, 350)
+            self.walls.append(wall)
+            wall = Wall(350, 590, 590, 10)
+            self.walls.append(wall)
+            wall = Wall(1000, 250, 10, 350)
+            self.walls.append(wall)
+            # bottom right room
+            wall = Wall(1100, 590, 140, 10)
+            self.walls.append(wall)
+            wall = Wall(1310, 590, 56, 10)
+            self.walls.append(wall)
+            wall = Wall(1100, 590, 10, 178)
+            self.walls.append(wall)
+            # bottom left room
+            wall = Wall(0, 330, 120, 10)
+            self.walls.append(wall)
+            wall = Wall(110, 330, 10, 348)
+            self.walls.append(wall)
+            wall = Wall(110, 670, 700, 10)
+            self.walls.append(wall)
+            wall = Wall(800, 670, 10, 30)
+            self.walls.append(wall)
+
+            for wall in self.walls:
+                pygame.draw.rect(self.map.getMap(), ((192, 192, 192)), wall.rect)
+
+            # Voting boxes
+            pygame.draw.rect(self.map.getMap(), (50, 50, 50), [1500, 250, 140, 40])
+            pygame.draw.rect(self.map.getMap(), (50, 50, 50), [1500, 300, 140, 40])
+            pygame.draw.rect(self.map.getMap(), (50, 50, 50), [1500, 350, 140, 40])
+            pygame.draw.rect(self.map.getMap(), (50, 50, 50), [1500, 400, 140, 40])
 
 
             # Properly quit (pygame will crash without this)
@@ -1020,7 +1097,7 @@ class Game():
                 elif i == 6:
                     self.map.getMap().blit(font.render("Type your favorite beverage in", 1, (255, 255, 255)), (1380, self.mission_write_y))
                     self.mission_write_y = self.mission_write_y + 20
-                    self.map.getMap().blit(font.render("Type your favorite beverage in", 1, (255, 255, 255)),(1380, self.mission_write_y))
+                    self.map.getMap().blit(font.render("the chat", 1, (255, 255, 255)),(1380, self.mission_write_y))
                     self.current_mission_write = self.current_mission_write + 1
                     self.mission_write_y = self.mission_write_y + 40
                 elif i == 7:
@@ -1119,9 +1196,25 @@ class Game():
                 #print(p1_text)
                 #print(msg_bool)
             """
-            #just for test, comment out other prints when using this
+
+            #just for tests
+            #comment out other prints when using this
             #print(self.player1.voted)
-            pygame.display.update()
+
+            #tests for winning screens
+            """
+            if keys[pygame.K_i]:
+                self.impostor_win()
+            if keys[pygame.K_c]:
+                self.crewmate_win()
+            """
+
+            if not self.crewmateWin and not self.impostorWin:
+                pygame.display.update()
+            elif self.crewmateWin:
+                self.crewmate_win()
+            else:
+                self.impostor_win()
 
         pygame.quit()
 
