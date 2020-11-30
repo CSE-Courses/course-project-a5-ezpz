@@ -3,6 +3,9 @@ import pygame
 from client import Client
 from pygame import mixer
 import random
+import os
+
+
 
 
 TIMEOUT = 4  # number of seconds until timeout
@@ -60,14 +63,15 @@ class Map():
         self.height = h
         self.walls = []
 
+
     def getMap(self):
         return self.screen
 
     #makes window black and then draws the map walls
     def drawMapBackground(self):
         #fills window with black
-        self.screen.fill((0, 0, 1))
         #walls holds every wall instance
+        self.screen.fill((0, 0, 1))
         #walls at borders of window
         wall = Wall(1356, 0, 10, 768)
         self.walls.append(wall)
@@ -139,6 +143,7 @@ class Map():
 
 
 
+
 ########################################################################################################################################
 
 # wall class that takes coordinates, width, and height to make rectangle
@@ -150,9 +155,6 @@ class Wall(object):
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
-
-
-
 
 ########################################################################################################################################
 
@@ -420,9 +422,10 @@ class Game():
         self.alien2 = Alien(1060, 25, 40, 29, 'Images/alien.png', 'Images/gone.png')
         self.alien3 = Alien(1120, 25, 40, 29, 'Images/alien.png', 'Images/gone.png')
         self.lobby = Lobby(self.width, self.height, "Version 1.0")  # Creating Lobby class instance
-
+        self.missions = []
         self.player1.place = self.lobby
         self.player2.place = self.lobby
+
 
         self.p1Label = Label(1030, 315, "Player1 has joined", 20, self.lobby)
 
@@ -458,14 +461,16 @@ class Game():
         print("Interrupted")
     signal.signal(signal.SIGALRM, interrupted)
     """
-
+    #adds a player to the player_list
     def add_player(self, player):
         self.player_list.append(player)
 
+    #randomly assings the role of impostor to a random player
     def assign_roles(self):
         random.shuffle(self.player_list)
         self.player_list[0].role = "impostor"
 
+    #makes a player dead and checks to see if their death causes crewmates or impostor to win
     def playerDead(self, username):
         index = self.getPlayerIndex(username)
         self.player_list[index].status = "dead"
@@ -473,7 +478,7 @@ class Game():
             self.crewmate_win()
         self.checkDeathWin()
 
-
+    #resets the vote tracker
     def set_vote_tracker(self):
         if len(self.vote_tracker) == 0:
             self.vote_tracker.clear()
@@ -482,9 +487,11 @@ class Game():
         while (not (i == players)):
             self.vote_tracker.append(0)
 
+    #gets the index of a player in player_list
     def getPlayerIndex (self, username):
         return self.player_list.index(username)
 
+    #adds a players vote to the vote tracker
     def vote(self, voter):
         if (voter.voted == "skip"):
             self.vote_tracker[len(self.player_list) + 1] = self.vote_tracker[len(self.player_list) + 1] + 1
@@ -494,6 +501,7 @@ class Game():
         else:
             self.vote_tracker[self.getPlayerIndex(voter.voted)] = self.vote_tracker[self.getPlayerIndex(voter.voted)] + 1
 
+    #iterates through alive players and applies their votes
     def applyVotes(self):
         i = 0
         while (not (i == len(self.player_list))):
@@ -501,6 +509,8 @@ class Game():
                 self.vote(self.player_list[i])
             i = i + 1
 
+
+    #calculates vote results and kills a player if necessary
     def tallyVotes(self):
         tied = True
         current_champ = 0
@@ -520,6 +530,8 @@ class Game():
         if (not tied and not (current_champ == len(self.player_list))):
             self.playerDead(self.player_list[current_champ].username)
 
+
+    #checks to see if a death has caused crewmates or impostors to win
     def checkDeathWin(self, username):
         number_of_players = len(self.player_list)
         alive_crewmates = 0
@@ -531,9 +543,16 @@ class Game():
         if (alive_crewmates == 1):
             self.impostor_win()
 
+    #randomly decides the missions for the game, amount is how many tasks there will be
+    def decide_missions(self, amount):
+        self.missions = random.sample(range(1, 9), amount)
+
+
+    #crewmate winning screen
     def crewmate_win(self):
         print("crewmates win")
 
+    #impostor winning screen
     def impostor_win(self):
         print("impostor win")
 
@@ -591,7 +610,6 @@ class Game():
         msg_bool = False  # boolean for if theres a message
         p1_input = 'a'
         p1_bytes = ''
-
         while running:
             self.clock.tick(60)  # once per frame, the program will never running at more than 60 fps.self.started = True
 
@@ -698,10 +716,12 @@ class Game():
         global called
         called = 0 #only call simon says once
         simon = "Error no one left to call the shots" #player who is simon
+        self.decide_missions(4)
 
         running = True
         #creates the game map
         self.map = Map(self.mapwidth, self.mapheight, "Version 1.0")
+
 
         #place gets accurate walls
         self.player1.place = self.map
@@ -726,7 +746,7 @@ class Game():
 
         # Declaring array storing bullets
         bullets = []
-        shotLoop = 0  # bullet cool down
+        shotLoop = 0  # bullet cool down]
 
         while running:
             self.clock.tick(100)  # once per frame, the program will never running at more than 60 fps.self.started = True
@@ -735,6 +755,8 @@ class Game():
                 shotLoop += 1
             if shotLoop > 3:
                 shotLoop = 0
+            self.map.drawMapBackground()
+
 
             # Properly quit (pygame will crash without this)
             for event in pygame.event.get():
@@ -804,7 +826,7 @@ class Game():
             self.player2.rect.x, self.player2.rect.y = self.parseData(self.sendData())
 
             # Update map
-            self.map.drawMapBackground()
+
             self.player1.draw(self.map.getMap())
             self.player2.draw(self.map.getMap())
             self.enemy1.draw(self.map.getMap())
@@ -815,7 +837,7 @@ class Game():
                 bullet.draw()
 
             # ENTER LABEL PLACED IN LOBBY TO ENTER GAME#
-            pygame.init()  # initialize pygame
+              # initialize pygame
             font = pygame.font.Font(None, 30)
             enterLabel = font.render("", 1, (255, 255, 255))
             self.map.getMap().blit(enterLabel, (500, 457))
@@ -914,7 +936,7 @@ class Game():
                 mission_prompt = "Type your favorite color in the chat"
             elif (mission == 5):
                 print("mission: 5")
-                mission_prompt = "Type a meaningful number in the cha"
+                mission_prompt = "Type a meaningful number in the chat"
             elif (mission == 6):
                 print("mission: 6")
                 mission_prompt = "Type your favorite beverage in the chat"
@@ -951,7 +973,72 @@ class Game():
 
             mission_text = font.render(mission_prompt, 1, (255, 255, 255))  # player 1 text
 
-            self.lobby.getLobby().blit(mission_text, (625, 800))
+            self.map.getMap().blit(mission_text, (625, 800))
+
+            #writes Missions: above list of mission
+            missions_word = font.render("Missions:", 1, (255, 255, 255))
+            self.map.getMap().blit(missions_word, (1470, 480))
+
+            self.mission_write_y = 520 #1380 for x
+            self.current_mission_write = 0
+
+            #mission list on side of screen
+            #looks more complicated than it is. Only things that change are string and if
+            #second line needed, increment mission_write_y by 20 between lines and 40 between missions
+            #will have to adjust later when missions changed
+            for i in self.missions:
+                if i == 1:
+                    self.map.getMap().blit(font.render("Move to your colored circle", 1, (255, 255, 255)), (1380, self.mission_write_y))
+                    self.current_mission_write = self.current_mission_write + 1
+                    self.mission_write_y = self.mission_write_y + 40
+                elif i == 2:
+                    self.map.getMap().blit(font.render("Go to the bottom right corner", 1, (255, 255, 255)), (1380, self.mission_write_y))
+                    self.mission_write_y = self.mission_write_y + 20
+                    self.map.getMap().blit(font.render("of the screen", 1, (255, 255, 255)), (1380, self.mission_write_y))
+                    self.current_mission_write = self.current_mission_write + 1
+                    self.mission_write_y = self.mission_write_y + 40
+                elif i == 3:
+                    self.map.getMap().blit(font.render("Use the movement keys to do a", 1, (255, 255, 255)), (1380, self.mission_write_y))
+                    self.mission_write_y = self.mission_write_y + 20
+                    self.map.getMap().blit(font.render("dance party", 1, (255, 255, 255)),(1380, self.mission_write_y))
+
+                    self.current_mission_write = self.current_mission_write + 1
+                    self.mission_write_y = self.mission_write_y + 40
+                elif i == 4:
+                    self.map.getMap().blit(font.render("Type your favorite color in", 1, (255, 255, 255)), (1380, self.mission_write_y))
+                    self.mission_write_y = self.mission_write_y + 20
+                    self.map.getMap().blit(font.render("the chat", 1, (255, 255, 255)),(1380, self.mission_write_y))
+                    self.current_mission_write = self.current_mission_write + 1
+                    self.mission_write_y = self.mission_write_y + 40
+                elif i == 5:
+                    self.map.getMap().blit(font.render("Type a meaningful number in", 1, (255, 255, 255)), (1380, self.mission_write_y))
+                    self.mission_write_y = self.mission_write_y + 20
+                    self.map.getMap().blit(font.render("the chat", 1, (255, 255, 255)),(1380, self.mission_write_y))
+                    self.current_mission_write = self.current_mission_write + 1
+                    self.mission_write_y = self.mission_write_y + 40
+                elif i == 6:
+                    self.map.getMap().blit(font.render("Type your favorite beverage in", 1, (255, 255, 255)), (1380, self.mission_write_y))
+                    self.mission_write_y = self.mission_write_y + 20
+                    self.map.getMap().blit(font.render("Type your favorite beverage in", 1, (255, 255, 255)),(1380, self.mission_write_y))
+                    self.current_mission_write = self.current_mission_write + 1
+                    self.mission_write_y = self.mission_write_y + 40
+                elif i == 7:
+                    self.map.getMap().blit(font.render("Simon says", 1, (255, 255, 255)), (1380, self.mission_write_y))
+                    self.current_mission_write = self.current_mission_write + 1
+                    self.mission_write_y = self.mission_write_y + 40
+                elif i == 8:
+                    self.map.getMap().blit(font.render("Stand in a line", 1, (255, 255, 255)), (1380, self.mission_write_y))
+                    self.current_mission_write = self.current_mission_write + 1
+                    self.mission_write_y = self.mission_write_y + 40
+                elif i == 9:
+                    self.map.getMap().blit(font.render("Go to the left of the screen and", 1, (255, 255, 255)), (1380, self.mission_write_y))
+                    self.mission_write_y = self.mission_write_y + 20
+                    self.map.getMap().blit(font.render("race to the right of the screen", 1,(255, 255, 255)), (1380, self.mission_write_y))
+                    self.current_mission_write = self.current_mission_write + 1
+                    self.mission_write_y = self.mission_write_y + 40
+
+
+
 
             # Voting labels
             red_text = font.render("red", 1, (255, 255, 255))  # player 1 text
@@ -972,6 +1059,20 @@ class Game():
                 self.lobby.getLobby().blit(vote_text, (1530, 200))
                 number_of_players = len(self.player_list)
                 alive_players = 0
+                for event in pygame.event.get():
+                    mousecor = pygame.mouse.get_pos()
+                    mouseXcor = mousecor[0]
+                    mouseYcor = mousecor[1]
+                    if event.type == pygame.MOUSEBUTTONDOWN:
+                        if 1500 < mouseXcor < 1640 and 250 < mouseYcor < 290:
+                            self.player1.voted = "red"
+                        elif 1500 < mouseXcor < 1640 and 300 < mouseYcor < 340:
+                            self.player1.voted = "blue"
+                        elif 1500 < mouseXcor < 1640 and 350 < mouseYcor < 390:
+                            self.player1.voted = "cyan"
+                        elif 1500 < mouseXcor < 1640 and 400 < mouseYcor < 440:
+                            self.player1.voted = "orange"
+
                 i = 0
                 while (i < number_of_players):
                     if (self.player_list[i].status == "alive"):
@@ -986,6 +1087,7 @@ class Game():
                         if not isBlueDead:
                             blue_text = font.render("blue", 1, (0, 0, 255))  # player 1 text
                             self.lobby.getLobby().blit(blue_text, (1530, 310))
+
                     i = i + 1
 
             # Timer
@@ -1016,7 +1118,8 @@ class Game():
                 #print(p1_text)
                 #print(msg_bool)
             """
-
+            #just for test, comment out other prints when using this
+            #print(self.player1.voted)
             pygame.display.update()
 
         pygame.quit()
