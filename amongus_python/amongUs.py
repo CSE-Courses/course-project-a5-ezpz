@@ -72,6 +72,7 @@ class Map():
         #fills window with black
         #walls holds every wall instance
         #self.screen.fill((0, 0, 1))
+
         #walls at borders of window
         wall = Wall(1356, 0, 10, 768)
         self.walls.append(wall)
@@ -429,6 +430,7 @@ class Game():
         self.impostorWin = False
 
 
+
         self.p1Label = Label(1030, 315, "Player1 has joined", 20, self.lobby)
 
         self.player_list = []
@@ -734,6 +736,7 @@ class Game():
         self.map = Map(self.mapwidth, self.mapheight, "Version 1.0")
         self.map.drawMapBackground()
 
+
         #place gets accurate walls
         self.player1.place = self.map
         self.player2.place = self.map
@@ -766,6 +769,7 @@ class Game():
                 shotLoop += 1
             if shotLoop > 3:
                 shotLoop = 0
+
             #self.map.drawMapBackground()
             # fills window with black
             # walls holds every wall instance
@@ -829,7 +833,6 @@ class Game():
             pygame.draw.rect(self.map.getMap(), (50, 50, 50), [1500, 300, 140, 40])
             pygame.draw.rect(self.map.getMap(), (50, 50, 50), [1500, 350, 140, 40])
             pygame.draw.rect(self.map.getMap(), (50, 50, 50), [1500, 400, 140, 40])
-
 
 
             # Properly quit (pygame will crash without this)
@@ -1193,6 +1196,7 @@ class Game():
                 #print(p1_text)
                 #print(msg_bool)
             """
+
             #just for tests
             #comment out other prints when using this
             #print(self.player1.voted)
