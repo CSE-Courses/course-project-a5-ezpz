@@ -36,9 +36,9 @@ except socket.error as e:
     print("[SERVER] Server could not start")
     quit()
 
-S.listen()  # listen for connections
+S.listen(8)  # listen for connections
 
-print(f"[SERVER] Server Started with local ip {SERVER_IP}")
+#print(f"[SERVER] Server Started with local ip {SERVER_IP}")
 
 # dynamic variables
 players = {}

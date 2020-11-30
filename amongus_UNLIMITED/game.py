@@ -21,16 +21,16 @@ TIME_FONT = pygame.font.SysFont("comicsans", 30)
 SCORE_FONT = pygame.font.SysFont("comicsans", 26)
 
 COLORS = [(255,0,0), (255, 128, 0), (255,255,0), (128,255,0),(0,255,0),(0,255,128),(0,255,255),(0, 128, 255), (0,0,255), (0,0,255), (128,0,255),(255,0,255), (255,0,128),(128,128,128), (0,0,0)]
-PICTURES = ["blue.png", "red.png", "orange.png", "cyan.png"]
+PICTURES = ["Images/blue.png", "Images/red.png", "Images/orange.png", "Images/cyan.png"]
 # Dynamic Variables
 players = {}
 balls = []
 
 
-redImg = pygame.image.load('red.png')  # load red image
-cyanImg = pygame.image.load('cyan.png')  # load red image
-orangeImg = pygame.image.load('orange.png')  # load red image
-blueImg = pygame.image.load('blue.png')  # load blue image
+redImg = pygame.image.load('Images/red.png')  # load red image
+cyanImg = pygame.image.load('Images/cyan.png')  # load red image
+orangeImg = pygame.image.load('Images/orange.png')  # load red image
+blueImg = pygame.image.load('Images/blue.png')  # load blue image
 
 
 # FUNCTIONS
