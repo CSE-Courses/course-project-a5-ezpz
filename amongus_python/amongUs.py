@@ -982,6 +982,7 @@ class Game():
             self.mission_write_y = 520 #1380 for x
             self.current_mission_write = 0
 
+
             #mission list on side of screen
             #looks more complicated than it is. Only things that change are string and if
             #second line needed, increment mission_write_y by 20 between lines and 40 between missions
