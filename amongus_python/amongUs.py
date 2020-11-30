@@ -5,9 +5,6 @@ from pygame import mixer
 import random
 import os
 
-
-
-
 TIMEOUT = 4  # number of seconds until timeout
 clock = pygame.time.Clock()
 
@@ -48,9 +45,13 @@ class Lobby():
         #self.screen.blit(self.button, self.button.get_rect())
 
     def drawLobbyBackground2(self):
-        # Place background image for lobby
-        self.bg_img = pygame.image.load('Images/starz.png').convert()
+        self.bg_img = pygame.image.load('Images/serverEntry.png')
         self.screen.blit(self.bg_img, self.bg_img.get_rect())
+
+    def drawPlayerInputLobby(self):
+        self.bg_img = pygame.image.load('Images/homeScreen.png').convert_alpha()
+        self.screen.blit(self.bg_img, self.bg_img.get_rect())
+        # self.screen.fill((0,0,0))
 
 ########################################################################################################################################
 
@@ -402,10 +403,10 @@ class Game():
     started = False
 
     # Take in name and use as global variable
-    global playername
-    playername = input("Player1 name:")
-    global playername2
-    playername2 = input("Player2 name:")
+    #global playername
+    #playername = input("Player1 name:")
+    #global playername2
+    #playername2 = input("Player2 name:")
 
 
     def __init__(self, w, h, mapw, maph):
@@ -428,10 +429,6 @@ class Game():
         self.player2.place = self.lobby
         self.crewmateWin = False
         self.impostorWin = False
-
-
-
-        self.p1Label = Label(1030, 315, "Player1 has joined", 20, self.lobby)
 
         self.player_list = []
         self.vote_tracker = []
@@ -568,17 +565,67 @@ class Game():
         win_text = font.render("Impostor wins!", 1, (255, 0, 0))
         self.map.getMap().blit(win_text, (600, 350))
 
+########################################################
+    # Take in name and use as global variable
+    global playername
+    playername = ''
+    global playername2
+    playername2 = ''
 
-    def cheshire(self):
+    def playerInput(self):
+        global playername
+        global playername2
+        pygame.init()
+        base_font = pygame.font.Font(None, 32)
+
+        input_rect1 = pygame.Rect(500, 200, 140, 32)
+        active1 = False
+        input_rect2 = pygame.Rect(500, 250, 140, 32)
+        active2 = False
+
+        color_active = (0, 255, 0)
+        color_passive = (255, 255, 255)
+        color1 = color_passive
+        color2 = color_passive
         running = True
         while running:
+            pygame.init()
             self.clock.tick(60)  # once per frame, the program will never running at more than 60 fps.self.started = True
             # Properly quit (pygame will crash without this)
             for event in pygame.event.get():
                 # If closed out, quit program
                 if event.type == pygame.QUIT:
+                    pygame.quit()
                     running = False
+                    sys.exit()
+
+                # Check if mouse is clicked into rectangles to take in input
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    # Check if mouse is clicked into 1ST rectangle to take in input for player 1
+                    if input_rect1.collidepoint(event.pos):
+                        active1 = True
+                    else:
+                        active1 = False
+                    # Check if mouse is clicked into 2ND rectangle to take in input for player 2
+                    if input_rect2.collidepoint(event.pos):
+                        active2 = True
+                    else:
+                        active2 = False
+
+                # Check if any keys are pressed
                 if event.type == pygame.KEYDOWN:
+                    # If 1ST rectangle is clicked on and green/active then take in user input from keyboard
+                    if active1 == True:
+                        if event.key == pygame.K_BACKSPACE:
+                            playername = playername[0:-1]
+                        else:
+                            playername += event.unicode
+                    # If 2ND rectangle is clicked on and green/active then take in user input from keyboard
+                    if active2 == True:
+                        if event.key == pygame.K_BACKSPACE:
+                            playername2 = playername2[0:-1]
+                        else:
+                            playername2 += event.unicode
 
                     # If key pressed is ESC key, quit program
                     if event.key == pygame.K_ESCAPE:
@@ -588,32 +635,96 @@ class Game():
                         self.started = True
                         running = False
 
-            # making character move
-            keys = pygame.key.get_pressed()
-            if keys[pygame.K_UP]:
-                Game.run(self)
+            # Draw lobby
+            self.lobby.drawPlayerInputLobby()
+            # Title for game
+            font = pygame.font.Font(None, 50)
+            title = font.render("ENTER PLAYER INFO", 1, (255, 255, 255))
+            self.lobby.getLobby().blit(title, (600, 50))
+            # Label to enter the lobby
+            enterLabel = font.render("Press the Enter key to continue", 1, (255, 255, 255))
+            self.lobby.getLobby().blit(enterLabel, (400, 500))
+            # Player labels
+            font = pygame.font.Font(None, 50)
+            player1 = font.render("PLAYER 1 NAME: ", 1, (255, 255, 255))
+            self.lobby.getLobby().blit(player1, (200, 200))
+            player2 = font.render("PLAYER 2 NAME: ", 1, (255, 255, 255))
+            self.lobby.getLobby().blit(player2, (200, 250))
 
-            #Update Lobby
-            pygame.init()  # initialize pygame, needed to create fonts, etc.
-            self.lobby.drawLobbyBackground2()
-            # ENTER LABEL PLACED IN LOBBY TO ENTER GAME#
-            font = pygame.font.Font(None, 30)
-            enterLabel2 = font.render("Among Us 9.0", 1, (255, 255, 255))
-            enterLabel = font.render("Press the Up key to connect to server: cheshire.", 1, (255, 255, 255))
-            self.lobby.getLobby().blit(enterLabel, (400, 300))
-            self.lobby.getLobby().blit(enterLabel2, (400, 50))
+            #######################################Adding user input#################################
+            # Depending on if rectangle is active or not change color of input rectangle
+            if active1:
+                color1 = color_active
+            else:
+                color1 = color_passive
 
+            if active2:
+                color2 = color_active
+            else:
+                color2 = color_passive
+
+            # Draw input rectangle 1
+            pygame.draw.rect(self.lobby.getLobby(), color1, input_rect1, 2)
+            text_surface = base_font.render(playername, True, (255, 255, 255))
+            self.lobby.getLobby().blit(text_surface, (input_rect1.x + 5, input_rect1.y + 5))  # Blit text into rect
+            input_rect1.w = max(100, text_surface.get_width() + 10)
+
+            # Draw input rectangle 2
+            pygame.draw.rect(self.lobby.getLobby(), color2, input_rect2, 2)
+            text_surface2 = base_font.render(playername2, True, (255, 255, 255))
+            self.lobby.getLobby().blit(text_surface2, (input_rect2.x + 5, input_rect2.y + 5))  # Blit text into rect
+            input_rect2.w = max(100, text_surface2.get_width() + 10)
+            ###################################################################################
             pygame.display.update()
 
         if not self.started:
             pygame.quit()
         else:
-            Game.run(self)
+            Game.cheshire(self)
 
+###############################
+
+    def cheshire(self):
+        running = True
+        while running:
+            # self.clock.tick(60)  # once per frame, the program will never running at more than 60 fps.self.started = True
+            # Properly quit (pygame will crash without this)
+            for event in pygame.event.get():
+                # If closed out, quit program
+                if event.type == pygame.QUIT:
+                    running = False
+                    pygame.quit()
+                    sys.exit()
+                if event.type == pygame.KEYDOWN:
+
+                    # If key pressed is ESC key, quit program
+                    if event.key == pygame.K_ESCAPE:
+                        running = False
+
+            # making character move
+            keys = pygame.key.get_pressed()
+            if keys[pygame.K_UP]:
+                Game.run(self)
+
+            # Update Lobby
+            pygame.init()  # initialize pygame, needed to create fonts, etc.
+            self.lobby.drawLobbyBackground2()
+            # ENTER LABEL PLACED IN LOBBY TO ENTER GAME#
+            font = pygame.font.Font(None, 50)
+            enterLabel2 = font.render("Among Us 9.0", 1, (255, 255, 255))
+            self.lobby.getLobby().blit(enterLabel2, (600, 50))
+            enterLabel = font.render("Press the Up key to connect to server: cheshire.", 1, (255, 255, 255))
+            self.lobby.getLobby().blit(enterLabel, (400, 600))
+
+            pygame.display.update()
+
+###################################
 
 
     def run(self):
         global playername
+        global playername2
+
         running = True
         self.add_player(self.player1)
         self.add_player(self.player2)
@@ -622,6 +733,7 @@ class Game():
         msg_bool = False  # boolean for if theres a message
         p1_input = 'a'
         p1_bytes = ''
+
         while running:
             self.clock.tick(60)  # once per frame, the program will never running at more than 60 fps.self.started = True
 
@@ -654,9 +766,6 @@ class Game():
             if keys[pygame.K_DOWN]:
                 if self.player1.rect.y <= self.height - self.player1.rate:
                     self.player1.move(3)
-            #if keys[pygame.K_1]:
-             #   playername = "Dylan"
-
             """     
             if keys[pygame.K_0]:
                 p1_input = input("enter an input :")
@@ -677,9 +786,13 @@ class Game():
 
             # Displaying last player joined
             font = pygame.font.Font(None, 20)
-            text = font.render(playername + " is playing as CYAN", 1, (255, 255, 255))  # player 1 text
+            if playername == '':
+                playername = 'Nobody'
+            if playername2 == '':
+                playername2 = 'Nobody'
+            text = font.render(playername + " is currently playing as CYAN", 1, (255, 255, 255))  # player 1 text
             self.lobby.getLobby().blit(text, (15, 600))
-            text = font.render(playername2 + " is playing as ORANGE", 1, (255, 255, 255))  # player 2 text
+            text = font.render(playername2 + " is currently playing as ORANGE", 1, (255, 255, 255))  # player 2 text
             self.lobby.getLobby().blit(text, (15, 625))
 
 
@@ -717,8 +830,7 @@ class Game():
 
 
 
-
-
+###################################
 
 
     global isBlueDead
@@ -903,7 +1015,6 @@ class Game():
             self.player2.rect.x, self.player2.rect.y = self.parseData(self.sendData())
 
             # Update map
-
             self.player1.draw(self.map.getMap())
             self.player2.draw(self.map.getMap())
             self.enemy1.draw(self.map.getMap())
