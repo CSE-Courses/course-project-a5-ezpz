@@ -402,12 +402,6 @@ class Game():
     #started will be true if enter is pressed to start the game
     started = False
 
-    # Take in name and use as global variable
-    #global playername
-    #playername = input("Player1 name:")
-    #global playername2
-    #playername2 = input("Player2 name:")
-
 
     def __init__(self, w, h, mapw, maph):
         self.width = w
@@ -564,6 +558,10 @@ class Game():
         font = pygame.font.Font(None, 100)
         win_text = font.render("Impostor wins!", 1, (255, 0, 0))
         self.map.getMap().blit(win_text, (600, 350))
+
+
+
+
 
 ########################################################
     # Take in name and use as global variable
@@ -731,7 +729,7 @@ class Game():
         # self.add_player(self.enemy1)
         self.assign_roles()
         msg_bool = False  # boolean for if theres a message
-        p1_input = 'a'
+        p1_input = 'type here...'
         p1_bytes = ''
 
         while running:
@@ -841,7 +839,7 @@ class Game():
         global called
         called = 0 #only call simon says once
         simon = "Error no one left to call the shots" #player who is simon
-        self.decide_missions(4)
+        #self.decide_missions(4)
 
         running = True
         #creates the game map
@@ -863,7 +861,7 @@ class Game():
 
         msg_bool = False  # boolean for if theres a message
         self.assign_roles()
-        p1_input = 'a'
+        p1_input = 'type here...'
         p1_bytes = ''
         start_ticks = pygame.time.get_ticks()  # start timer
         max_time = 30 # set max time
@@ -987,11 +985,6 @@ class Game():
 
             # making character move
             keys = pygame.key.get_pressed()
-            if keys[pygame.K_SPACE] and shotLoop == 0: #allow user to shoot projectile if bullet cooldown is met
-                if len(bullets) < 5:
-                    bullets.append(projectile(self.player1.rect.x, self.player1.rect.y, 6, (255,0,0), 1, self.lobby.getLobby()))
-                shotLoop = 1
-
             if keys[pygame.K_RIGHT]:
                 if self.player1.rect.x <= self.width - self.player1.rate:
                     self.player1.move(0)
@@ -1004,13 +997,7 @@ class Game():
             if keys[pygame.K_DOWN]:
                 if self.player1.rect.y <= self.height - self.player1.rate:
                     self.player1.move(3)
-            """     
-            if keys[pygame.K_0]:
-                p1_input = input("enter an input :")
-                # p1_text = font.render("player 1: " + p1_input, 1, (255, 255, 255)) # player 1 text
-                msg_bool = True
-                print(msg_bool)
-            """
+
             # Send Network data
             self.player2.rect.x, self.player2.rect.y = self.parseData(self.sendData())
 
@@ -1059,11 +1046,6 @@ class Game():
 
 
 ###########################################   CREWMATE TASKS ################################################################
-            self.boulder.draw(self.map.getMap())
-            self.jewel.draw(self.map.getMap())
-            self.alien.draw(self.map.getMap())
-            self.alien2.draw(self.map.getMap())
-            self.alien3.draw(self.map.getMap())
 
             ############CODE FOR JEWEL MISSION######################
             # ADDING COLLISON DETECTION w/ player1
@@ -1092,44 +1074,73 @@ class Game():
                 if self.player2.hitbox[1] < self.boulder.hitbox[1] + self.boulder.hitbox[3] and self.player2.hitbox[1] + self.player2.hitbox[3] > self.boulder.hitbox[1]:
                     if self.player2.hitbox[0] + self.player2.hitbox[2] > self.boulder.hitbox[0] and self.player2.hitbox[0] < self.boulder.hitbox[0] + self.boulder.hitbox[2]:
                         self.player2.move(2)
-            # Destroy boulder obstacle
-            if keys[pygame.K_x]:
-                self.boulder.current_image = self.boulder.images[1]
             ###########################################################
 
+            # Full List of missions on side of screen
+            missions_word = font.render("Missions:", 1, (255, 255, 255))
+            self.map.getMap().blit(missions_word, (1470, 480))
+            self.mission_write_y = 520  # 1380 for x
 
+            self.map.getMap().blit(font.render("Exterminate all aliens on board", 1, (255, 255, 255)), (1380, self.mission_write_y))
+            self.mission_write_y = self.mission_write_y + 40
+            self.map.getMap().blit(font.render("Acquire Jewel", 1, (255, 255, 255)), (1380, self.mission_write_y))
+            self.mission_write_y = self.mission_write_y + 40
+            self.map.getMap().blit(font.render("Destroy Obstacle Covering Front Entrance of Main Room", 1, (255, 255, 255)),(1380, self.mission_write_y))
+            self.mission_write_y = self.mission_write_y + 40
+            self.map.getMap().blit(font.render("Simon says", 1, (255, 255, 255)), (1380, self.mission_write_y))
+            self.mission_write_y = self.mission_write_y + 40
+            self.map.getMap().blit(font.render("Move to your colored circle", 1, (255, 255, 255)), (1380, self.mission_write_y))
+            ############################################
 
-            # signal.alarm(0) # Disable alarm after success
             # Code for Displaying the mission prompts
+            global mission
             mission = 1
+            global mission_prompt
             mision_prompt = 'mission: '
             mission_text = ''
             random_num = 1  # for simon says assignment
-            if (mission == 1):
-                #print("mission: 1")
-                mission_prompt = "Move to your colored circle"
-                pygame.draw.circle(self.lobby.getLobby(), (255, 0, 0), (700, 300), 25)  # Red circle
-                pygame.draw.circle(self.lobby.getLobby(), (0, 0, 255), (700, 400), 25)  # Blue circle
-                pygame.draw.circle(self.lobby.getLobby(), (255, 140, 0), (800, 300), 25)  # Orange circle
-                pygame.draw.circle(self.lobby.getLobby(), (0, 255, 255), (800, 400), 25)  # cyan circle
 
-            elif (mission == 2):
+            if (mission == 1):
+                # print("mission: 1")
+                mission_prompt = "Exterminate all aliens on board"
+                self.alien.draw(self.map.getMap())
+                self.alien2.draw(self.map.getMap())
+                self.alien3.draw(self.map.getMap())
+                # Use space action key to shoot bullets and destroy aliens
+                if keys[
+                    pygame.K_SPACE] and shotLoop == 0 and mission == 1:  # allow user to shoot projectile if bullet cooldown is met
+                    if len(bullets) < 5:
+                        bullets.append(projectile(self.player1.rect.x, self.player1.rect.y, 6, (255, 0, 0), 1,
+                                                  self.map.getMap()))
+                    shotLoop = 1
+                # Increment mission to move onto to next mission
+                if self.alien3.current_image == self.alien3.images[1]:
+                    self.map.getMap().blit(font.render("Exterminate all aliens on board", 1, (0, 255, 0)),
+                                           (1380, 520))
+                    mission += 1
+
+            if (mission == 2):
                 print("mission: 2")
-                mission_prompt = "Go to the bottom right corner of the screen"
-            elif (mission == 3):
+                mission_prompt = "Acquire Jewel"
+                self.jewel.draw(self.map.getMap())
+                if self.jewel.current_image == self.jewel.images[1]:
+                    self.map.getMap().blit(font.render("Acquire Jewel", 1, (0, 255, 0)), (1380, 560))
+                    mission += 1
+
+            if (mission == 3):
                 print("mission: 3")
-                mission_prompt = "Use the movement keys to do a dance party"
-            elif (mission == 4):
+                mission_prompt = "Destroy Obstacle Covering Front Entrance of Main Room"
+                self.boulder.draw(self.map.getMap())
+                # Destroy boulder obstacle
+                if keys[pygame.K_x]:
+                    self.boulder.current_image = self.boulder.images[1]
+                # Increment mission to move onto to next mission
+                if self.boulder.current_image == self.boulder.images[1]:
+                    self.map.getMap().blit(font.render("Destroy Obstacle Covering Front Entrance of Main Room", 1, (0, 255, 0)), (1380, 600))
+                    mission += 1
+
+            if (mission == 4):
                 print("mission: 4")
-                mission_prompt = "Type your favorite color in the chat"
-            elif (mission == 5):
-                print("mission: 5")
-                mission_prompt = "Type a meaningful number in the chat"
-            elif (mission == 6):
-                print("mission: 6")
-                mission_prompt = "Type your favorite beverage in the chat"
-            elif (mission == 7):
-                print("mission: 7")
                 print("called = " + str(called))
                 if called == 0:
                     random_num = random.randint(1, 2)
@@ -1152,25 +1163,50 @@ class Game():
 
                 mission_prompt = "Simon says, Type commands in chat, others follow when simon says; " + simon
                 called = 1
-            elif (mission == 8):
+                if p1_input != "type here...":
+                    self.map.getMap().blit(font.render("Simon says", 1, (0, 255, 0)), (1380, 640))
+                    mission += 1
+
+
+
+            if (mission == 5):
+                print("mission: 5")
+                mission_prompt = "Move to your colored circle"
+                pygame.draw.circle(self.lobby.getLobby(), (255, 0, 0), (700, 300), 25)  # Red circle
+                pygame.draw.circle(self.lobby.getLobby(), (0, 0, 255), (700, 400), 25)  # Blue circle
+                pygame.draw.circle(self.lobby.getLobby(), (255, 140, 0), (800, 300), 25)  # Orange circle
+                pygame.draw.circle(self.lobby.getLobby(), (0, 255, 255), (800, 400), 25)  # cyan circle
+
+                if self.player1.rect.x > 790 and self.player1.rect.x < 810:
+                    if self.player1.rect.y > 390 and self.player1.rect.y < 410:
+                        self.map.getMap().blit(font.render("Move to your colored circle", 1, (0, 255, 0)), (1380, 680))
+                        mission += 1
+
+            if (mission == 6):
+                print("mission: 6")
+                mission_prompt = "Type your favorite beverage in the chat"
+            if (mission == 7):
+                print("mission: 7")
+
+            if (mission == 8):
                 print("mission: 8")
                 mission_prompt = "Stand in a line"
-            else:
+            if (mission == 9):
                 print("mission: 9")
                 mission_prompt = "Go to the left of the screen and race to the right of the screen"
 
             mission_text = font.render(mission_prompt, 1, (255, 255, 255))  # player 1 text
-
             self.map.getMap().blit(mission_text, (625, 800))
 
+
+            """
             #writes Missions: above list of mission
             missions_word = font.render("Missions:", 1, (255, 255, 255))
-            self.map.getMap().blit(missions_word, (1470, 480))
-
+            self.map.getMap().blit(missions_word, (1470, 480))            
+            
             self.mission_write_y = 520 #1380 for x
             self.current_mission_write = 0
-
-
+            
             #mission list on side of screen
             #looks more complicated than it is. Only things that change are string and if
             #second line needed, increment mission_write_y by 20 between lines and 40 between missions
@@ -1225,7 +1261,7 @@ class Game():
                     self.map.getMap().blit(font.render("race to the right of the screen", 1,(255, 255, 255)), (1380, self.mission_write_y))
                     self.current_mission_write = self.current_mission_write + 1
                     self.mission_write_y = self.mission_write_y + 40
-
+            """
 
 
 
