@@ -1076,127 +1076,126 @@ class Game():
                         self.player2.move(2)
             ###########################################################
 
-            # Full List of missions on side of screen
-            missions_word = font.render("Missions:", 1, (255, 255, 255))
-            self.map.getMap().blit(missions_word, (1470, 480))
-            self.mission_write_y = 520  # 1380 for x
+            if self.player1.role == "crewmate":
+                # Full List of missions on side of screen
+                missions_word = font.render("Missions:", 1, (255, 255, 255))
+                self.map.getMap().blit(missions_word, (1470, 480))
+                self.mission_write_y = 520  # 1380 for x
 
-            self.map.getMap().blit(font.render("Exterminate all aliens on board", 1, (255, 255, 255)), (1380, self.mission_write_y))
-            self.mission_write_y = self.mission_write_y + 40
-            self.map.getMap().blit(font.render("Acquire Jewel", 1, (255, 255, 255)), (1380, self.mission_write_y))
-            self.mission_write_y = self.mission_write_y + 40
-            self.map.getMap().blit(font.render("Destroy Obstacle Covering Front Entrance of Main Room", 1, (255, 255, 255)),(1380, self.mission_write_y))
-            self.mission_write_y = self.mission_write_y + 40
-            self.map.getMap().blit(font.render("Simon says", 1, (255, 255, 255)), (1380, self.mission_write_y))
-            self.mission_write_y = self.mission_write_y + 40
-            self.map.getMap().blit(font.render("Move to your colored circle", 1, (255, 255, 255)), (1380, self.mission_write_y))
-            ############################################
+                self.map.getMap().blit(font.render("Exterminate all aliens on board", 1, (255, 255, 255)), (1380, self.mission_write_y))
+                self.mission_write_y = self.mission_write_y + 40
+                self.map.getMap().blit(font.render("Acquire Jewel", 1, (255, 255, 255)), (1380, self.mission_write_y))
+                self.mission_write_y = self.mission_write_y + 40
+                self.map.getMap().blit(font.render("Destroy Obstacle Covering Front Entrance of Main Room", 1, (255, 255, 255)),(1380, self.mission_write_y))
+                self.mission_write_y = self.mission_write_y + 40
+                self.map.getMap().blit(font.render("Simon says", 1, (255, 255, 255)), (1380, self.mission_write_y))
+                self.mission_write_y = self.mission_write_y + 40
+                self.map.getMap().blit(font.render("Move to your colored circle", 1, (255, 255, 255)), (1380, self.mission_write_y))
+                ############################################
 
-            # Code for Displaying the mission prompts
-            global mission
-            mission = 1
-            global mission_prompt
-            mision_prompt = 'mission: '
-            mission_text = ''
-            random_num = 1  # for simon says assignment
-
-            if (mission == 1):
-                # print("mission: 1")
-                mission_prompt = "Exterminate all aliens on board"
-                self.alien.draw(self.map.getMap())
-                self.alien2.draw(self.map.getMap())
-                self.alien3.draw(self.map.getMap())
-                # Use space action key to shoot bullets and destroy aliens
-                if keys[
-                    pygame.K_SPACE] and shotLoop == 0 and mission == 1:  # allow user to shoot projectile if bullet cooldown is met
-                    if len(bullets) < 5:
-                        bullets.append(projectile(self.player1.rect.x, self.player1.rect.y, 6, (255, 0, 0), 1,
-                                                  self.map.getMap()))
-                    shotLoop = 1
-                # Increment mission to move onto to next mission
-                if self.alien3.current_image == self.alien3.images[1]:
-                    self.map.getMap().blit(font.render("Exterminate all aliens on board", 1, (0, 255, 0)),
-                                           (1380, 520))
-                    mission += 1
-
-            if (mission == 2):
-                print("mission: 2")
-                mission_prompt = "Acquire Jewel"
-                self.jewel.draw(self.map.getMap())
-                if self.jewel.current_image == self.jewel.images[1]:
-                    self.map.getMap().blit(font.render("Acquire Jewel", 1, (0, 255, 0)), (1380, 560))
-                    mission += 1
-
-            if (mission == 3):
-                print("mission: 3")
-                mission_prompt = "Destroy Obstacle Covering Front Entrance of Main Room"
-                self.boulder.draw(self.map.getMap())
-                # Destroy boulder obstacle
-                if keys[pygame.K_x]:
-                    self.boulder.current_image = self.boulder.images[1]
-                # Increment mission to move onto to next mission
-                if self.boulder.current_image == self.boulder.images[1]:
-                    self.map.getMap().blit(font.render("Destroy Obstacle Covering Front Entrance of Main Room", 1, (0, 255, 0)), (1380, 600))
-                    mission += 1
-
-            if (mission == 4):
-                print("mission: 4")
-                print("called = " + str(called))
-                if called == 0:
-                    random_num = random.randint(1, 2)
-                    print(random_num)
-                    number_of_players = len(self.player_list)
-                    alive_players = 0
-                    i = 0
-                    while (i < number_of_players):
-                        if (self.player_list[i].status == "alive"):
-                            alive_players = alive_players + 1
-                            print(self.player_list[i].color)
-                            if (self.player_list[i].color == "Images/cyan.png" and random_num == 1):
-                                simon = "Cyan is the simon"
-                                break
-                            elif (self.player_list[i].color == "Images/orange.png" and random_num == 2):
-                                simon = "Orange is the simon"
-                                break
-
-                        i = i + 1
-
-                mission_prompt = "Simon says, Type commands in chat, others follow when simon says; " + simon
-                called = 1
-                if p1_input != "type here...":
-                    self.map.getMap().blit(font.render("Simon says", 1, (0, 255, 0)), (1380, 640))
-                    mission += 1
-
-
-
-            if (mission == 5):
-                print("mission: 5")
-                mission_prompt = "Move to your colored circle"
-                pygame.draw.circle(self.lobby.getLobby(), (255, 0, 0), (700, 300), 25)  # Red circle
-                pygame.draw.circle(self.lobby.getLobby(), (0, 0, 255), (700, 400), 25)  # Blue circle
-                pygame.draw.circle(self.lobby.getLobby(), (255, 140, 0), (800, 300), 25)  # Orange circle
-                pygame.draw.circle(self.lobby.getLobby(), (0, 255, 255), (800, 400), 25)  # cyan circle
-
-                if self.player1.rect.x > 790 and self.player1.rect.x < 810:
-                    if self.player1.rect.y > 390 and self.player1.rect.y < 410:
-                        self.map.getMap().blit(font.render("Move to your colored circle", 1, (0, 255, 0)), (1380, 680))
+                # Code for Displaying the mission prompts
+                global mission
+                mission = 1
+                global mission_prompt
+                mision_prompt = 'mission: '
+                mission_text = ''
+                random_num = 1  # for simon says assignment
+                if (mission == 1):
+                    # print("mission: 1")
+                    mission_prompt = "Exterminate all aliens on board"
+                    self.alien.draw(self.map.getMap())
+                    self.alien2.draw(self.map.getMap())
+                    self.alien3.draw(self.map.getMap())
+                    # Use space action key to shoot bullets and destroy aliens
+                    if keys[
+                        pygame.K_SPACE] and shotLoop == 0 and mission == 1:  # allow user to shoot projectile if bullet cooldown is met
+                        if len(bullets) < 5:
+                            bullets.append(projectile(self.player1.rect.x, self.player1.rect.y, 6, (255, 0, 0), 1,
+                                                      self.map.getMap()))
+                        shotLoop = 1
+                    # Increment mission to move onto to next mission
+                    if self.alien3.current_image == self.alien3.images[1]:
+                        self.map.getMap().blit(font.render("Exterminate all aliens on board", 1, (0, 255, 0)),
+                                               (1380, 520))
                         mission += 1
 
-            if (mission == 6):
-                print("mission: 6")
-                mission_prompt = "Type your favorite beverage in the chat"
-            if (mission == 7):
-                print("mission: 7")
+                if (mission == 2):
+                    print("mission: 2")
+                    mission_prompt = "Acquire Jewel"
+                    self.jewel.draw(self.map.getMap())
+                    if self.jewel.current_image == self.jewel.images[1]:
+                        self.map.getMap().blit(font.render("Acquire Jewel", 1, (0, 255, 0)), (1380, 560))
+                        mission += 1
 
-            if (mission == 8):
-                print("mission: 8")
-                mission_prompt = "Stand in a line"
-            if (mission == 9):
-                print("mission: 9")
-                mission_prompt = "Go to the left of the screen and race to the right of the screen"
+                if (mission == 3):
+                    print("mission: 3")
+                    mission_prompt = "Destroy Obstacle Covering Front Entrance of Main Room"
+                    self.boulder.draw(self.map.getMap())
+                    # Destroy boulder obstacle
+                    if keys[pygame.K_x]:
+                        self.boulder.current_image = self.boulder.images[1]
+                    # Increment mission to move onto to next mission
+                    if self.boulder.current_image == self.boulder.images[1]:
+                        self.map.getMap().blit(font.render("Destroy Obstacle Covering Front Entrance of Main Room", 1, (0, 255, 0)), (1380, 600))
+                        mission += 1
 
-            mission_text = font.render(mission_prompt, 1, (255, 255, 255))  # player 1 text
-            self.map.getMap().blit(mission_text, (625, 800))
+                if (mission == 4):
+                    print("mission: 4")
+                    print("called = " + str(called))
+                    if called == 0:
+                        random_num = random.randint(1, 2)
+                        print(random_num)
+                        number_of_players = len(self.player_list)
+                        alive_players = 0
+                        i = 0
+                        while (i < number_of_players):
+                            if (self.player_list[i].status == "alive"):
+                                alive_players = alive_players + 1
+                                print(self.player_list[i].color)
+                                if (self.player_list[i].color == "Images/cyan.png" and random_num == 1):
+                                    simon = "Cyan is the simon"
+                                    break
+                                elif (self.player_list[i].color == "Images/orange.png" and random_num == 2):
+                                    simon = "Orange is the simon"
+                                    break
+
+                            i = i + 1
+
+                    mission_prompt = "Simon says, Type commands in chat, others follow when simon says; " + simon
+                    called = 1
+                    if p1_input != "type here...":
+                        self.map.getMap().blit(font.render("Simon says", 1, (0, 255, 0 )), (1380, 640))
+                        mission += 1
+
+
+                if (mission == 5):
+                    print("mission: 5")
+                    mission_prompt = "Move to your colored circle"
+                    pygame.draw.circle(self.lobby.getLobby(), (255, 0, 0), (700, 300), 25)  # Red circle
+                    pygame.draw.circle(self.lobby.getLobby(), (0, 0, 255), (700, 400), 25)  # Blue circle
+                    pygame.draw.circle(self.lobby.getLobby(), (255, 140, 0), (800, 300), 25)  # Orange circle
+                    pygame.draw.circle(self.lobby.getLobby(), (0, 255, 255), (800, 400), 25)  # cyan circle
+
+                    if self.player1.rect.x > 790 and self.player1.rect.x < 810:
+                        if self.player1.rect.y > 390 and self.player1.rect.y < 410:
+                            self.map.getMap().blit(font.render("Move to your colored circle", 1, (0, 255, 0)), (1380, 680))
+                            mission += 1
+
+                if (mission == 6):
+                    print("mission: 6")
+                    mission_prompt = "Type your favorite beverage in the chat"
+                if (mission == 7):
+                    print("mission: 7")
+
+                if (mission == 8):
+                    print("mission: 8")
+                    mission_prompt = "Stand in a line"
+                if (mission == 9):
+                    print("mission: 9")
+                    mission_prompt = "Go to the left of the screen and race to the right of the screen"
+
+                mission_text = font.render(mission_prompt, 1, (255, 255, 255))  # player 1 text
+                self.map.getMap().blit(mission_text, (625, 800))
 
 
             """
