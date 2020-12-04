@@ -863,9 +863,14 @@ class Game():
         self.assign_roles()
         p1_input = 'type here...'
         p1_bytes = ''
+
+        startKILL = pygame.time.get_ticks()  # start killing timer
+        maxKILL = 30  # set overall kill interval time
+
         start_ticks = pygame.time.get_ticks()  # start timer
         max_time = 30 # set max time
         vote = 2
+
         labelx = 80
 
         # Declaring array storing bullets
@@ -1022,17 +1027,6 @@ class Game():
             labelx = labelx - 1
 
 
-            # KILLING CHARACTERS#
-            # press 2 on keyboard to transform player2 to dead image
-            if keys[pygame.K_2]:
-                self.player2.current_image = self.player2.images[1]
-            # press 3 on keyboard to transform 3rd player aka enemy1 to dead image
-            if keys[pygame.K_3]:
-                self.enemy1.current_image = self.enemy1.images[1]
-                #pygame.display.flip()
-                isBlueDead = True # set boolean to true
-            #print("Is blue dead")
-            #print(isBlueDead)
 
             # CHAT BOX SHIT#
             # signal.alarm(TIMEOUT)
@@ -1195,7 +1189,36 @@ class Game():
                     mission_prompt = "Go to the left of the screen and race to the right of the screen"
 
                 mission_text = font.render(mission_prompt, 1, (255, 255, 255))  # player 1 text
-                self.map.getMap().blit(mission_text, (625, 800))
+                self.map.getMap().blit(mission_text, (625, 790))
+
+
+            #Kill cooldown
+            if self.player1.role != "crewmate":
+                secs = (pygame.time.get_ticks() - startKILL) / 1000  # calculate how many seconds
+                dif = int(maxKILL - secs)
+                if (dif < 0):
+                    maxKILL += 30
+                if (dif > 15 and dif < 31):
+                    time = "ALLOWED TO KILL!"
+                    timer_txt = font.render(time, 1, (0, 255, 0))  # player 1 text
+                    self.map.getMap().blit(timer_txt, (625, 790))
+                    # KILLING CHARACTERS#
+                    # USE 2 KEY TO KILL PLAYER 2
+                    if keys[pygame.K_2]:
+                        if self.player1.rect.x - self.player2.rect.x > -5 and self.player1.rect.x - self.player2.rect.x < 5:
+                            self.player2.current_image = self.player2.images[1]
+                    # USE 3 KEY TO KILL BLUE BOT
+                    if keys[pygame.K_3]:
+                        if self.player1.rect.x - self.enemy1.x > -5 and self.player1.rect.x - self.enemy1.x < 5:
+                            self.enemy1.current_image = self.enemy1.images[1]
+                            # pygame.display.flip()
+                            isBlueDead = True  # set boolean to true
+
+                if (dif > -1 and dif < 16):
+                    time = "Kill Cooldown: " + str(dif)
+                    timer_txt = font.render(time, 1, (255, 0, 0))  # player 1 text
+                    self.map.getMap().blit(timer_txt, (625, 790))
+
 
 
             """
@@ -1316,7 +1339,6 @@ class Game():
 
             # Timer
             seconds = (pygame.time.get_ticks() - start_ticks) / 1000  # calculate how many seconds
-
             # print(seconds) #print how many seconds
             #print(int(max_time - seconds))  # debug
             diff = int(max_time - seconds)
