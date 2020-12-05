@@ -46,6 +46,7 @@ balls = []
 connections = 0
 _id = 0
 colors = [(255,0,0), (255, 128, 0), (255,255,0), (128,255,0),(0,255,0),(0,255,128),(0,255,255),(0, 128, 255), (0,0,255), (0,0,255), (128,0,255),(255,0,255), (255,0,128),(128,128,128), (0,0,0)]
+pids = [0, 1, 2, 3, 4, 5, 6, 7]
 start = False
 stat_time = 0
 game_time = "Starting Soon"
@@ -100,8 +101,9 @@ def threaded_client(conn, _id):
 
 	# Setup properties for each new player
 	color = colors[current_id]
+	pid = pids[current_id]
 	x, y = get_start_location(players)
-	players[current_id] = {"x":x, "y":y,"color":color,"score":0,"name":name}  # x, y color, score, name
+	players[current_id] = {"x":x, "y":y,"pid":pid,"score":0,"name":name}  # x, y color, score, name
 
 	# pickle data and send initial info to clients
 	conn.send(str.encode(str(current_id)))
