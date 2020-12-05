@@ -177,7 +177,107 @@ class Wall(object):
         self.rect.x = x
         self.rect.y = y
 
-######################################################################################
+##############################################################################################################################
+
+class Jewel(pygame.sprite.Sprite):
+
+    def __init__(self, startx, starty, w, h, jewelImg, takenImg):
+        pygame.sprite.Sprite.__init__(self)
+        self.x = startx
+        self.y = starty
+        self.height = h  #45pixels
+        self.width = w  #45pixels
+        self.screen = pygame.display.set_mode((w, h))
+        self.gem = jewelImg
+        self.collected = takenImg
+        self.images = [pygame.image.load(self.gem).convert_alpha(), pygame.image.load(self.collected).convert_alpha()]
+        self.current_image = self.images[0]
+
+        self.hitbox = (self.x, self.y, 45, 45)
+
+
+    def draw(self, player):
+        if self.current_image == self.images[0]:
+            self.screen.blit(self.current_image, (self.x, self.y))
+            #pygame.draw.rect(self.screen, (225, 0, 0), self.hitbox, 2)
+        else:
+            self.screen.blit(self.current_image, (550, 10))
+##############################################################################################################################
+
+class Boulder(pygame.sprite.Sprite):
+
+    def __init__(self, startx, starty, w, h, obstacle, destroyed):
+        pygame.sprite.Sprite.__init__(self)
+        self.x = startx
+        self.y = starty
+        self.height = h  #72pixels
+        self.width = w  #72pixels
+        self.screen = pygame.display.set_mode((w, h))
+        self.obstacle = obstacle
+        self.destroyed = destroyed
+        self.images = [pygame.image.load(self.obstacle).convert_alpha(), pygame.image.load(self.destroyed).convert_alpha()]
+        self.current_image = self.images[0]
+
+        self.hitbox = (self.x, self.y, 72, 72)
+
+
+    def draw(self, player):
+        if self.current_image == self.images[0]:
+            self.screen.blit(self.current_image, (self.x, self.y))
+            #pygame.draw.rect(self.screen, (225, 0, 0), self.hitbox, 2)
+        else:
+            self.screen.blit(self.current_image, (550, 10))
+
+
+
+##############################################################################################################################
+
+class Alien(pygame.sprite.Sprite):
+
+    def __init__(self, startx, starty, w, h, obstacle, destroyed):
+        pygame.sprite.Sprite.__init__(self)
+        self.x = startx
+        self.y = starty
+        self.height = h  # 29pixels
+        self.width = w  # 40pixels
+        self.screen = pygame.display.set_mode((w, h))
+        self.obstacle = obstacle
+        self.destroyed = destroyed
+        self.images = [pygame.image.load(self.obstacle).convert_alpha(), pygame.image.load(self.destroyed).convert_alpha()]
+        self.current_image = self.images[0]
+
+        self.hitbox = (self.x, self.y, 40, 30)
+
+
+    def draw(self, player):
+        if self.current_image == self.images[0]:
+            self.screen.blit(self.current_image, (self.x, self.y))
+            self.hitbox = (self.x, self.y, 40, 30)
+            #pygame.draw.rect(self.screen, (0, 0, 0), self.hitbox, 2)
+        else:
+            self.screen.blit(self.current_image, (550, 10))
+            #self.hitbox = (self.x, self.y, 40, 30)
+            #pygame.draw.rect(self.screen, (255, 0, 0), self.hitbox, 2)
+
+##############################################################################################################################
+
+class projectile(object):
+
+    def __init__(self, x, y, radius, color, facing, window):
+        self.x = x
+        self.y = y
+        self.radius = radius
+        self.color = color
+        self.facing = facing
+        self.vel = 8 * facing
+        self.window = window
+
+    def draw(self):
+        pygame.draw.circle(self.window, self.color, (self.x,self.y), self.radius)
+
+
+
+##############################################################################################################################
 
 
 
@@ -264,6 +364,13 @@ def redraw_window(players, balls, game_time, score, current_id):
 	# text = TIME_FONT.render("Score: " + str(round(score)),1,(0,0,0))
 	# WIN.blit(text,(10,15 + text.get_height()))
 
+
+
+
+
+
+
+
 def redraw_gameWindow(players, balls, game_time, score, current_id):
 	"""
 	draws each frame
@@ -271,6 +378,30 @@ def redraw_gameWindow(players, balls, game_time, score, current_id):
 	"""
 	map = Map(1700, 850, "Version 1.0")
 	map.drawMapBackground()
+#############
+	"""""
+	boulder = Boulder(550, 200, 72, 72, 'Images/boulder.png', 'Images/gone.png')
+	jewel = Jewel(50, 375, 50, 50, 'Images/jewel.png', 'Images/gone.png')
+	alien = Alien(1000, 25, 40, 29, 'Images/alien.png', 'Images/gone.png')
+	alien2 = Alien(1060, 25, 40, 29, 'Images/alien.png', 'Images/gone.png')
+	alien3 = Alien(1120, 25, 40, 29, 'Images/alien.png', 'Images/gone.png')
+	jewel.draw(map.screen)
+	boulder.draw(map.screen)
+	alien.draw(map.screen)
+	alien2.draw(map.screen)
+	alien3.draw(map.screen)
+	"""""
+	#########
+	bg_img = pygame.image.load('Images/alien.png').convert_alpha()
+	map.screen.blit(bg_img, (1000, 25))
+	map.screen.blit(bg_img, (1060, 25))
+	map.screen.blit(bg_img, (1120, 25))
+	bg_img1 = pygame.image.load('Images/boulder.png').convert_alpha()
+	map.screen.blit(bg_img1, (550, 200))
+	bg_img1 = pygame.image.load('Images/jewel.png').convert_alpha()
+	map.screen.blit(bg_img1, (50, 375))
+
+#################
 	'''
 	# draw all the orbs/balls
 	for ball in balls:
