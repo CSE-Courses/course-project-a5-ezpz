@@ -103,7 +103,9 @@ def threaded_client(conn, _id):
 	color = colors[current_id]
 	pid = pids[current_id]
 	x, y = get_start_location(players)
-	players[current_id] = {"x":x, "y":y,"pid":pid,"score":0,"name":name}  # x, y color, score, name
+	role = "crewmate"
+	place = "lobby"
+	players[current_id] = {"x":x, "y":y,"pid":pid,"score":0,"name":name, "alive":0, "role":role, "place": place}  # x, y color, score, name, alive, role, place
 
 	# pickle data and send initial info to clients
 	conn.send(str.encode(str(current_id)))
