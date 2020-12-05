@@ -72,7 +72,8 @@ def redraw_window(players, balls, game_time, score, current_id):
 	# draw each player in the list
 	for player in sorted(players, key=lambda x: players[x]["score"]):
 		p = players[player]
-		print(current_id) # printing the player info
+		print(player)
+		#print(current_id) # printing the player info
 		# pygame.draw.circle(WIN, p["color"], (p["x"], p["y"] + 30), PLAYER_RADIUS + round(p["score"]))
 		# WIN.blit(redImg, (p["x"], p["y"] + 30))
 		why = p["y"] + 30
@@ -88,7 +89,7 @@ def redraw_window(players, balls, game_time, score, current_id):
 	x = W - title.get_width() - 10
 	WIN.blit(title, (x, 5))
 
-	ran = min(len(players), 3)
+	ran = min(len(players), 8)
 	for count, i in enumerate(sort_players[:ran]):
 		text = SCORE_FONT.render(str(count+1) + ". " + str(players[i]["name"]), 1, (0,0,0))
 		WIN.blit(text, (x, start_y + count * 20))
@@ -111,6 +112,12 @@ def drawPlayer(ex, ey, player_id):
 		WIN.blit(blueImg, (ex, ey))
 	# pygame.draw.circle(WIN, p["color"], (p["x"], p["y"]), PLAYER_RADIUS + round(p["score"]))
 
+def assignImposter():
+	x = random.randint(0,len(players)-1)
+	p = players[x]
+	p["role"] = "imposter"
+	print(p)
+
 def main(name):
 
 	"""
@@ -129,7 +136,7 @@ def main(name):
 
 	# setup the clock, limit to 30fps
 	clock = pygame.time.Clock()
-
+	assignImposter()
 
 
 
