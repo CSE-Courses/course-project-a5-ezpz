@@ -76,7 +76,7 @@ def redraw_window(players, balls, game_time, score, current_id):
 		# pygame.draw.circle(WIN, p["color"], (p["x"], p["y"] + 30), PLAYER_RADIUS + round(p["score"]))
 		# WIN.blit(redImg, (p["x"], p["y"] + 30))
 		why = p["y"] + 30
-		drawPlayer(p["x"], why, current_id)
+		drawPlayer(p["x"], why, p["pid"])
 		# render and draw name for each player
 		text = NAME_FONT.render(p["name"], 1, (0,0,0))
 		WIN.blit(text, (p["x"] - text.get_width()/2, p["y"] - text.get_height()/2))
@@ -100,12 +100,12 @@ def redraw_window(players, balls, game_time, score, current_id):
 	# text = TIME_FONT.render("Score: " + str(round(score)),1,(0,0,0))
 	# WIN.blit(text,(10,15 + text.get_height()))
 
-def drawPlayer(ex, ey, current_id):
-	if(current_id == 0):
+def drawPlayer(ex, ey, player_id):
+	if(player_id == 0):
 		WIN.blit(redImg, (ex, ey))
-	elif(current_id == 1):
+	elif(player_id == 1):
 		WIN.blit(cyanImg, (ex, ey))
-	elif (current_id == 2):
+	elif (player_id == 2):
 		WIN.blit(orangeImg, (ex, ey))
 	else:
 		WIN.blit(blueImg, (ex, ey))
