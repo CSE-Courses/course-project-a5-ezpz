@@ -31,6 +31,169 @@ redImg = pygame.image.load('Images/red.png')  # load red image
 cyanImg = pygame.image.load('Images/cyan.png')  # load red image
 orangeImg = pygame.image.load('Images/orange.png')  # load red image
 blueImg = pygame.image.load('Images/blue.png')  # load blue image
+#########################################################################################################################################
+
+class Lobby():
+
+    def __init__(self, w, h, name="None"):
+        self.screen = pygame.display.set_mode((w, h))
+        pygame.display.set_caption(name)
+        self.width = w
+        self.height = h
+        self.walls = []
+
+    def getLobby(self):
+        return self.screen
+
+    def drawLobbyBackground(self):
+        #Place background image for lobby
+        self.screen.fill((0, 0, 1))
+        self.bg_img = pygame.image.load('Images/lobbyShip.png').convert() #653x584
+        self.screen.blit(self.bg_img, (375,0), self.bg_img.get_rect())
+        #draw walls for lobby
+        wall = Wall(365, 0, 10, 584) #left wall
+        self.walls.append(wall)
+        wall = Wall(1038, 0, 10, 584) #right wall
+        self.walls.append(wall)
+        wall = Wall(375, 584, 653, 10) #bottom wall
+        self.walls.append(wall)
+        for wall in self.walls:
+            pygame.draw.rect(self.screen, ((0, 0, 1)), wall.rect)
+        #myfont = pygame.font.SysFont("monspace", 20)
+        #self.screen.blit(self.button, self.button.get_rect())
+
+    def drawLobbyBackground2(self):
+        self.bg_img = pygame.image.load('Images/serverEntry.png')
+        self.screen.blit(self.bg_img, self.bg_img.get_rect())
+
+    def drawPlayerInputLobby(self):
+        self.bg_img = pygame.image.load('Images/homeScreen.png').convert_alpha()
+        self.screen.blit(self.bg_img, self.bg_img.get_rect())
+        # self.screen.fill((0,0,0))
+########################################################################################################################################
+
+class Map():
+
+    def __init__(self, w, h, name="None"):
+        self.screen = pygame.display.set_mode((w, h))
+        pygame.display.set_caption(name)
+        self.width = w
+        self.height = h
+        self.walls = []
+
+
+    def getMap(self):
+        return self.screen
+
+    #makes window black and then draws the map walls
+    def drawMapBackground(self):
+        #fills window with black
+        #walls holds every wall instance
+        self.screen.fill((0, 0, 1))
+
+        #walls at borders of window
+        wall = Wall(1356, 0, 10, 768)
+        self.walls.append(wall)
+        wall = Wall(0, 758, 1366, 10)
+        self.walls.append(wall)
+        wall = Wall(0, 0, 10, 768)
+        self.walls.append(wall)
+        wall = Wall(0, 0, 1366, 10)
+        self.walls.append(wall)
+        #top left room (spawn)
+        wall = Wall(0, 192, 80, 10)
+        self.walls.append(wall)
+        wall = Wall(145, 192, 80, 10)
+        self.walls.append(wall)
+        wall = Wall(225, 0, 10, 202)
+        self.walls.append(wall)
+        #top right room
+        wall = Wall(960, 160, 406, 10)
+        self.walls.append(wall)
+        wall = Wall(960, 60, 10, 110)
+        self.walls.append(wall)
+        #middle room
+        wall = Wall(350, 250, 200, 10)
+        self.walls.append(wall)
+        wall = Wall(620, 250, 390, 10)
+        self.walls.append(wall)
+        wall = Wall(350, 250, 10, 350)
+        self.walls.append(wall)
+        wall = Wall(350, 590, 590, 10)
+        self.walls.append(wall)
+        wall = Wall(1000, 250, 10, 350)
+        self.walls.append(wall)
+        #bottom right room
+        wall = Wall(1100, 590, 140, 10)
+        self.walls.append(wall)
+        wall = Wall(1310, 590, 56, 10)
+        self.walls.append(wall)
+        wall = Wall(1100, 590, 10, 178)
+        self.walls.append(wall)
+        #bottom left room
+        wall = Wall(0, 330, 120, 10)
+        self.walls.append(wall)
+        wall = Wall(110, 330, 10, 348)
+        self.walls.append(wall)
+
+
+        wall = Wall(110, 670, 700, 10)
+        self.walls.append(wall)
+        wall = Wall(800, 670, 10, 30)
+
+        self.walls.append(wall)
+
+        """
+        self.button1 = Button(100, 100, 950, 350, Game.map, "red")  # voting buttons
+        self.button2 = Button(100, 100, 950, 400, Game.map, "blue")
+        self.button3 = Button(100, 100, 950, 450, Game.map, "cyan")
+        self.button4 = Button(100, 100, 950, 500, Game.map, "orange")
+        """
+
+
+        # Voting boxes
+        pygame.draw.rect(self.screen, (50, 50, 50), [1500, 250, 140, 40])
+        pygame.draw.rect(self.screen, (50, 50, 50), [1500, 300, 140, 40])
+        pygame.draw.rect(self.screen, (50, 50, 50), [1500, 350, 140, 40])
+        pygame.draw.rect(self.screen, (50, 50, 50), [1500, 400, 140, 40])
+
+
+
+        for wall in self.walls:
+            pygame.draw.rect(self.screen, ((192, 192, 192)), wall.rect)
+
+
+
+
+########################################################################################################################################
+
+# wall class that takes coordinates, width, and height to make rectangle
+class Wall(object):
+    def __init__(self, x, y, w, h):
+        super(Wall, self).__init__()
+        self.image = pygame.Surface([w, h])
+        self.image.fill((192, 192, 192))
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+
+######################################################################################
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 # FUNCTIONS
@@ -62,8 +225,9 @@ def redraw_window(players, balls, game_time, score, current_id):
 	draws each frame
 	:return: None
 	"""
-	WIN.fill((255,255,255)) # fill screen white, to clear old frames
-
+	lobby = Lobby(1700, 850, "Version 1.0")  # Creating
+	lobby.drawLobbyBackground()
+	#WIN.fill((255,255,255)) # fill screen white, to clear old frames
 	'''
 	# draw all the orbs/balls
 	for ball in balls:
@@ -72,31 +236,73 @@ def redraw_window(players, balls, game_time, score, current_id):
 	# draw each player in the list
 	for player in sorted(players, key=lambda x: players[x]["score"]):
 		p = players[player]
-		print(player)
-		#print(current_id) # printing the player info
+		print(current_id) # printing the player info
 		# pygame.draw.circle(WIN, p["color"], (p["x"], p["y"] + 30), PLAYER_RADIUS + round(p["score"]))
 		# WIN.blit(redImg, (p["x"], p["y"] + 30))
 		why = p["y"] + 30
 		drawPlayer(p["x"], why, p["pid"])
 		# render and draw name for each player
-		text = NAME_FONT.render(p["name"], 1, (0,0,0))
-		WIN.blit(text, (p["x"] - text.get_width()/2, p["y"] - text.get_height()/2))
+		text = NAME_FONT.render(p["name"], 1, (255,255,255))
+		lobby.screen.blit(text, (p["x"] - text.get_width()/2, p["y"] - text.get_height()/2))
 
 	# draw scoreboard
 	sort_players = list(reversed(sorted(players, key=lambda x: players[x]["score"])))
-	title = TIME_FONT.render("Players", 1, (0,0,0))
+	title = TIME_FONT.render("Players", 1, (255,255,255))
 	start_y = 25
 	x = W - title.get_width() - 10
-	WIN.blit(title, (x, 5))
+	lobby.screen.blit(title, (x, 5))
 
 	ran = min(len(players), 8)
 	for count, i in enumerate(sort_players[:ran]):
-		text = SCORE_FONT.render(str(count+1) + ". " + str(players[i]["name"]), 1, (0,0,0))
-		WIN.blit(text, (x, start_y + count * 20))
+		text = SCORE_FONT.render(str(count+1) + ". " + str(players[i]["name"]), 1, (255,255,255))
+		lobby.screen.blit(text, (x, start_y + count * 20))
 
 	# draw time
-	text = TIME_FONT.render("Time: " + convert_time(game_time), 1, (0,0,0))
-	WIN.blit(text,(10,10))
+	text = TIME_FONT.render("Time: " + convert_time(game_time), 1, (255,255,255))
+	lobby.screen.blit(text,(10,10))
+	# draw score
+	# text = TIME_FONT.render("Score: " + str(round(score)),1,(0,0,0))
+	# WIN.blit(text,(10,15 + text.get_height()))
+
+def redraw_gameWindow(players, balls, game_time, score, current_id):
+	"""
+	draws each frame
+	:return: None
+	"""
+	map = Map(1700, 850, "Version 1.0")
+	map.drawMapBackground()
+	'''
+	# draw all the orbs/balls
+	for ball in balls:
+		pygame.draw.circle(WIN, ball[2], (ball[0], ball[1]), BALL_RADIUS)
+	'''
+	# draw each player in the list
+	for player in sorted(players, key=lambda x: players[x]["score"]):
+		p = players[player]
+		print(current_id) # printing the player info
+		# pygame.draw.circle(WIN, p["color"], (p["x"], p["y"] + 30), PLAYER_RADIUS + round(p["score"]))
+		# WIN.blit(redImg, (p["x"], p["y"] + 30))
+		why = p["y"] + 30
+		drawPlayer(p["x"], why, p["pid"])
+		# render and draw name for each player
+		text = NAME_FONT.render(p["name"], 1, (255,255,255))
+		map.screen.blit(text, (p["x"] - text.get_width()/2, p["y"] - text.get_height()/2))
+
+	# draw scoreboard
+	sort_players = list(reversed(sorted(players, key=lambda x: players[x]["score"])))
+	title = TIME_FONT.render("Players", 1, (255,255,255))
+	start_y = 25
+	x = W - title.get_width() - 10
+	map.screen.blit(title, (x, 5))
+
+	ran = min(len(players), 8)
+	for count, i in enumerate(sort_players[:ran]):
+		text = SCORE_FONT.render(str(count+1) + ". " + str(players[i]["name"]), 1, (255,255,255))
+		map.screen.blit(text, (x, start_y + count * 20))
+
+	# draw time
+	text = TIME_FONT.render("Time: " + convert_time(game_time), 1, (255,255,255))
+	map.screen.blit(text,(10,10))
 	# draw score
 	# text = TIME_FONT.render("Score: " + str(round(score)),1,(0,0,0))
 	# WIN.blit(text,(10,15 + text.get_height()))
@@ -138,9 +344,7 @@ def main(name):
 	clock = pygame.time.Clock()
 	assignImposter()
 
-
-
-
+	started = False
 	run = True
 	while run:
 		clock.tick(30) # 30 fps max
@@ -194,11 +398,20 @@ def main(name):
 				# if user hits a escape key close program
 				if event.key == pygame.K_ESCAPE:
 					run = False
+				# If enter is pressed, lobby will close and game will start
+				if event.key == pygame.K_RETURN:
+					started = True
+					#run = False
 
 
 		# redraw window then update the frame
-		redraw_window(players, balls, game_time, player["score"], current_id)
+		if started:
+			redraw_gameWindow(players, balls, game_time, player["score"], current_id)
+		else:
+			redraw_window(players, balls, game_time, player["score"], current_id)
 		pygame.display.update()
+
+		#redraw_gameWindow(players, balls, game_time, player["score"], current_id)
 
 
 	server.disconnect()
