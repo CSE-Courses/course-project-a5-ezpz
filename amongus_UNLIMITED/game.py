@@ -298,265 +298,329 @@ class projectile(object):
 
 # FUNCTIONS
 def convert_time(t):
-	"""
-	converts a time given in seconds to a time in
-	minutes
+    """
+    converts a time given in seconds to a time in
+    minutes
 
-	:param t: int
-	:return: string
-	"""
-	if type(t) == str:
-		return t
+    :param t: int
+    :return: string
+    """
+    if type(t) == str:
+        return t
 
-	if int(t) < 60:
-		return str(t) + "s"
-	else:
-		minutes = str(t // 60)
-		seconds = str(t % 60)
+    if int(t) < 60:
+        return str(t) + "s"
+    else:
+        minutes = str(t // 60)
+        seconds = str(t % 60)
 
-		if int(seconds) < 10:
-			seconds = "0" + seconds
+        if int(seconds) < 10:
+            seconds = "0" + seconds
 
-		return minutes + ":" + seconds
+        return minutes + ":" + seconds
 
 
 def redraw_window(players, balls, game_time, score, current_id):
-	"""
-	draws each frame
-	:return: None
-	"""
-	lobby = Lobby(1700, 850, "Version 1.0")  # Creating
-	lobby.drawLobbyBackground()
-	#WIN.fill((255,255,255)) # fill screen white, to clear old frames
-	'''
-	# draw all the orbs/balls
-	for ball in balls:
-		pygame.draw.circle(WIN, ball[2], (ball[0], ball[1]), BALL_RADIUS)
-	'''
-	# draw each player in the list
-	for player in sorted(players, key=lambda x: players[x]["score"]):
-		p = players[player]
-		print(current_id) # printing the player info
-		# pygame.draw.circle(WIN, p["color"], (p["x"], p["y"] + 30), PLAYER_RADIUS + round(p["score"]))
-		# WIN.blit(redImg, (p["x"], p["y"] + 30))
-		why = p["y"] + 30
-		drawPlayer(p["x"], why, p["pid"])
-		# render and draw name for each player
-		text = NAME_FONT.render(p["name"], 1, (255,255,255))
-		lobby.screen.blit(text, (p["x"] - text.get_width()/2, p["y"] - text.get_height()/2))
+    """
+    draws each frame
+    :return: None
+    """
+    lobby = Lobby(1700, 850, "Version 1.0")  # Creating
+    lobby.drawLobbyBackground()
+    #WIN.fill((255,255,255)) # fill screen white, to clear old frames
+    '''
+    # draw all the orbs/balls
+    for ball in balls:
+        pygame.draw.circle(WIN, ball[2], (ball[0], ball[1]), BALL_RADIUS)
+    '''
+    # draw each player in the list
+    for player in sorted(players, key=lambda x: players[x]["score"]):
+        p = players[player]
+        print(current_id) # printing the player info
+        # pygame.draw.circle(WIN, p["color"], (p["x"], p["y"] + 30), PLAYER_RADIUS + round(p["score"]))
+        # WIN.blit(redImg, (p["x"], p["y"] + 30))
+        why = p["y"] + 30
+        drawPlayer(p["x"], why, p["pid"])
+        # render and draw name for each player
+        text = NAME_FONT.render(p["name"], 1, (255,255,255))
+        lobby.screen.blit(text, (p["x"] - text.get_width()/2, p["y"] - text.get_height()/2))
 
-	# draw scoreboard
-	sort_players = list(reversed(sorted(players, key=lambda x: players[x]["score"])))
-	title = TIME_FONT.render("Players", 1, (255,255,255))
-	start_y = 25
-	x = W - title.get_width() - 10
-	lobby.screen.blit(title, (x, 5))
+    # draw scoreboard
+    sort_players = list(reversed(sorted(players, key=lambda x: players[x]["score"])))
+    title = TIME_FONT.render("Players", 1, (255,255,255))
+    start_y = 25
+    x = W - title.get_width() - 10
+    lobby.screen.blit(title, (x, 5))
 
-	ran = min(len(players), 8)
-	for count, i in enumerate(sort_players[:ran]):
-		text = SCORE_FONT.render(str(count+1) + ". " + str(players[i]["name"]), 1, (255,255,255))
-		lobby.screen.blit(text, (x, start_y + count * 20))
+    ran = min(len(players), 8)
+    for count, i in enumerate(sort_players[:ran]):
+        text = SCORE_FONT.render(str(count+1) + ". " + str(players[i]["name"]), 1, (255,255,255))
+        lobby.screen.blit(text, (x, start_y + count * 20))
 
-	# draw time
-	text = TIME_FONT.render("Time: " + convert_time(game_time), 1, (255,255,255))
-	lobby.screen.blit(text,(10,10))
-	# draw score
-	# text = TIME_FONT.render("Score: " + str(round(score)),1,(0,0,0))
-	# WIN.blit(text,(10,15 + text.get_height()))
-
-
+    # draw time
+    text = TIME_FONT.render("Time: " + convert_time(game_time), 1, (255,255,255))
+    lobby.screen.blit(text,(10,10))
+    # draw score
+    # text = TIME_FONT.render("Score: " + str(round(score)),1,(0,0,0))
+    # WIN.blit(text,(10,15 + text.get_height()))
 
 
 
 
 
 
-def redraw_gameWindow(players, balls, game_time, score, current_id):
-	"""
-	draws each frame
-	:return: None
-	"""
-	map = Map(1700, 850, "Version 1.0")
-	map.drawMapBackground()
+
+def redraw_gameWindow(players, balls, game_time, score, current_id, map):
+
+
+    """
+    draws each frame
+    :return: None
+    """
+    #map = Map(1700, 850, "Version 1.0")
+    #map.drawMapBackground()
 #############
-	"""""
-	boulder = Boulder(550, 200, 72, 72, 'Images/boulder.png', 'Images/gone.png')
-	jewel = Jewel(50, 375, 50, 50, 'Images/jewel.png', 'Images/gone.png')
-	alien = Alien(1000, 25, 40, 29, 'Images/alien.png', 'Images/gone.png')
-	alien2 = Alien(1060, 25, 40, 29, 'Images/alien.png', 'Images/gone.png')
-	alien3 = Alien(1120, 25, 40, 29, 'Images/alien.png', 'Images/gone.png')
-	jewel.draw(map.screen)
-	boulder.draw(map.screen)
-	alien.draw(map.screen)
-	alien2.draw(map.screen)
-	alien3.draw(map.screen)
-	"""""
-	#########
-	bg_img = pygame.image.load('Images/alien.png').convert_alpha()
-	map.screen.blit(bg_img, (1000, 25))
-	map.screen.blit(bg_img, (1060, 25))
-	map.screen.blit(bg_img, (1120, 25))
-	bg_img1 = pygame.image.load('Images/boulder.png').convert_alpha()
-	map.screen.blit(bg_img1, (550, 200))
-	bg_img1 = pygame.image.load('Images/jewel.png').convert_alpha()
-	map.screen.blit(bg_img1, (50, 375))
+    """""
+    boulder = Boulder(550, 200, 72, 72, 'Images/boulder.png', 'Images/gone.png')
+    jewel = Jewel(50, 375, 50, 50, 'Images/jewel.png', 'Images/gone.png')
+    alien = Alien(1000, 25, 40, 29, 'Images/alien.png', 'Images/gone.png')
+    alien2 = Alien(1060, 25, 40, 29, 'Images/alien.png', 'Images/gone.png')
+    alien3 = Alien(1120, 25, 40, 29, 'Images/alien.png', 'Images/gone.png')
+    jewel.draw(map.screen)
+    boulder.draw(map.screen)
+    alien.draw(map.screen)
+    alien2.draw(map.screen)
+    alien3.draw(map.screen)
+    """""
+    #########
+    bg_img = pygame.image.load('Images/alien.png').convert_alpha()
+    map.screen.blit(bg_img, (1000, 25))
+    map.screen.blit(bg_img, (1060, 25))
+    map.screen.blit(bg_img, (1120, 25))
+    bg_img1 = pygame.image.load('Images/boulder.png').convert_alpha()
+    map.screen.blit(bg_img1, (550, 200))
+    bg_img1 = pygame.image.load('Images/jewel.png').convert_alpha()
+    map.screen.blit(bg_img1, (50, 375))
 
 #################
-	'''
-	# draw all the orbs/balls
-	for ball in balls:
-		pygame.draw.circle(WIN, ball[2], (ball[0], ball[1]), BALL_RADIUS)
-	'''
-	# draw each player in the list
-	for player in sorted(players, key=lambda x: players[x]["score"]):
-		p = players[player]
-		print(current_id) # printing the player info
-		# pygame.draw.circle(WIN, p["color"], (p["x"], p["y"] + 30), PLAYER_RADIUS + round(p["score"]))
-		# WIN.blit(redImg, (p["x"], p["y"] + 30))
-		why = p["y"] + 30
-		drawPlayer(p["x"], why, p["pid"])
-		# render and draw name for each player
-		text = NAME_FONT.render(p["name"], 1, (255,255,255))
-		map.screen.blit(text, (p["x"] - text.get_width()/2, p["y"] - text.get_height()/2))
+    '''
+    # draw all the orbs/balls
+    for ball in balls:
+        pygame.draw.circle(WIN, ball[2], (ball[0], ball[1]), BALL_RADIUS)
+    '''
+    # draw each player in the list
+    for player in sorted(players, key=lambda x: players[x]["score"]):
+        p = players[player]
+        print(current_id) # printing the player info
+        # pygame.draw.circle(WIN, p["color"], (p["x"], p["y"] + 30), PLAYER_RADIUS + round(p["score"]))
+        # WIN.blit(redImg, (p["x"], p["y"] + 30))
+        why = p["y"] + 30
+        drawPlayer(p["x"], why, p["pid"])
+        # render and draw name for each player
+        text = NAME_FONT.render(p["name"], 1, (255,255,255))
+        map.screen.blit(text, (p["x"] - text.get_width()/2, p["y"] - text.get_height()/2))
 
-	# draw scoreboard
-	sort_players = list(reversed(sorted(players, key=lambda x: players[x]["score"])))
-	title = TIME_FONT.render("Players", 1, (255,255,255))
-	start_y = 25
-	x = W - title.get_width() - 10
-	map.screen.blit(title, (x, 5))
+    # draw scoreboard
+    sort_players = list(reversed(sorted(players, key=lambda x: players[x]["score"])))
+    title = TIME_FONT.render("Players", 1, (255,255,255))
+    start_y = 25
+    x = W - title.get_width() - 10
+    map.screen.blit(title, (x, 5))
 
-	ran = min(len(players), 8)
-	for count, i in enumerate(sort_players[:ran]):
-		text = SCORE_FONT.render(str(count+1) + ". " + str(players[i]["name"]), 1, (255,255,255))
-		map.screen.blit(text, (x, start_y + count * 20))
+    ran = min(len(players), 8)
+    for count, i in enumerate(sort_players[:ran]):
+        text = SCORE_FONT.render(str(count+1) + ". " + str(players[i]["name"]), 1, (255,255,255))
+        map.screen.blit(text, (x, start_y + count * 20))
 
-	# draw time
-	text = TIME_FONT.render("Time: " + convert_time(game_time), 1, (255,255,255))
-	map.screen.blit(text,(10,10))
-	# draw score
-	# text = TIME_FONT.render("Score: " + str(round(score)),1,(0,0,0))
-	# WIN.blit(text,(10,15 + text.get_height()))
+    # draw time
+    text = TIME_FONT.render("Time: " + convert_time(game_time), 1, (255,255,255))
+    map.screen.blit(text,(10,10))
+    # draw score
+    # text = TIME_FONT.render("Score: " + str(round(score)),1,(0,0,0))
+    # WIN.blit(text,(10,15 + text.get_height()))
 
 def drawPlayer(ex, ey, player_id):
-	if(player_id == 0):
-		WIN.blit(redImg, (ex, ey))
-	elif(player_id == 1):
-		WIN.blit(cyanImg, (ex, ey))
-	elif (player_id == 2):
-		WIN.blit(orangeImg, (ex, ey))
-	else:
-		WIN.blit(blueImg, (ex, ey))
-	# pygame.draw.circle(WIN, p["color"], (p["x"], p["y"]), PLAYER_RADIUS + round(p["score"]))
+    if(player_id == 0):
+        WIN.blit(redImg, (ex, ey))
+    elif(player_id == 1):
+        WIN.blit(cyanImg, (ex, ey))
+    elif (player_id == 2):
+        WIN.blit(orangeImg, (ex, ey))
+    else:
+        WIN.blit(blueImg, (ex, ey))
+    # pygame.draw.circle(WIN, p["color"], (p["x"], p["y"]), PLAYER_RADIUS + round(p["score"]))
 
 def assignImposter():
-	x = random.randint(0,len(players)-1)
-	p = players[x]
-	p["role"] = "imposter"
-	print(p)
+    x = random.randint(0,len(players)-1)
+    p = players[x]
+    p["role"] = "imposter"
+    print(p)
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+global p1_input
+p1_input = ''
 def main(name):
+    global p1_input
+    pygame.init()
+    base_font = pygame.font.Font(None, 32)
 
-	"""
-	function for running the game,
-	includes the main loop of the game
+    input_rect = pygame.Rect(90, 785, 140, 32)
+    active = False
 
-	:param players: a list of dicts represting a player
-	:return: None
-	"""
-	global players
+    color_active = (0, 255, 0)
+    color_passive = (255, 255, 255)
+    color = color_passive
 
-	# start by connecting to the network
-	server = Network()
-	current_id = server.connect(name)
-	balls, players, game_time = server.send("get")
+    """
+    function for running the game,
+    includes the main loop of the game
 
-	# setup the clock, limit to 30fps
-	clock = pygame.time.Clock()
-	assignImposter()
+    :param players: a list of dicts represting a player
+    :return: None
+    """
+    global players
 
-	started = False
-	run = True
-	while run:
-		clock.tick(30) # 30 fps max
-		player = players[current_id]
-		#print(players[current_id]) # print player id
-		#print(current_id)
-		# print(player["x"]) # player x
-		# print("draw player")
-		#drawPlayer(200,100, player)
-		#drawPlayer(player["x"], player["y"])
+    # start by connecting to the network
+    server = Network()
+    current_id = server.connect(name)
+    balls, players, game_time = server.send("get")
 
-		if(current_id == 4):
-			# WIN.blit("red.png", (player["x"], player["x"]))
-			print('')
-		vel = START_VEL - round(player["score"]/14)
-		if vel <= 1:
-			vel = 1
+    # setup the clock, limit to 30fps
+    clock = pygame.time.Clock()
+    assignImposter()
 
-		# get key presses
-		keys = pygame.key.get_pressed()
+    started = False
+    run = True
+    while run:
+        clock.tick(30) # 30 fps max
+        player = players[current_id]
+        #print(players[current_id]) # print player id
+        #print(current_id)
+        # print(player["x"]) # player x
+        # print("draw player")
+        #drawPlayer(200,100, player)
+        #drawPlayer(player["x"], player["y"])
 
-		data = ""
-		# movement based on key presses
-		if keys[pygame.K_LEFT] or keys[pygame.K_a]:
-			if player["x"] - vel - PLAYER_RADIUS - player["score"] >= 0:
-				player["x"] = player["x"] - vel
+        if(current_id == 4):
+            # WIN.blit("red.png", (player["x"], player["x"]))
+            print('')
+        vel = START_VEL - round(player["score"]/14)
+        if vel <= 1:
+            vel = 1
 
-		if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
-			if player["x"] + vel + PLAYER_RADIUS + player["score"] <= W:
-				player["x"] = player["x"] + vel
+        # get key presses
+        keys = pygame.key.get_pressed()
 
-		if keys[pygame.K_UP] or keys[pygame.K_w]:
-			if player["y"] - vel - PLAYER_RADIUS - player["score"] >= 0:
-				player["y"] = player["y"] - vel
+        data = ""
+        # movement based on key presses
+        if keys[pygame.K_LEFT]:
+            if player["x"] - vel - PLAYER_RADIUS - player["score"] >= 0:
+                player["x"] = player["x"] - vel
 
-		if keys[pygame.K_DOWN] or keys[pygame.K_s]:
-			if player["y"] + vel + PLAYER_RADIUS + player["score"] <= H:
-				player["y"] = player["y"] + vel
+        if keys[pygame.K_RIGHT]:
+            if player["x"] + vel + PLAYER_RADIUS + player["score"] <= W:
+                player["x"] = player["x"] + vel
 
-		data = "move " + str(player["x"]) + " " + str(player["y"])
+        if keys[pygame.K_UP]:
+            if player["y"] - vel - PLAYER_RADIUS - player["score"] >= 0:
+                player["y"] = player["y"] - vel
 
-		# send data to server and recieve back all players information
-		balls, players, game_time = server.send(data)
+        if keys[pygame.K_DOWN]:
+            if player["y"] + vel + PLAYER_RADIUS + player["score"] <= H:
+                player["y"] = player["y"] + vel
 
-		for event in pygame.event.get():
-			# if user hits red x button close window
-			if event.type == pygame.QUIT:
-				run = False
+        data = "move " + str(player["x"]) + " " + str(player["y"])
 
-			if event.type == pygame.KEYDOWN:
-				# if user hits a escape key close program
-				if event.key == pygame.K_ESCAPE:
-					run = False
-				# If enter is pressed, lobby will close and game will start
-				if event.key == pygame.K_RETURN:
-					started = True
-					#run = False
+        # send data to server and recieve back all players information
+        balls, players, game_time = server.send(data)
+
+        for event in pygame.event.get():
+            # if user hits red x button close window
+            if event.type == pygame.QUIT:
+                run = False
+
+            # Check if mouse is clicked into rectangles to take in input
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                # Check if mouse is clicked into 1ST rectangle to take in input for player 1
+                if input_rect.collidepoint(event.pos):
+                    active = True
+                else:
+                    active = False
+
+            if event.type == pygame.KEYDOWN:
+                # if user hits a escape key close program
+                if event.key == pygame.K_ESCAPE:
+                    run = False
+                # If enter is pressed, lobby will close and game will start
+                if event.key == pygame.K_RETURN:
+                    started = True
+                    #run = False
+
+                # If 1ST rectangle is clicked on and green/active then take in user input from keyboard
+                if active == True:
+                    if event.key == pygame.K_BACKSPACE:
+                        p1_input = p1_input[0:-1]
+                    else:
+                        p1_input += event.unicode
 
 
-		# redraw window then update the frame
-		if started:
-			redraw_gameWindow(players, balls, game_time, player["score"], current_id)
-		else:
-			redraw_window(players, balls, game_time, player["score"], current_id)
-		pygame.display.update()
+        # redraw window then update the frame
+        if started:
+            map = Map(1700, 850, "Version 1.0")
+            map.drawMapBackground()
+            redraw_gameWindow(players, balls, game_time, player["score"], current_id, map)
+            ###########Player Input text chat#####################################################################
+            if active:
+                color = color_active
+            else:
+                color = color_passive
 
-		#redraw_gameWindow(players, balls, game_time, player["score"], current_id)
+            # CHAT BOX SHIT#
+            font = pygame.font.Font(None, 30)
+            p1_text = font.render("player: ", 1, (255, 255, 255))  # player 1 text
+            map.screen.blit(p1_text, (15, 790))
+            # Draw input rectangle 1
+            pygame.draw.rect(map.screen, color, input_rect, 2)
+            text_surface = base_font.render(p1_input, True, (255, 255, 255))
+            map.screen.blit(text_surface, (input_rect.x + 5, input_rect.y + 5))  # Blit text into rect
+            input_rect.w = max(100, text_surface.get_width() + 10)
+            ########################################################################################################
+            #drawChatBox(map)
+        else:
+            redraw_window(players, balls, game_time, player["score"], current_id)
+        pygame.display.update()
+
+        #redraw_gameWindow(players, balls, game_time, player["score"], current_id)
 
 
-	server.disconnect()
-	pygame.quit()
-	quit()
+    server.disconnect()
+    pygame.quit()
+    quit()
 
 
 # get users name
 while True:
- 	name = input("Please enter your name: ")
- 	if  0 < len(name) < 20:
- 		break
- 	else:
- 		print("Error, this name is not allowed (must be between 1 and 19 characters [inclusive])")
+    name = input("Please enter your name: ")
+    if  0 < len(name) < 20:
+        break
+    else:
+        print("Error, this name is not allowed (must be between 1 and 19 characters [inclusive])")
 
 # make window start in top left hand corner
 os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (0,30)
