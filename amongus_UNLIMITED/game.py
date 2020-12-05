@@ -320,7 +320,7 @@ def convert_time(t):
         return minutes + ":" + seconds
 
 
-def redraw_window(players, balls, game_time, score, current_id):
+def redraw_LOBBY(players, balls, game_time, score, current_id):
     """
     draws each frame
     :return: None
@@ -370,7 +370,7 @@ def redraw_window(players, balls, game_time, score, current_id):
 
 
 
-def redraw_gameWindow(players, balls, game_time, score, current_id, map):
+def redraw_MAP(players, balls, game_time, score, current_id, map):
 
 
     """
@@ -475,32 +475,27 @@ def assignImposter():
 
 global p1_input
 p1_input = ''
-def main(name):
+def rungame(name):
+    #CHAT BOX REQUIREMENTS#
     global p1_input
     pygame.init()
     base_font = pygame.font.Font(None, 32)
-
-    input_rect = pygame.Rect(90, 785, 140, 32)
+    input_rect = pygame.Rect(90, 805, 140, 32)
     active = False
-
     color_active = (0, 255, 0)
     color_passive = (255, 255, 255)
     color = color_passive
+    font = pygame.font.Font(None, 30)
+    chatText = font.render('', 1, (255, 255, 255))  # player 1 text
+    # CHAT BOX REQUIREMENTS END#
 
-    """
-    function for running the game,
-    includes the main loop of the game
 
-    :param players: a list of dicts represting a player
-    :return: None
-    """
+
     global players
-
     # start by connecting to the network
     server = Network()
     current_id = server.connect(name)
     balls, players, game_time = server.send("get")
-
     # setup the clock, limit to 30fps
     clock = pygame.time.Clock()
     assignImposter()
@@ -584,26 +579,26 @@ def main(name):
         if started:
             map = Map(1700, 850, "Version 1.0")
             map.drawMapBackground()
-            redraw_gameWindow(players, balls, game_time, player["score"], current_id, map)
-            ###########Player Input text chat#####################################################################
+            #DRAW IN ALL OBSTACLES AND TASKS FOR GAME WITH redraw_MAP
+            redraw_MAP(players, balls, game_time, player["score"], current_id, map)
+            ##Player Input text chat###
             if active:
                 color = color_active
             else:
                 color = color_passive
-
-            # CHAT BOX SHIT#
             font = pygame.font.Font(None, 30)
             p1_text = font.render("player: ", 1, (255, 255, 255))  # player 1 text
-            map.screen.blit(p1_text, (15, 790))
-            # Draw input rectangle 1
+            map.screen.blit(p1_text, (15, 810))
             pygame.draw.rect(map.screen, color, input_rect, 2)
             text_surface = base_font.render(p1_input, True, (255, 255, 255))
             map.screen.blit(text_surface, (input_rect.x + 5, input_rect.y + 5))  # Blit text into rect
             input_rect.w = max(100, text_surface.get_width() + 10)
-            ########################################################################################################
-            #drawChatBox(map)
+            if keys[pygame.K_RETURN]:
+                chatText = font.render(p1_input, 1, (255, 255, 255))  # player 1 text
+            map.screen.blit(chatText, (90, 780))
+            ##Player Input text chat END###
         else:
-            redraw_window(players, balls, game_time, player["score"], current_id)
+            redraw_LOBBY(players, balls, game_time, player["score"], current_id)
         pygame.display.update()
 
         #redraw_gameWindow(players, balls, game_time, player["score"], current_id)
@@ -630,4 +625,4 @@ WIN = pygame.display.set_mode((W,H))
 pygame.display.set_caption("Blobs")
 
 # start game
-main(name)
+rungame(name)
