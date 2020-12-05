@@ -569,7 +569,6 @@ class Game():
     playername = ''
     global playername2
     playername2 = ''
-
     def playerInput(self):
         global playername
         global playername2
@@ -714,10 +713,14 @@ class Game():
             enterLabel = font.render("Press the Up key to connect to server: cheshire.", 1, (255, 255, 255))
             self.lobby.getLobby().blit(enterLabel, (400, 600))
 
+            """
+            pygame.mixer.init()
+            pygame.mixer.music.load('Images/audio.wav')
+            pygame.mixer.music.play(0)
+            """
             pygame.display.update()
 
 ###################################
-
 
     def run(self):
         global playername
@@ -764,13 +767,7 @@ class Game():
             if keys[pygame.K_DOWN]:
                 if self.player1.rect.y <= self.height - self.player1.rate:
                     self.player1.move(3)
-            """     
-            if keys[pygame.K_0]:
-                p1_input = input("enter an input :")
-                # p1_text = font.render("player 1: " + p1_input, 1, (255, 255, 255)) # player 1 text
-                msg_bool = True
-                print(msg_bool)
-            """
+
             # Send Network data
             self.player2.rect.x, self.player2.rect.y = self.parseData(self.sendData())
 
@@ -794,13 +791,6 @@ class Game():
             self.lobby.getLobby().blit(text, (15, 625))
 
 
-
-
-            """
-            pygame.mixer.init()
-            pygame.mixer.music.load('Images/audio.wav')
-            pygame.mixer.music.play(0)
-            """
             #ENTER LABEL PLACED IN LOBBY TO ENTER GAME#
             font = pygame.font.Font(None, 30)
             enterLabel = font.render("Press 'Enter' when all players have joined.", 1, (255, 255, 255))
@@ -830,11 +820,20 @@ class Game():
 
 ###################################
 
-
     global isBlueDead
     isBlueDead = False  # Boolean to check if blue is dead
+    global p1_input
+    p1_input = ''
     #runs the actual game
     def rungame(self):
+        global p1_input
+        input_rect = pygame.Rect(90, 785, 140, 32)
+        active = False
+        color_active = (0, 255, 0)
+        color_passive = (255, 255, 255)
+        color = color_passive
+        base_font = pygame.font.Font(None, 30)
+
         global isBlueDead
         global called
         called = 0 #only call simon says once
@@ -861,7 +860,6 @@ class Game():
 
         msg_bool = False  # boolean for if theres a message
         self.assign_roles()
-        p1_input = 'type here...'
         p1_bytes = ''
 
         startKILL = pygame.time.get_ticks()  # start killing timer
@@ -955,10 +953,25 @@ class Game():
                 # If closed out, quit program
                 if event.type == pygame.QUIT:
                     running = False
+                # Check if mouse is clicked into rectangles to take in input
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    # Check if mouse is clicked into 1ST rectangle to take in input for player 1
+                    if input_rect.collidepoint(event.pos):
+                        active = True
+                    else:
+                        active = False
+
+
                 if event.type == pygame.KEYDOWN:
                     # If key pressed is ESC key, quit program
                     if event.key == pygame.K_ESCAPE:
                         running = False
+                    # If 1ST rectangle is clicked on and green/active then take in user input from keyboard
+                    if active == True:
+                        if event.key == pygame.K_BACKSPACE:
+                            p1_input = p1_input[0:-1]
+                        else:
+                            p1_input += event.unicode
 
 ##############################################CODE FOR CONTROLLING BULLETS#########################################################
             # KEEPING TRACK OF BULLET DISTANCE TRAVELED ALLOWED
@@ -1011,6 +1024,23 @@ class Game():
             self.player2.draw(self.map.getMap())
             self.enemy1.draw(self.map.getMap())
 
+            ###########Player Input text chat#####################################################################
+            if active:
+                color = color_active
+            else:
+                color = color_passive
+
+            # CHAT BOX SHIT#
+            font = pygame.font.Font(None, 30)
+            p1_text = font.render("player: ", 1, (255, 255, 255))  # player 1 text
+            self.map.getMap().blit(p1_text, (15, 790))
+            # Draw input rectangle 1
+            pygame.draw.rect(self.map.getMap(), color, input_rect, 2)
+            text_surface = base_font.render(p1_input, True, (255, 255, 255))
+            self.lobby.getLobby().blit(text_surface, (input_rect.x + 5, input_rect.y + 5))  # Blit text into rect
+            input_rect.w = max(100, text_surface.get_width() + 10)
+            ########################################################################################################
+
 
             #DRAWING BULLETS TO APPEAR IN GAME
             for bullet in bullets:
@@ -1029,14 +1059,8 @@ class Game():
 
 
             # CHAT BOX SHIT#
-            # signal.alarm(TIMEOUT)
-            if keys[pygame.K_0]:
-                p1_input = input("enter an input :")
-            # else:
-            # p1_input = ""
-            #print(p1_input)  # Test, prints current output
-            p1_text = font.render("player: " + p1_input, 1, (255, 255, 255))  # player 1 text
-            self.map.getMap().blit(p1_text, (15, 800))
+            #p1_text = font.render("player: ", 1, (255, 255, 255))  # player 1 text
+            #self.map.getMap().blit(p1_text, (15, 800))
 
 
 ###########################################   CREWMATE TASKS ################################################################
@@ -1157,7 +1181,7 @@ class Game():
 
                     mission_prompt = "Simon says, Type commands in chat, others follow when simon says; " + simon
                     called = 1
-                    if p1_input != "type here...":
+                    if p1_input != "":
                         self.map.getMap().blit(font.render("Simon says", 1, (0, 255, 0 )), (1380, 640))
                         mission += 1
 
@@ -1173,7 +1197,7 @@ class Game():
                     if self.player1.rect.x > 790 and self.player1.rect.x < 810:
                         if self.player1.rect.y > 390 and self.player1.rect.y < 410:
                             self.map.getMap().blit(font.render("Move to your colored circle", 1, (0, 255, 0)), (1380, 680))
-                            mission += 1
+                            #mission += 1
 
                 if (mission == 6):
                     print("mission: 6")
@@ -1205,13 +1229,12 @@ class Game():
                     # KILLING CHARACTERS#
                     # USE 2 KEY TO KILL PLAYER 2
                     if keys[pygame.K_2]:
-                        if self.player1.rect.x - self.player2.rect.x > -5 and self.player1.rect.x - self.player2.rect.x < 5:
+                        if self.player1.rect.x - self.player2.rect.x > -10 and self.player1.rect.x - self.player2.rect.x < 10:
                             self.player2.current_image = self.player2.images[1]
                     # USE 3 KEY TO KILL BLUE BOT
                     if keys[pygame.K_3]:
-                        if self.player1.rect.x - self.enemy1.x > -5 and self.player1.rect.x - self.enemy1.x < 5:
+                        if self.player1.rect.x - self.enemy1.x > -10 and self.player1.rect.x - self.enemy1.x < 10:
                             self.enemy1.current_image = self.enemy1.images[1]
-                            # pygame.display.flip()
                             isBlueDead = True  # set boolean to true
 
                 if (dif > -1 and dif < 16):
@@ -1221,69 +1244,7 @@ class Game():
 
 
 
-            """
-            #writes Missions: above list of mission
-            missions_word = font.render("Missions:", 1, (255, 255, 255))
-            self.map.getMap().blit(missions_word, (1470, 480))            
-            
-            self.mission_write_y = 520 #1380 for x
-            self.current_mission_write = 0
-            
-            #mission list on side of screen
-            #looks more complicated than it is. Only things that change are string and if
-            #second line needed, increment mission_write_y by 20 between lines and 40 between missions
-            #will have to adjust later when missions changed
-            for i in self.missions:
-                if i == 1:
-                    self.map.getMap().blit(font.render("Move to your colored circle", 1, (255, 255, 255)), (1380, self.mission_write_y))
-                    self.current_mission_write = self.current_mission_write + 1
-                    self.mission_write_y = self.mission_write_y + 40
-                elif i == 2:
-                    self.map.getMap().blit(font.render("Go to the bottom right corner", 1, (255, 255, 255)), (1380, self.mission_write_y))
-                    self.mission_write_y = self.mission_write_y + 20
-                    self.map.getMap().blit(font.render("of the screen", 1, (255, 255, 255)), (1380, self.mission_write_y))
-                    self.current_mission_write = self.current_mission_write + 1
-                    self.mission_write_y = self.mission_write_y + 40
-                elif i == 3:
-                    self.map.getMap().blit(font.render("Use the movement keys to do a", 1, (255, 255, 255)), (1380, self.mission_write_y))
-                    self.mission_write_y = self.mission_write_y + 20
-                    self.map.getMap().blit(font.render("dance party", 1, (255, 255, 255)),(1380, self.mission_write_y))
 
-                    self.current_mission_write = self.current_mission_write + 1
-                    self.mission_write_y = self.mission_write_y + 40
-                elif i == 4:
-                    self.map.getMap().blit(font.render("Type your favorite color in", 1, (255, 255, 255)), (1380, self.mission_write_y))
-                    self.mission_write_y = self.mission_write_y + 20
-                    self.map.getMap().blit(font.render("the chat", 1, (255, 255, 255)),(1380, self.mission_write_y))
-                    self.current_mission_write = self.current_mission_write + 1
-                    self.mission_write_y = self.mission_write_y + 40
-                elif i == 5:
-                    self.map.getMap().blit(font.render("Type a meaningful number in", 1, (255, 255, 255)), (1380, self.mission_write_y))
-                    self.mission_write_y = self.mission_write_y + 20
-                    self.map.getMap().blit(font.render("the chat", 1, (255, 255, 255)),(1380, self.mission_write_y))
-                    self.current_mission_write = self.current_mission_write + 1
-                    self.mission_write_y = self.mission_write_y + 40
-                elif i == 6:
-                    self.map.getMap().blit(font.render("Type your favorite beverage in", 1, (255, 255, 255)), (1380, self.mission_write_y))
-                    self.mission_write_y = self.mission_write_y + 20
-                    self.map.getMap().blit(font.render("the chat", 1, (255, 255, 255)),(1380, self.mission_write_y))
-                    self.current_mission_write = self.current_mission_write + 1
-                    self.mission_write_y = self.mission_write_y + 40
-                elif i == 7:
-                    self.map.getMap().blit(font.render("Simon says", 1, (255, 255, 255)), (1380, self.mission_write_y))
-                    self.current_mission_write = self.current_mission_write + 1
-                    self.mission_write_y = self.mission_write_y + 40
-                elif i == 8:
-                    self.map.getMap().blit(font.render("Stand in a line", 1, (255, 255, 255)), (1380, self.mission_write_y))
-                    self.current_mission_write = self.current_mission_write + 1
-                    self.mission_write_y = self.mission_write_y + 40
-                elif i == 9:
-                    self.map.getMap().blit(font.render("Go to the left of the screen and", 1, (255, 255, 255)), (1380, self.mission_write_y))
-                    self.mission_write_y = self.mission_write_y + 20
-                    self.map.getMap().blit(font.render("race to the right of the screen", 1,(255, 255, 255)), (1380, self.mission_write_y))
-                    self.current_mission_write = self.current_mission_write + 1
-                    self.mission_write_y = self.mission_write_y + 40
-            """
 
 
 
