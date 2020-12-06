@@ -379,20 +379,8 @@ def redraw_MAP(players, balls, game_time, score, current_id, map):
     """
     #map = Map(1700, 850, "Version 1.0")
     #map.drawMapBackground()
-#############
-    """""
-    boulder = Boulder(550, 200, 72, 72, 'Images/boulder.png', 'Images/gone.png')
-    jewel = Jewel(50, 375, 50, 50, 'Images/jewel.png', 'Images/gone.png')
-    alien = Alien(1000, 25, 40, 29, 'Images/alien.png', 'Images/gone.png')
-    alien2 = Alien(1060, 25, 40, 29, 'Images/alien.png', 'Images/gone.png')
-    alien3 = Alien(1120, 25, 40, 29, 'Images/alien.png', 'Images/gone.png')
-    jewel.draw(map.screen)
-    boulder.draw(map.screen)
-    alien.draw(map.screen)
-    alien2.draw(map.screen)
-    alien3.draw(map.screen)
-    """""
     #########
+    """""
     bg_img = pygame.image.load('Images/alien.png').convert_alpha()
     map.screen.blit(bg_img, (1000, 25))
     map.screen.blit(bg_img, (1060, 25))
@@ -401,7 +389,7 @@ def redraw_MAP(players, balls, game_time, score, current_id, map):
     map.screen.blit(bg_img1, (550, 200))
     bg_img1 = pygame.image.load('Images/jewel.png').convert_alpha()
     map.screen.blit(bg_img1, (50, 375))
-
+    """""
 #################
     '''
     # draw all the orbs/balls
@@ -411,6 +399,31 @@ def redraw_MAP(players, balls, game_time, score, current_id, map):
     # draw each player in the list
     for player in sorted(players, key=lambda x: players[x]["score"]):
         p = players[player]
+        #FOR CREWMATES
+        if p["role"] != "imposter":
+            # If player is crewmate add missions into their map
+            bg_img = pygame.image.load('Images/alien.png').convert_alpha()
+            map.screen.blit(bg_img, (1000, 25))
+            map.screen.blit(bg_img, (1060, 25))
+            map.screen.blit(bg_img, (1120, 25))
+            bg_img1 = pygame.image.load('Images/boulder.png').convert_alpha()
+            map.screen.blit(bg_img1, (550, 200))
+            bg_img1 = pygame.image.load('Images/jewel.png').convert_alpha()
+            map.screen.blit(bg_img1, (50, 375))
+            print(p["role"])
+
+            ##Full List of missions on side of screen##
+            font = pygame.font.Font(None, 30)
+            missions_word = font.render("Missions:", 1, (255, 255, 255))
+            map.getMap().blit(missions_word, (1470, 480))
+            map.getMap().blit(font.render("Exterminate all aliens on board", 1, (255, 255, 255)), (1380, 520))
+            map.getMap().blit(font.render("Acquire Jewel", 1, (255, 255, 255)), (1380, 560))
+            map.getMap().blit(font.render("Destroy Obstacle Covering Front Entrance of Main Room", 1, (255, 255, 255)), (1380, 600))
+            map.getMap().blit(font.render("Simon says", 1, (255, 255, 255)), (1380, 640))
+            map.getMap().blit(font.render("Move to your colored circle", 1, (255, 255, 255)), (1380, 680))
+
+
+
         print(current_id) # printing the player info
         # pygame.draw.circle(WIN, p["color"], (p["x"], p["y"] + 30), PLAYER_RADIUS + round(p["score"]))
         # WIN.blit(redImg, (p["x"], p["y"] + 30))
@@ -575,12 +588,14 @@ def rungame(name):
                         p1_input += event.unicode
 
 
-        # redraw window then update the frame
+        #redraw window then update the frame
         if started:
             map = Map(1700, 850, "Version 1.0")
             map.drawMapBackground()
+
             #DRAW IN ALL OBSTACLES AND TASKS FOR GAME WITH redraw_MAP
             redraw_MAP(players, balls, game_time, player["score"], current_id, map)
+
             ##Player Input text chat###
             if active:
                 color = color_active
@@ -597,6 +612,8 @@ def rungame(name):
                 chatText = font.render(p1_input, 1, (255, 255, 255))  # player 1 text
             map.screen.blit(chatText, (90, 780))
             ##Player Input text chat END###
+
+
         else:
             redraw_LOBBY(players, balls, game_time, player["score"], current_id)
         pygame.display.update()
