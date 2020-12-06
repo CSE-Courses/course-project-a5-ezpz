@@ -336,7 +336,7 @@ def redraw_LOBBY(players, balls, game_time, score, current_id):
     # draw each player in the list
     for player in sorted(players, key=lambda x: players[x]["score"]):
         p = players[player]
-        print(current_id) # printing the player info
+        #print(current_id) # printing the player info
         # pygame.draw.circle(WIN, p["color"], (p["x"], p["y"] + 30), PLAYER_RADIUS + round(p["score"]))
         # WIN.blit(redImg, (p["x"], p["y"] + 30))
         why = p["y"] + 30
@@ -379,8 +379,20 @@ def redraw_MAP(players, balls, game_time, score, current_id, map):
     """
     #map = Map(1700, 850, "Version 1.0")
     #map.drawMapBackground()
-    #########
+#############
     """""
+    boulder = Boulder(550, 200, 72, 72, 'Images/boulder.png', 'Images/gone.png')
+    jewel = Jewel(50, 375, 50, 50, 'Images/jewel.png', 'Images/gone.png')
+    alien = Alien(1000, 25, 40, 29, 'Images/alien.png', 'Images/gone.png')
+    alien2 = Alien(1060, 25, 40, 29, 'Images/alien.png', 'Images/gone.png')
+    alien3 = Alien(1120, 25, 40, 29, 'Images/alien.png', 'Images/gone.png')
+    jewel.draw(map.screen)
+    boulder.draw(map.screen)
+    alien.draw(map.screen)
+    alien2.draw(map.screen)
+    alien3.draw(map.screen)
+    """""
+    #########
     bg_img = pygame.image.load('Images/alien.png').convert_alpha()
     map.screen.blit(bg_img, (1000, 25))
     map.screen.blit(bg_img, (1060, 25))
@@ -389,7 +401,7 @@ def redraw_MAP(players, balls, game_time, score, current_id, map):
     map.screen.blit(bg_img1, (550, 200))
     bg_img1 = pygame.image.load('Images/jewel.png').convert_alpha()
     map.screen.blit(bg_img1, (50, 375))
-    """""
+
 #################
     '''
     # draw all the orbs/balls
@@ -399,32 +411,7 @@ def redraw_MAP(players, balls, game_time, score, current_id, map):
     # draw each player in the list
     for player in sorted(players, key=lambda x: players[x]["score"]):
         p = players[player]
-        #FOR CREWMATES
-        if p["role"] != "imposter":
-            # If player is crewmate add missions into their map
-            bg_img = pygame.image.load('Images/alien.png').convert_alpha()
-            map.screen.blit(bg_img, (1000, 25))
-            map.screen.blit(bg_img, (1060, 25))
-            map.screen.blit(bg_img, (1120, 25))
-            bg_img1 = pygame.image.load('Images/boulder.png').convert_alpha()
-            map.screen.blit(bg_img1, (550, 200))
-            bg_img1 = pygame.image.load('Images/jewel.png').convert_alpha()
-            map.screen.blit(bg_img1, (50, 375))
-            print(p["role"])
-
-            ##Full List of missions on side of screen##
-            font = pygame.font.Font(None, 30)
-            missions_word = font.render("Missions:", 1, (255, 255, 255))
-            map.getMap().blit(missions_word, (1470, 480))
-            map.getMap().blit(font.render("Exterminate all aliens on board", 1, (255, 255, 255)), (1380, 520))
-            map.getMap().blit(font.render("Acquire Jewel", 1, (255, 255, 255)), (1380, 560))
-            map.getMap().blit(font.render("Destroy Obstacle Covering Front Entrance of Main Room", 1, (255, 255, 255)), (1380, 600))
-            map.getMap().blit(font.render("Simon says", 1, (255, 255, 255)), (1380, 640))
-            map.getMap().blit(font.render("Move to your colored circle", 1, (255, 255, 255)), (1380, 680))
-
-
-
-        print(current_id) # printing the player info
+        #print(current_id) # printing the player info
         # pygame.draw.circle(WIN, p["color"], (p["x"], p["y"] + 30), PLAYER_RADIUS + round(p["score"]))
         # WIN.blit(redImg, (p["x"], p["y"] + 30))
         why = p["y"] + 30
@@ -500,7 +487,14 @@ def rungame(name):
     color = color_passive
     font = pygame.font.Font(None, 30)
     chatText = font.render('', 1, (255, 255, 255))  # player 1 text
-    # CHAT BOX REQUIREMENTS END#
+
+
+    start_ticks = pygame.time.get_ticks()  # start timer
+    max_time = 30  # set max time
+    vote = 2
+
+
+# CHAT BOX REQUIREMENTS END#
 
 
 
@@ -588,14 +582,12 @@ def rungame(name):
                         p1_input += event.unicode
 
 
-        #redraw window then update the frame
+        # redraw window then update the frame
         if started:
             map = Map(1700, 850, "Version 1.0")
             map.drawMapBackground()
-
             #DRAW IN ALL OBSTACLES AND TASKS FOR GAME WITH redraw_MAP
             redraw_MAP(players, balls, game_time, player["score"], current_id, map)
-
             ##Player Input text chat###
             if active:
                 color = color_active
@@ -613,9 +605,64 @@ def rungame(name):
             map.screen.blit(chatText, (90, 780))
             ##Player Input text chat END###
 
+            # Voting labels
+            red_text = font.render("red", 1, (255, 255, 255))  # player 1 text
+            map.screen.blit(red_text, (1530, 260))
+            blue_text = font.render("blue", 1, (255, 255, 255))  # player 1 text
+            map.screen.blit(blue_text, (1530, 310))
+            cyan_text = font.render("cyan", 1, (255, 255, 255))  # player 1 text
+            map.screen.blit(cyan_text, (1530, 360))
+            orange_text = font.render("orange", 1, (255, 255, 255))  # player 1 text
+            map.screen.blit(orange_text, (1530, 410))
+            if ((vote % 2) == 0):
+                vote_text = font.render("vote", 1, (255, 255, 255))  # player 1 text
+                map.screen.blit(vote_text, (1530, 200))
+
+            else:
+                vote_text = font.render("vote", 1, (0, 255, 0))  # set vote text to green
+                map.screen.blit(vote_text, (1530, 200))
+                number_of_players = len(players)
+                alive_players = 0
+
+                i = 0
+                while (i < number_of_players):
+                    if (players[i]["alive"] == 0):
+                        alive_players = alive_players + 1
+                        #print(players[i].color)
+                        if (players[i]["pid"] == 1): # red, cyan, orange, blue
+                            cyan_text = font.render("cyan", 1, (0, 255, 255))  # player 1 text
+                            map.screen.blit(cyan_text, (1530, 360))
+                        elif (players[i]["pid"] == 2):
+                            orange_text = font.render("orange", 1, (255, 160, 0))  # player 1 text
+                            map.screen.blit(orange_text, (1530, 410))
+                        elif (players[i]["pid"] == 0):
+                            red_text = font.render("red", 1, (255, 0, 0))  # player 1 text
+                            map.screen.blit(red_text, (1530, 260))
+                        elif (players[i]["pid"] == 3):
+                            blue_text = font.render("blue", 1, (0, 0, 255))  # player 1 text
+                            map.screen.blit(blue_text, (1530, 310))
+
+
+                    i = i + 1
+
+            # Timer
+            seconds = (pygame.time.get_ticks() - start_ticks) / 1000  # calculate how many seconds
+            # print(seconds) #print how many seconds
+            # print(int(max_time - seconds))  # debug
+            diff = int(max_time - seconds)
+            if (diff < 0):
+                # start_ticks = 0
+                max_time += 30
+                vote += 1
+            time_diff = "timer: " + str(diff)
+            timer_text = font.render(time_diff, 1, (255, 255, 255))  # player 1 text
+            map.screen.blit(timer_text, (1500, 500))
 
         else:
             redraw_LOBBY(players, balls, game_time, player["score"], current_id)
+
+
+
         pygame.display.update()
 
         #redraw_gameWindow(players, balls, game_time, player["score"], current_id)
