@@ -420,6 +420,9 @@ def redraw_MAP(players, balls, game_time, score, current_id, map):
     # draw each player in the list
     for player in sorted(players, key=lambda x: players[x]["score"]):
         p = players[player]
+        playersAlive =0
+        if(p["alive"] == 10):
+            playersAlive += 1
         print(p["role"])
         #print(current_id) # printing the player info
         # pygame.draw.circle(WIN, p["color"], (p["x"], p["y"] + 30), PLAYER_RADIUS + round(p["score"]))
@@ -453,7 +456,7 @@ def redraw_MAP(players, balls, game_time, score, current_id, map):
             if (mission > 4):
                 map.getMap().blit(font.render("Simon says", 1, (0, 255, 0)), (1380, mission_write_y))
             mission_write_y = mission_write_y + 40
-            map.getMap().blit(font.render(" to your colored circle", 1, (255, 255, 255)),
+            map.getMap().blit(font.render("Move to your colored circle", 1, (255, 255, 255)),
                                    (1380, mission_write_y))
             if (mission > 5):
                 map.getMap().blit(font.render("Move to your colored circle", 1, (0, 255, 0)),(1380, mission_write_y))
@@ -466,6 +469,10 @@ def redraw_MAP(players, balls, game_time, score, current_id, map):
             if (mission == 1):
                 # print("mission: 1")
                 mission_prompt = "Exterminate all aliens on board"
+                bg_img1 = pygame.image.load('Images/alien.png').convert_alpha()
+                map.screen.blit(bg_img1, (1000,25))
+                map.screen.blit(bg_img1, (1060, 25))
+                map.screen.blit(bg_img1, (1120, 25))
                 if keys[pygame.K_SPACE]:
                     map.getMap().blit(font.render("Exterminate all aliens on board", 1, (0, 255, 0)), (1380, 550))
                     mission += 1
@@ -554,7 +561,7 @@ def redraw_MAP(players, balls, game_time, score, current_id, map):
                 bg_img1 = pygame.transform.scale(bg_img1, (60, 40))
                 map.screen.blit(bg_img1, (800, 400))
 
-                if ((players[1]["x"] == 800 and players[1]["y"] == 400) or (players[0]["x"] == 700 and players[0]["y"] == 300) ):
+                if ((players[1]["x"] > 800 and players[1]["y"] > 400) or (players[0]["x"] > 700 and players[0]["y"] > 300) ):
                     mission += 1
                     break
                 """
@@ -583,6 +590,8 @@ def redraw_MAP(players, balls, game_time, score, current_id, map):
             if (mission == 9):
                 print("mission: 9")
                 mission_prompt = "Go to the left of the screen and race to the right of the screen"
+            if(playersAlive <= 2): # Imposter wins message
+                mission_prompt = "Imposter wins!!!"
 
             mission_text = font.render(mission_prompt, 1, (255, 255, 255))  # player 1 text
             map.getMap().blit(mission_text, (625, 790))
@@ -841,24 +850,23 @@ def rungame(name):
 
         data = ""
         # movement based on key presses
-        if not started:
-            if keys[pygame.K_LEFT]:
-                if player["x"] - vel - PLAYER_RADIUS - player["score"] >= 0:
-                    player["x"] = player["x"] - vel
+        if keys[pygame.K_LEFT]:
+            if player["x"] - vel - PLAYER_RADIUS - player["score"] >= 0:
+                player["x"] = player["x"] - vel
 
-            if keys[pygame.K_RIGHT]:
-                if player["x"] + vel + PLAYER_RADIUS + player["score"] <= W:
-                    player["x"] = player["x"] + vel
+        if keys[pygame.K_RIGHT]:
+            if player["x"] + vel + PLAYER_RADIUS + player["score"] <= W:
+                player["x"] = player["x"] + vel
 
-            if keys[pygame.K_UP]:
-                if player["y"] - vel - PLAYER_RADIUS - player["score"] >= 0:
-                    player["y"] = player["y"] - vel
+        if keys[pygame.K_UP]:
+            if player["y"] - vel - PLAYER_RADIUS - player["score"] >= 0:
+                player["y"] = player["y"] - vel
 
-            if keys[pygame.K_DOWN]:
-                if player["y"] + vel + PLAYER_RADIUS + player["score"] <= H:
-                    player["y"] = player["y"] + vel
+        if keys[pygame.K_DOWN]:
+            if player["y"] + vel + PLAYER_RADIUS + player["score"] <= H:
+                player["y"] = player["y"] + vel
 
-            data = "move " + str(player["x"]) + " " + str(player["y"])
+        data = "move " + str(player["x"]) + " " + str(player["y"])
 
         # allow user to shoot projectile if bullet cooldown is met
         if keys[pygame.K_SPACE] and shotLoop == 0:
@@ -905,45 +913,6 @@ def rungame(name):
             map.drawMapBackground()
             #DRAW IN ALL OBSTACLES AND TASKS FOR GAME WITH redraw_MAP
             redraw_MAP(players, balls, game_time, player["score"], current_id, map)
-
-            # movement based on key presses
-            if keys[pygame.K_LEFT]:
-                if player["x"] - vel - PLAYER_RADIUS - player["score"] >= 0:
-                    player["x"] = player["x"] - vel
-                    for wall in map.walls:
-                        playerhitbox = pygame.Rect(player["x"], player["y"], 36, 48)
-                        if playerhitbox.colliderect(wall.rect):
-                            player["x"] = player["x"] + vel
-
-            if keys[pygame.K_RIGHT]:
-                if player["x"] + vel + PLAYER_RADIUS + player["score"] <= W:
-                    player["x"] = player["x"] + vel
-                    for wall in map.walls:
-                        playerhitbox = pygame.Rect(player["x"], player["y"], 36, 48)
-                        if playerhitbox.colliderect(wall.rect):
-                            player["x"] = player["x"] - vel
-
-            if keys[pygame.K_UP]:
-                if player["y"] - vel - PLAYER_RADIUS - player["score"] >= 0:
-                    player["y"] = player["y"] - vel
-                    for wall in map.walls:
-                        playerhitbox = pygame.Rect(player["x"], player["y"], 36, 48)
-                        if playerhitbox.colliderect(wall.rect):
-                            player["y"] = player["y"] + vel
-
-            if keys[pygame.K_DOWN]:
-                if player["y"] + vel + PLAYER_RADIUS + player["score"] <= H:
-                    player["y"] = player["y"] + vel
-                    for wall in map.walls:
-                        playerhitbox = pygame.Rect(player["x"], player["y"], 36, 48)
-                        if playerhitbox.colliderect(wall.rect):
-                            player["y"] = player["y"] - vel
-
-            data = "move " + str(player["x"]) + " " + str(player["y"])
-
-            balls, players, game_time = server.send(data)
-            
-            
             ##Player Input text chat###
             if active:
                 color = color_active
@@ -961,9 +930,19 @@ def rungame(name):
             map.screen.blit(chatText, (90, 780))
             ##Player Input text chat END###
 
-
-
-
+            # Imposter Mission Cover UP
+            if player["role"] == "imposter":
+                mission_write_y = 550  # 1380 for x
+                map.getMap().blit(font.render("Exterminate all aliens on board", 1, (0, 0, 0)), (1380, mission_write_y))
+                mission_write_y = mission_write_y + 40
+                map.getMap().blit(font.render("Acquire Jewel", 1, (0, 0, 0)), (1380, mission_write_y))
+                mission_write_y = mission_write_y + 40
+                map.getMap().blit(font.render("Destroy Obstacle Covering Front Entrance of Main Room", 1, (0, 0, 0)),
+                                  (1380, mission_write_y))
+                mission_write_y = mission_write_y + 40
+                map.getMap().blit(font.render("Simon says", 1, (0, 0, 0)), (1380, mission_write_y))
+                mission_write_y = mission_write_y + 40
+                map.getMap().blit(font.render("Move to your colored circle", 1, (0, 0, 0)), (1380, mission_write_y))
 
             #####ALIEN TASk
             alien = Alien(1000, 25, 40, 29, 'Images/alien.png', 'Images/gone.png', map)
