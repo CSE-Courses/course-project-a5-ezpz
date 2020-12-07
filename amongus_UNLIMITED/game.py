@@ -1,7 +1,10 @@
 # small network game that has differnt blobs
 # moving around the screen
 
+import sys
 import contextlib
+from time import sleep
+
 with contextlib.redirect_stdout(None):
     import pygame
 from client import Network
@@ -460,6 +463,112 @@ def assignImposter():
 
 
 
+global playername
+playername = ''
+
+
+def playerInput():
+    global playername
+    lobby = Lobby(1700, 850, "Version 1.0")
+    clock = pygame.time.Clock()
+    pygame.init()
+    base_font = pygame.font.Font(None, 32)
+
+    input_rect1 = pygame.Rect(500, 200, 140, 32)
+    active1 = False
+
+
+    color_active = (0, 255, 0)
+    color_passive = (255, 255, 255)
+    color1 = color_passive
+
+    running = True
+    while running:
+        pygame.init()
+        clock.tick(60)  # once per frame, the program will never running at more than 60 fps.self.started = True
+        # Properly quit (pygame will crash without this)
+        for event in pygame.event.get():
+            # If closed out, quit program
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                running = False
+                sys.exit()
+
+            # Check if mouse is clicked into rectangles to take in input
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                # Check if mouse is clicked into 1ST rectangle to take in input for player 1
+                if input_rect1.collidepoint(event.pos):
+                    active1 = True
+                else:
+                    active1 = False
+                # Check if mouse is clicked into 2ND rectangle to take in input for player 2
+
+
+            # Check if any keys are pressed
+            if event.type == pygame.KEYDOWN:
+                # If 1ST rectangle is clicked on and green/active then take in user input from keyboard
+                if active1 == True:
+                    if event.key == pygame.K_BACKSPACE:
+                        playername = playername[0:-1]
+                    else:
+                        playername += event.unicode
+                # If 2ND rectangle is clicked on and green/active then take in user input from keyboard
+
+
+                # If key pressed is ESC key, quit program
+                if event.key == pygame.K_ESCAPE:
+                    running = False
+                # If enter is pressed, lobby will close and game will start
+                if event.key == pygame.K_RETURN:
+                    started = True
+                    running = False
+
+        # Draw lobby
+        lobby.drawPlayerInputLobby()
+        # Title for game
+        font = pygame.font.Font(None, 50)
+        title = font.render("ENTER PLAYER INFO", 1, (255, 255, 255))
+        lobby.getLobby().blit(title, (600, 50))
+        # Label to enter the lobby
+        enterLabel = font.render("Press the Enter key to continue", 1, (255, 255, 255))
+        lobby.getLobby().blit(enterLabel, (400, 500))
+        # Player labels
+        font = pygame.font.Font(None, 50)
+        player1 = font.render("PLAYER 1 NAME: ", 1, (255, 255, 255))
+        lobby.getLobby().blit(player1, (200, 200))
+
+
+        #######################################Adding user input#################################
+        # Depending on if rectangle is active or not change color of input rectangle
+        if active1:
+            color1 = color_active
+        else:
+            color1 = color_passive
+
+
+
+        # Draw input rectangle 1
+        pygame.draw.rect(lobby.getLobby(), color1, input_rect1, 2)
+        text_surface = base_font.render(playername, True, (255, 255, 255))
+        lobby.getLobby().blit(text_surface, (input_rect1.x + 5, input_rect1.y + 5))  # Blit text into rect
+        input_rect1.w = max(100, text_surface.get_width() + 10)
+
+        pygame.display.update()
+
+    if not started:
+        pygame.quit()
+    else:
+        return(str(playername))
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -675,11 +784,14 @@ def rungame(name):
 
 # get users name
 while True:
-    name = input("Please enter your name: ")
+
+    name = playerInput()
+    #name = input("Please enter your name: ")
     if  0 < len(name) < 20:
         break
     else:
         print("Error, this name is not allowed (must be between 1 and 19 characters [inclusive])")
+
 
 # make window start in top left hand corner
 os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (0,30)
