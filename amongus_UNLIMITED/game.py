@@ -404,8 +404,7 @@ def redraw_MAP(players, balls, game_time, score, current_id, map):
     map.screen.blit(bg_img, (1120, 25))
     #bg_img1 = pygame.image.load('Images/boulder.png').convert_alpha()
     #map.screen.blit(bg_img1, (550, 200))
-    bg_img1 = pygame.image.load('Images/jewel.png').convert_alpha()
-    map.screen.blit(bg_img1, (50, 375))
+
 
 #################
     '''
@@ -469,7 +468,14 @@ def redraw_MAP(players, balls, game_time, score, current_id, map):
             if (mission == 2):
                 print("mission: 2")
                 mission_prompt = "Acquire Jewel"
-                mission += 1
+                keys = pygame.key.get_pressed()
+                bg_img1 = pygame.image.load('Images/jewel.png').convert_alpha()
+                map.screen.blit(bg_img1, (50, 375))
+
+                if keys[pygame.K_c]:
+                    bg_img1 = pygame.image.load('Images/gone.png').convert_alpha()
+                    map.screen.blit(bg_img1, (50, 375))
+                    mission += 1
 
             if (mission == 3):
                 boulderGone = False
@@ -527,10 +533,30 @@ def redraw_MAP(players, balls, game_time, score, current_id, map):
                 print("mission: 5")
                 mission_prompt = "Move to your colored circle"
 
+
+                bg_img1 = pygame.image.load('Images/red_circle.png').convert_alpha()
+                bg_img1 = pygame.transform.scale(bg_img1, (40,40))
+                map.screen.blit(bg_img1, (700, 300))
+
+                bg_img1 = pygame.image.load('Images/blue_circle.png').convert_alpha()
+                bg_img1 = pygame.transform.scale(bg_img1, (60, 40))
+                map.screen.blit(bg_img1, (700, 400))
+                bg_img1 = pygame.image.load('Images/orange_circle.png').convert_alpha()
+                bg_img1 = pygame.transform.scale(bg_img1, (60, 40))
+                map.screen.blit(bg_img1, (800, 300))
+                bg_img1 = pygame.image.load('Images/cyan_circle.png').convert_alpha()
+                bg_img1 = pygame.transform.scale(bg_img1, (60, 40))
+                map.screen.blit(bg_img1, (800, 400))
+
+                if (players[1]["x"] == 800 and players[1]["y"] == 400):
+                    mission += 1
+                    break
+                """
                 pygame.draw.circle(missionSurface, (255, 0, 0), (700, 300), 25)  # Red circle
                 pygame.draw.circle(missionSurface, (0, 0, 255), (700, 400), 25)  # Blue circle
                 pygame.draw.circle(missionSurface, (255, 140, 0), (800, 300), 25)  # Orange circle
                 pygame.draw.circle(missionSurface, (0, 255, 255), (800, 400), 25)  # cyan circle
+                """
                 """
                 if player1.rect.x > 790 and self.player1.rect.x < 810:
                     if self.player1.rect.y > 390 and self.player1.rect.y < 410:
@@ -749,27 +775,26 @@ def rungame(name):
     started = False
     run = True
     while run:
-    clock.tick(30)  # 30 fps max
-    player = players[current_id]
-    # print(players[current_id]) # print player id
-    # print(current_id)
-    # print(player["x"]) # player x
-    # print("draw player")
-    # drawPlayer(200,100, player)
-    # drawPlayer(player["x"], player["y"])
+        clock.tick(30) # 30 fps max
+        player = players[current_id]
+        #print(players[current_id]) # print player id
+        #print(current_id)
+        # print(player["x"]) # player x
+        # print("draw player")
+        #drawPlayer(200,100, player)
+        #drawPlayer(player["x"], player["y"])
 
-    if (current_id == 4):
-        # WIN.blit("red.png", (player["x"], player["x"]))
-        print('')
-    vel = START_VEL - round(player["score"] / 14)
-    if vel <= 1:
-        vel = 1
+        if(current_id == 4):
+            # WIN.blit("red.png", (player["x"], player["x"]))
+            print('')
+        vel = START_VEL - round(player["score"]/14)
+        if vel <= 1:
+            vel = 1
 
-    # get key presses
-    keys = pygame.key.get_pressed()
+        # get key presses
+        keys = pygame.key.get_pressed()
 
-    data = ""
-    if not started:
+        data = ""
         # movement based on key presses
         if keys[pygame.K_LEFT]:
             if player["x"] - vel - PLAYER_RADIUS - player["score"] >= 0:
@@ -792,34 +817,34 @@ def rungame(name):
         # send data to server and recieve back all players information
         balls, players, game_time = server.send(data)
 
-    for event in pygame.event.get():
-        # if user hits red x button close window
-        if event.type == pygame.QUIT:
-            run = False
-
-        # Check if mouse is clicked into rectangles to take in input
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            # Check if mouse is clicked into 1ST rectangle to take in input for player 1
-            if input_rect.collidepoint(event.pos):
-                active = True
-            else:
-                active = False
-
-        if event.type == pygame.KEYDOWN:
-            # if user hits a escape key close program
-            if event.key == pygame.K_ESCAPE:
+        for event in pygame.event.get():
+            # if user hits red x button close window
+            if event.type == pygame.QUIT:
                 run = False
-            # If enter is pressed, lobby will close and game will start
-            if event.key == pygame.K_RETURN:
-                started = True
-                # run = False
 
-            # If 1ST rectangle is clicked on and green/active then take in user input from keyboard
-            if active == True:
-                if event.key == pygame.K_BACKSPACE:
-                    p1_input = p1_input[0:-1]
+            # Check if mouse is clicked into rectangles to take in input
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                # Check if mouse is clicked into 1ST rectangle to take in input for player 1
+                if input_rect.collidepoint(event.pos):
+                    active = True
                 else:
-                    p1_input += event.unicode
+                    active = False
+
+            if event.type == pygame.KEYDOWN:
+                # if user hits a escape key close program
+                if event.key == pygame.K_ESCAPE:
+                    run = False
+                # If enter is pressed, lobby will close and game will start
+                if event.key == pygame.K_RETURN:
+                    started = True
+                    #run = False
+
+                # If 1ST rectangle is clicked on and green/active then take in user input from keyboard
+                if active == True:
+                    if event.key == pygame.K_BACKSPACE:
+                        p1_input = p1_input[0:-1]
+                    else:
+                        p1_input += event.unicode
 
 
         # redraw window then update the frame
@@ -828,43 +853,6 @@ def rungame(name):
             map.drawMapBackground()
             #DRAW IN ALL OBSTACLES AND TASKS FOR GAME WITH redraw_MAP
             redraw_MAP(players, balls, game_time, player["score"], current_id, map)
-            if keys[pygame.K_LEFT]:
-                if player["x"] - vel - PLAYER_RADIUS - player["score"] >= 0:
-                    player["x"] = player["x"] - vel
-                    for wall in map.walls:
-                        playerhitbox = pygame.Rect(player["x"], player["y"], 36, 48)
-                        if playerhitbox.colliderect(wall.rect):
-                            player["x"] = player["x"] + vel
-
-            if keys[pygame.K_RIGHT]:
-                if player["x"] + vel + PLAYER_RADIUS + player["score"] <= W:
-                    player["x"] = player["x"] + vel
-                    for wall in map.walls:
-                        playerhitbox = pygame.Rect(player["x"], player["y"], 36, 48)
-                        if playerhitbox.colliderect(wall.rect):
-                            player["x"] = player["x"] - vel
-
-            if keys[pygame.K_UP]:
-                if player["y"] - vel - PLAYER_RADIUS - player["score"] >= 0:
-                    player["y"] = player["y"] - vel
-                    for wall in map.walls:
-                        playerhitbox = pygame.Rect(player["x"], player["y"], 36, 48)
-                        if playerhitbox.colliderect(wall.rect):
-                            player["y"] = player["y"] + vel
-
-            if keys[pygame.K_DOWN]:
-                if player["y"] + vel + PLAYER_RADIUS + player["score"] <= H:
-                    player["y"] = player["y"] + vel
-                    for wall in map.walls:
-                        playerhitbox = pygame.Rect(player["x"], player["y"], 36, 78)
-                        if playerhitbox.colliderect(wall.rect):
-                            player["y"] = player["y"] - vel
-
-            data = "move " + str(player["x"]) + " " + str(player["y"])
-
-            # send data to server and recieve back all players information
-            balls, players, game_time = server.send(data)
-            
             ##Player Input text chat###
             if active:
                 color = color_active
