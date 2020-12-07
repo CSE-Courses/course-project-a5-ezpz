@@ -801,34 +801,18 @@ def rungame(name):
         if keys[pygame.K_LEFT]:
             if player["x"] - vel - PLAYER_RADIUS - player["score"] >= 0:
                 player["x"] = player["x"] - vel
-                for wall in map.walls:
-                    playerhitbox = pygame.Rect(player["x"], player["y"], 36, 48)
-                    if playerhitbox.colliderect(wall.rect):
-                        player["x"] = player["x"] + vel
 
         if keys[pygame.K_RIGHT]:
             if player["x"] + vel + PLAYER_RADIUS + player["score"] <= W:
                 player["x"] = player["x"] + vel
-                for wall in map.walls:
-                    playerhitbox = pygame.Rect(player["x"], player["y"], 36, 48)
-                    if playerhitbox.colliderect(wall.rect):
-                        player["x"] = player["x"] - vel
 
         if keys[pygame.K_UP]:
             if player["y"] - vel - PLAYER_RADIUS - player["score"] >= 0:
                 player["y"] = player["y"] - vel
-                for wall in map.walls:
-                    playerhitbox = pygame.Rect(player["x"], player["y"], 36, 48)
-                    if playerhitbox.colliderect(wall.rect):
-                        player["y"] = player["y"] + vel
 
         if keys[pygame.K_DOWN]:
             if player["y"] + vel + PLAYER_RADIUS + player["score"] <= H:
                 player["y"] = player["y"] + vel
-                for wall in map.walls:
-                    playerhitbox = pygame.Rect(player["x"], player["y"], 36, 48)
-                    if playerhitbox.colliderect(wall.rect):
-                        player["y"] = player["y"] - vel
 
         data = "move " + str(player["x"]) + " " + str(player["y"])
 
