@@ -237,13 +237,13 @@ class Boulder(pygame.sprite.Sprite):
 
 class Alien(pygame.sprite.Sprite):
 
-    def __init__(self, startx, starty, w, h, obstacle, destroyed):
+    def __init__(self, startx, starty, w, h, obstacle, destroyed, map):
         pygame.sprite.Sprite.__init__(self)
         self.x = startx
         self.y = starty
         self.height = h  # 29pixels
         self.width = w  # 40pixels
-        self.screen = pygame.display.set_mode((w, h))
+        self.screen = map.screen
         self.obstacle = obstacle
         self.destroyed = destroyed
         self.images = [pygame.image.load(self.obstacle).convert_alpha(), pygame.image.load(self.destroyed).convert_alpha()]
@@ -304,7 +304,6 @@ def convert_time(t):
     """
     converts a time given in seconds to a time in
     minutes
-
     :param t: int
     :return: string
     """
@@ -398,10 +397,7 @@ def redraw_MAP(players, balls, game_time, score, current_id, map):
     """""
     #########
     missionSurface = pygame.Surface([1700, 850])
-    bg_img = pygame.image.load('Images/alien.png').convert_alpha()
-    map.screen.blit(bg_img, (1000, 25))
-    map.screen.blit(bg_img, (1060, 25))
-    map.screen.blit(bg_img, (1120, 25))
+
     #bg_img1 = pygame.image.load('Images/boulder.png').convert_alpha()
     #map.screen.blit(bg_img1, (550, 200))
 
@@ -431,16 +427,15 @@ def redraw_MAP(players, balls, game_time, score, current_id, map):
             map.getMap().blit(missions_word, (1470, 500))
             mission_write_y = 550  # 1380 for x
 
-            map.getMap().blit(font.render("Exterminate all aliens on board", 1, (255, 255, 255)),
-                                   (1380, mission_write_y))
+            map.getMap().blit(font.render("Exterminate all aliens on board", 1, (255, 255, 255)), (1380, mission_write_y))
+            if (mission > 1):
+                map.getMap().blit(font.render("Exterminate all aliens on board", 1, (0, 255, 0)), (1380, mission_write_y))
             mission_write_y = mission_write_y + 40
             map.getMap().blit(font.render("Acquire Jewel", 1, (255, 255, 255)), (1380, mission_write_y))
             if(mission > 2):
                 map.getMap().blit(font.render("Acquire Jewel", 1, (0, 255, 0)), (1380, mission_write_y))
             mission_write_y = mission_write_y + 40
-            map.getMap().blit(
-                font.render("Destroy Obstacle Covering Front Entrance of Main Room", 1, (255, 255, 255)),
-                (1380, mission_write_y))
+            map.getMap().blit(font.render("Destroy Obstacle Covering Front Entrance of Main Room", 1, (255, 255, 255)), (1380, mission_write_y))
             if(mission > 3):
                 map.getMap().blit(font.render("Destroy Obstacle Covering Front Entrance of Main Room", 1, (0, 255, 0)),(1380, mission_write_y))
             mission_write_y = mission_write_y + 40
@@ -454,27 +449,28 @@ def redraw_MAP(players, balls, game_time, score, current_id, map):
                 map.getMap().blit(font.render("Move to your colored circle", 1, (0, 255, 0)),(1380, mission_write_y))
             # Code for Displaying the mission prompts
 
-
-
+            keys = pygame.key.get_pressed()
             mision_prompt = 'mission: '
             mission_text = ''
             random_num = 1  # for simon says assignment
             if (mission == 1):
                 # print("mission: 1")
                 mission_prompt = "Exterminate all aliens on board"
-
-                mission += 1
+                if keys[pygame.K_SPACE]:
+                    map.getMap().blit(font.render("Exterminate all aliens on board", 1, (0, 255, 0)), (1380, 550))
+                    mission += 1
 
             if (mission == 2):
                 print("mission: 2")
                 mission_prompt = "Acquire Jewel"
-                keys = pygame.key.get_pressed()
+                #keys = pygame.key.get_pressed()
                 bg_img1 = pygame.image.load('Images/jewel.png').convert_alpha()
                 map.screen.blit(bg_img1, (50, 375))
 
                 if keys[pygame.K_c]:
                     bg_img1 = pygame.image.load('Images/gone.png').convert_alpha()
                     map.screen.blit(bg_img1, (50, 375))
+                    map.getMap().blit(font.render("Acquire Jewel", 1, (0, 255, 0)), (1380, mission_write_y))
                     mission += 1
 
             if (mission == 3):
@@ -484,7 +480,7 @@ def redraw_MAP(players, balls, game_time, score, current_id, map):
                 bg_img1 = pygame.image.load('Images/boulder.png').convert_alpha()
                 map.screen.blit(bg_img1, (550, 200))
                 # Destroy boulder obstacle
-                keys = pygame.key.get_pressed()
+                #keys = pygame.key.get_pressed()
                 for event in pygame.event.get():
                     if keys[pygame.K_x]:
                         bg_img1 = pygame.image.load('Images/gone.png').convert_alpha()
@@ -548,7 +544,7 @@ def redraw_MAP(players, balls, game_time, score, current_id, map):
                 bg_img1 = pygame.transform.scale(bg_img1, (60, 40))
                 map.screen.blit(bg_img1, (800, 400))
 
-                if (players[1]["x"] == 800 and players[1]["y"] == 400):
+                if ((players[1]["x"] == 800 and players[1]["y"] == 400) or (players[0]["x"] == 700 and players[0]["y"] == 300) ):
                     mission += 1
                     break
                 """
@@ -757,11 +753,7 @@ def rungame(name):
     start_ticks = pygame.time.get_ticks()  # start timer
     max_time = 30  # set max time
     vote = 2
-
-
 # CHAT BOX REQUIREMENTS END#
-
-
 
     global players
     # start by connecting to the network
@@ -772,11 +764,21 @@ def rungame(name):
     clock = pygame.time.Clock()
     assignImposter()
 
+    # Declaring array storing bullets
+    bullets = []
+    shotLoop = 0  # bullet cool down]
+
     started = False
     run = True
     while run:
         clock.tick(30) # 30 fps max
         player = players[current_id]
+
+        # setting basic timer for projectiles
+        if shotLoop > 0:
+            shotLoop += 1
+        if shotLoop > 3:
+            shotLoop = 0
         #print(players[current_id]) # print player id
         #print(current_id)
         # print(player["x"]) # player x
@@ -796,27 +798,48 @@ def rungame(name):
 
         data = ""
         # movement based on key presses
-        if not started:
-            if keys[pygame.K_LEFT]:
-                if player["x"] - vel - PLAYER_RADIUS - player["score"] >= 0:
-                    player["x"] = player["x"] - vel
+        if keys[pygame.K_LEFT]:
+            if player["x"] - vel - PLAYER_RADIUS - player["score"] >= 0:
+                player["x"] = player["x"] - vel
+                for wall in map.walls:
+                    playerhitbox = pygame.Rect(player["x"], player["y"], 36, 48)
+                    if playerhitbox.colliderect(wall.rect):
+                        player["x"] = player["x"] + vel
 
-            if keys[pygame.K_RIGHT]:
-                if player["x"] + vel + PLAYER_RADIUS + player["score"] <= W:
-                    player["x"] = player["x"] + vel
+        if keys[pygame.K_RIGHT]:
+            if player["x"] + vel + PLAYER_RADIUS + player["score"] <= W:
+                player["x"] = player["x"] + vel
+                for wall in map.walls:
+                    playerhitbox = pygame.Rect(player["x"], player["y"], 36, 48)
+                    if playerhitbox.colliderect(wall.rect):
+                        player["x"] = player["x"] - vel
 
-            if keys[pygame.K_UP]:
-                if player["y"] - vel - PLAYER_RADIUS - player["score"] >= 0:
-                    player["y"] = player["y"] - vel
+        if keys[pygame.K_UP]:
+            if player["y"] - vel - PLAYER_RADIUS - player["score"] >= 0:
+                player["y"] = player["y"] - vel
+                for wall in map.walls:
+                    playerhitbox = pygame.Rect(player["x"], player["y"], 36, 48)
+                    if playerhitbox.colliderect(wall.rect):
+                        player["y"] = player["y"] + vel
 
-            if keys[pygame.K_DOWN]:
-                if player["y"] + vel + PLAYER_RADIUS + player["score"] <= H:
-                    player["y"] = player["y"] + vel
+        if keys[pygame.K_DOWN]:
+            if player["y"] + vel + PLAYER_RADIUS + player["score"] <= H:
+                player["y"] = player["y"] + vel
+                for wall in map.walls:
+                    playerhitbox = pygame.Rect(player["x"], player["y"], 36, 48)
+                    if playerhitbox.colliderect(wall.rect):
+                        player["y"] = player["y"] - vel
 
-            data = "move " + str(player["x"]) + " " + str(player["y"])
+        data = "move " + str(player["x"]) + " " + str(player["y"])
 
-            # send data to server and recieve back all players information
-            balls, players, game_time = server.send(data)
+        # allow user to shoot projectile if bullet cooldown is met
+        if keys[pygame.K_SPACE] and shotLoop == 0:
+            if len(bullets) < 5:
+                bullets.append(projectile(player["x"], player["y"], 6, (255, 0, 0), 1, map.screen))
+            shotLoop = 1
+
+        # send data to server and recieve back all players information
+        balls, players, game_time = server.send(data)
 
         for event in pygame.event.get():
             # if user hits red x button close window
@@ -854,44 +877,6 @@ def rungame(name):
             map.drawMapBackground()
             #DRAW IN ALL OBSTACLES AND TASKS FOR GAME WITH redraw_MAP
             redraw_MAP(players, balls, game_time, player["score"], current_id, map)
-
-            if keys[pygame.K_LEFT]:
-                if player["x"] - vel - PLAYER_RADIUS - player["score"] >= 0:
-                    player["x"] = player["x"] - vel
-                    for wall in map.walls:
-                        playerhitbox = pygame.Rect(player["x"], player["y"], 36, 48)
-                        if playerhitbox.colliderect(wall.rect):
-                            player["x"] = player["x"] + vel
-
-            if keys[pygame.K_RIGHT]:
-                if player["x"] + vel + PLAYER_RADIUS + player["score"] <= W:
-                    player["x"] = player["x"] + vel
-                    for wall in map.walls:
-                        playerhitbox = pygame.Rect(player["x"], player["y"], 36, 48)
-                        if playerhitbox.colliderect(wall.rect):
-                            player["x"] = player["x"] - vel
-
-            if keys[pygame.K_UP]:
-                if player["y"] - vel - PLAYER_RADIUS - player["score"] >= 0:
-                    player["y"] = player["y"] - vel
-                    for wall in map.walls:
-                        playerhitbox = pygame.Rect(player["x"], player["y"], 36, 48)
-                        if playerhitbox.colliderect(wall.rect):
-                            player["y"] = player["y"] + vel
-
-            if keys[pygame.K_DOWN]:
-                if player["y"] + vel + PLAYER_RADIUS + player["score"] <= H:
-                    player["y"] = player["y"] + vel
-                    for wall in map.walls:
-                        playerhitbox = pygame.Rect(player["x"], player["y"], 36, 48)
-                        if playerhitbox.colliderect(wall.rect):
-                            player["y"] = player["y"] - vel
-
-            data = "move " + str(player["x"]) + " " + str(player["y"])
-
-            # send data to server and recieve back all players information
-            balls, players, game_time = server.send(data)
-
             ##Player Input text chat###
             if active:
                 color = color_active
@@ -908,6 +893,62 @@ def rungame(name):
                 chatText = font.render(p1_input, 1, (255, 255, 255))  # player 1 text
             map.screen.blit(chatText, (90, 780))
             ##Player Input text chat END###
+
+
+
+
+
+            #####ALIEN TASk
+            alien = Alien(1000, 25, 40, 29, 'Images/alien.png', 'Images/gone.png', map)
+            alien2 = Alien(1060, 25, 40, 29, 'Images/alien.png', 'Images/gone.png', map)
+            alien3 = Alien(1120, 25, 40, 29, 'Images/alien.png', 'Images/gone.png', map)
+
+            # DRAWING BULLETS TO APPEAR IN GAME
+            for bullet in bullets:
+                # bg_img = pygame.image.load('Images/gone.png').convert_alpha()
+                bullet.draw()
+
+            for bullet in bullets:
+                # ADDING COLLISON DETECTION FOR THE 3 ALIENS
+                if alien.current_image == alien.images[0]:
+                    if bullet.y - bullet.radius < alien.hitbox[1] + alien.hitbox[3] and bullet.y + bullet.radius > \
+                            alien.hitbox[1]:  # checks if we are above the bottom and below the top of the rectangle
+                        if bullet.x + bullet.radius > alien.hitbox[0] and bullet.x - bullet.radius < alien.hitbox[0] + \
+                                alien.hitbox[2]:
+                            alien.current_image = alien.images[1]  # Change alien image to alienGone image
+                            bg_img1 = pygame.image.load('Images/gone.png').convert_alpha()
+                            map.screen.blit(bg_img1, (1000, 25))
+                            map.screen.blit(bg_img1, (1060, 25))
+                            map.screen.blit(bg_img1, (1120, 25))
+                            bullets.pop(bullets.index(bullet))
+
+                if alien2.current_image == alien2.images[0]:
+                    if bullet.y - bullet.radius < alien2.hitbox[1] + alien2.hitbox[3] and bullet.y + bullet.radius > \
+                            alien2.hitbox[1]:  # checks if we are above the bottom and below the top of the rectangle
+                        if bullet.x + bullet.radius > alien2.hitbox[0] and bullet.x - bullet.radius < alien2.hitbox[0] + \
+                                alien2.hitbox[2]:
+                            alien2.current_image = alien2.images[1]  # Change alien image to alienGone image
+                            bullets.pop(bullets.index(bullet))
+
+                if alien3.current_image == alien3.images[0]:
+                    if bullet.y - bullet.radius < alien3.hitbox[1] + alien3.hitbox[3] and bullet.y + bullet.radius > \
+                            alien3.hitbox[1]:  # checks if we are above the bottom and below the top of the rectangle
+                        if bullet.x + bullet.radius > alien3.hitbox[0] and bullet.x - bullet.radius < alien3.hitbox[0] + \
+                                alien3.hitbox[2]:
+                            alien3.current_image = alien3.images[1]  # Change alien image to alienGone image
+                            bg_img1 = pygame.image.load('Images/gone.png').convert_alpha()
+                            bullets.pop(bullets.index(bullet))
+                if bullet.x < 1700 and bullet.x > 0:
+                    bullet.x += bullet.vel
+                else:
+                    bullets.pop(bullets.index(bullet))
+
+                alien.draw(map.screen)
+                alien2.draw(map.screen)
+                alien3.draw(map.screen)
+            #####ALIEN TASk END
+
+
 
             # Voting labels
             red_text = font.render("red", 1, (255, 255, 255))  # player 1 text
