@@ -30,10 +30,18 @@ players = {}
 balls = []
 
 
-redImg = pygame.image.load('Images/red.png')  # load red image
-cyanImg = pygame.image.load('Images/cyan.png')  # load red image
-orangeImg = pygame.image.load('Images/orange.png')  # load red image
-blueImg = pygame.image.load('Images/blue.png')  # load blue image
+global redStatusImg
+global cyanStatusImg
+global orangeStatusImg
+global blueStatusImg
+redImg = [pygame.image.load('Images/red.png'), pygame.image.load('Images/redDead.png')]  # load red image
+redStatusImg = redImg[0]
+cyanImg = [pygame.image.load('Images/cyan.png'), pygame.image.load('Images/cyanDead.png')]  # load red image
+cyanStatusImg = cyanImg[0]
+orangeImg = [pygame.image.load('Images/orange.png'), pygame.image.load('Images/orangeDead.png')]  # load red image
+orangeStatusImg = orangeImg[0]
+blueImg = [pygame.image.load('Images/blue.png'), pygame.image.load('Images/blueDead.png')] # load blue image
+blueStatusImg = blueImg[0]
 #########################################################################################################################################
 
 class Lobby():
@@ -469,7 +477,7 @@ def redraw_MAP(players, balls, game_time, score, current_id, map):
                 bg_img1 = pygame.image.load('Images/jewel.png').convert_alpha()
                 map.screen.blit(bg_img1, (50, 375))
 
-                if keys[pygame.K_c]:
+                if keys[pygame.K_z]:
                     bg_img1 = pygame.image.load('Images/gone.png').convert_alpha()
                     map.screen.blit(bg_img1, (50, 375))
                     map.getMap().blit(font.render("Acquire Jewel", 1, (0, 255, 0)), (1380, mission_write_y))
@@ -546,7 +554,7 @@ def redraw_MAP(players, balls, game_time, score, current_id, map):
                 bg_img1 = pygame.transform.scale(bg_img1, (60, 40))
                 map.screen.blit(bg_img1, (800, 400))
 
-                if ((players[1]["x"] > 800 and players[1]["y"] > 400) or (players[0]["x"] > 700 and players[0]["y"] > 300) ):
+                if ((players[1]["x"] == 800 and players[1]["y"] == 400) or (players[0]["x"] == 700 and players[0]["y"] == 300) ):
                     mission += 1
                     break
                 """
@@ -563,10 +571,11 @@ def redraw_MAP(players, balls, game_time, score, current_id, map):
                 """
             if (mission == 6):
                 print("mission: 6")
+                mission_prompt = "CREWMATE WINS!"
                 #mission_prompt = "Type your favorite beverage in the chat"
-                mission_prompt = "Crewmate won the game!"
             if (mission == 7):
                 print("mission: 7")
+
 
             if (mission == 8):
                 print("mission: 8")
@@ -578,7 +587,6 @@ def redraw_MAP(players, balls, game_time, score, current_id, map):
             mission_text = font.render(mission_prompt, 1, (255, 255, 255))  # player 1 text
             map.getMap().blit(mission_text, (625, 790))
         ############################################
-
 
     # draw scoreboard
     sort_players = list(reversed(sorted(players, key=lambda x: players[x]["score"])))
@@ -599,16 +607,46 @@ def redraw_MAP(players, balls, game_time, score, current_id, map):
     # text = TIME_FONT.render("Score: " + str(round(score)),1,(0,0,0))
     # WIN.blit(text,(10,15 + text.get_height()))
 
+
+
+
 def drawPlayer(ex, ey, player_id):
+    global redStatusImg
+    global cyanStatusImg
+    global orangeStatusImg
+    global blueStatusImg
+    keys = pygame.key.get_pressed()
     if(player_id == 0):
-        WIN.blit(redImg, (ex, ey))
+        WIN.blit(redStatusImg, (ex, ey))
+        if keys[pygame.K_r]:
+            redStatusImg = redImg[1]
+            players[0]["alive"] = 1
+            print(players[0]["alive"])
+
     elif(player_id == 1):
-        WIN.blit(cyanImg, (ex, ey))
+        WIN.blit(cyanStatusImg, (ex, ey))
+        if keys[pygame.K_c]:
+            cyanStatusImg = cyanImg[1]
+            players[1]["alive"] = 1
+
     elif (player_id == 2):
-        WIN.blit(orangeImg, (ex, ey))
+        WIN.blit(orangeStatusImg, (ex, ey))
+        if keys[pygame.K_o]:
+            orangeStatusImg = orangeImg[1]
+            players[2]["alive"] = 1
     else:
-        WIN.blit(blueImg, (ex, ey))
+        WIN.blit(blueStatusImg, (ex, ey))
+        if keys[pygame.K_b]:
+            blueStatusImg = blueImg[1]
+            players[3]["alive"] = 1
     # pygame.draw.circle(WIN, p["color"], (p["x"], p["y"]), PLAYER_RADIUS + round(p["score"]))
+
+
+
+
+
+
+
 
 def assignImposter():
     x = random.randint(0,len(players)-1)
@@ -620,10 +658,10 @@ def assignImposter():
 
 
 
+
+
 global playername
 playername = ''
-
-
 def playerInput():
     global playername
     lobby = Lobby(1700, 850, "Version 1.0")
@@ -881,10 +919,6 @@ def rungame(name):
             if keys[pygame.K_RETURN]:
                 chatText = font.render(p1_input, 1, (255, 255, 255))  # player 1 text
             map.screen.blit(chatText, (90, 780))
-            if players[0]["role"] == "imposter":
-                bg_img1 = pygame.image.load('Images/gone.png').convert_alpha()
-                bg_img1 = pygame.transform.scale(bg_img1, (500, 800))
-                map.screen.blit(bg_img1, (550,50))
             ##Player Input text chat END###
 
 
