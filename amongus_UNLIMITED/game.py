@@ -381,20 +381,6 @@ def redraw_LOBBY(players, balls, game_time, score, current_id):
 global mission
 mission = 1
 
-#impostor winning screen
-def impostor_win(map):
-    map.getMap().fill((0, 0, 1))
-    font = pygame.font.Font(None, 100)
-    win_text = font.render("Impostor wins!", 1, (255, 0, 0))
-    map.getMap().blit(win_text, (600, 350))
-
-#crewmate winning screen
-def crewmate_win(map):
-    map.getMap().fill((0, 0, 1))
-    font = pygame.font.Font(None, 100)
-    win_text = font.render("Crewmate wins!", 1, (0, 255, 255))
-    map.getMap().blit(win_text, (600, 350))
-
 def redraw_MAP(players, balls, game_time, score, current_id, map):
     global mission_prompt
     global mission
@@ -446,6 +432,7 @@ def redraw_MAP(players, balls, game_time, score, current_id, map):
         # render and draw name for each player
         text = NAME_FONT.render(p["name"], 1, (255,255,255))
         map.screen.blit(text, (p["x"] - text.get_width()/2, p["y"] - text.get_height()/2))
+
 
         if p["role"] == "crewmate":
             # Full List of missions on side of screen
@@ -593,7 +580,6 @@ def redraw_MAP(players, balls, game_time, score, current_id, map):
             if (mission == 6):
                 print("mission: 6")
                 mission_prompt = "CREWMATE WINS!"
-                crewmate_win(map)
                 #mission_prompt = "Type your favorite beverage in the chat"
             if (mission == 7):
                 print("mission: 7")
@@ -611,10 +597,10 @@ def redraw_MAP(players, balls, game_time, score, current_id, map):
             mission_text = font.render(mission_prompt, 1, (255, 255, 255))  # player 1 text
             map.getMap().blit(mission_text, (625, 790))
         ############################################
+    font = pygame.font.Font(None, 30)
     mission_prompt = ""
     if (playersAlive <= 2):  # Imposter wins message
         mission_prompt = "Imposter wins!!!"
-        impostor_win(map)
     mission_text = font.render(mission_prompt, 1, (255, 255, 255))  # player 1 text
     map.getMap().blit(mission_text, (625, 50))
     # draw scoreboard
@@ -831,7 +817,6 @@ def rungame(name):
     max_time = 30  # set max time
     vote = 2
 # CHAT BOX REQUIREMENTS END#
-
     global players
     # start by connecting to the network
     server = Network()
@@ -843,7 +828,11 @@ def rungame(name):
 
     # Declaring array storing bullets
     bullets = []
-    shotLoop = 0  # bullet cool down]
+    shotLoop = 0  # bullet cool down
+
+    # start killing timer
+    startKILL = pygame.time.get_ticks()
+    maxKILL = 30  # set overall kill interval time
 
     started = False
     run = True
@@ -955,8 +944,20 @@ def rungame(name):
             map.screen.blit(chatText, (90, 780))
             ##Player Input text chat END###
 
+
+
+
+
+
+
             # Imposter Mission Cover UP
             if player["role"] == "imposter":
+                # Imposter label
+                font = pygame.font.Font(None, 30)
+                eLabel = font.render(player["role"], 1, (255, 255, 255))
+                map.getMap().blit(eLabel, (550, 15))
+
+                #Cover up aliens for imposter
                 bg_img1 = pygame.image.load('Images/gone.png')
                 map.getMap().blit(bg_img1, (1000, 25))
                 map.getMap().blit(bg_img1, (1060, 25))
@@ -966,17 +967,42 @@ def rungame(name):
                 mission_text = font.render("Exterminate all aliens on board", 1, (0, 0, 0))  # player 1 text
                 map.getMap().blit(mission_text, (625, 790))
 
+                #Cover up mission list
+                coverUP_rect = pygame.Rect(90, 805, 140, 32)
+
                 mission_write_y = 550  # 1380 for x
                 map.getMap().blit(font.render("Exterminate all aliens on board", 1, (0, 0, 0)), (1380, mission_write_y))
                 mission_write_y = mission_write_y + 40
                 map.getMap().blit(font.render("Acquire Jewel", 1, (0, 0, 0)), (1380, mission_write_y))
                 mission_write_y = mission_write_y + 40
-                map.getMap().blit(font.render("Destroy Obstacle Covering Front Entrance of Main Room", 1, (0, 0, 0)),
-                                  (1380, mission_write_y))
+                map.getMap().blit(font.render("Destroy Obstacle Covering Front Entrance of Main Room", 1, (0, 0, 0)), (1380, mission_write_y))
                 mission_write_y = mission_write_y + 40
                 map.getMap().blit(font.render("Simon says", 1, (0, 0, 0)), (1380, mission_write_y))
                 mission_write_y = mission_write_y + 40
                 map.getMap().blit(font.render("Move to your colored circle", 1, (0, 0, 0)), (1380, mission_write_y))
+
+                #Kill Cooldown Timer
+                secs = (pygame.time.get_ticks() - startKILL) / 1000  # calculate how many seconds
+                dif = int(maxKILL - secs)
+                if (dif < 0):
+                    maxKILL += 30
+                if (dif > 15 and dif < 31):
+                    time = "ALLOWED TO KILL!"
+                    timer_txt = font.render(time, 1, (0, 255, 0))  # player 1 text
+                    map.getMap().blit(timer_txt, (640, 790))
+                    # KILLING CHARACTERS#
+                    # USE 2 KEY TO KILL PLAYER 2
+                    #if keys[pygame.K_2]:
+
+                if (dif > -1 and dif < 16):
+                    time = "Kill Cooldown: " + str(dif)
+                    timer_txt = font.render(time, 1, (255, 0, 0))  # player 1 text
+                    map.getMap().blit(timer_txt, (640, 790))
+
+
+
+
+
 
             #####ALIEN TASk
             alien = Alien(1000, 25, 40, 29, 'Images/alien.png', 'Images/gone.png', map)
