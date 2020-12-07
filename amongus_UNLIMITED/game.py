@@ -796,26 +796,27 @@ def rungame(name):
 
         data = ""
         # movement based on key presses
-        if keys[pygame.K_LEFT]:
-            if player["x"] - vel - PLAYER_RADIUS - player["score"] >= 0:
-                player["x"] = player["x"] - vel
+        if not started:
+            if keys[pygame.K_LEFT]:
+                if player["x"] - vel - PLAYER_RADIUS - player["score"] >= 0:
+                    player["x"] = player["x"] - vel
 
-        if keys[pygame.K_RIGHT]:
-            if player["x"] + vel + PLAYER_RADIUS + player["score"] <= W:
-                player["x"] = player["x"] + vel
+            if keys[pygame.K_RIGHT]:
+                if player["x"] + vel + PLAYER_RADIUS + player["score"] <= W:
+                    player["x"] = player["x"] + vel
 
-        if keys[pygame.K_UP]:
-            if player["y"] - vel - PLAYER_RADIUS - player["score"] >= 0:
-                player["y"] = player["y"] - vel
+            if keys[pygame.K_UP]:
+                if player["y"] - vel - PLAYER_RADIUS - player["score"] >= 0:
+                    player["y"] = player["y"] - vel
 
-        if keys[pygame.K_DOWN]:
-            if player["y"] + vel + PLAYER_RADIUS + player["score"] <= H:
-                player["y"] = player["y"] + vel
+            if keys[pygame.K_DOWN]:
+                if player["y"] + vel + PLAYER_RADIUS + player["score"] <= H:
+                    player["y"] = player["y"] + vel
 
-        data = "move " + str(player["x"]) + " " + str(player["y"])
+            data = "move " + str(player["x"]) + " " + str(player["y"])
 
-        # send data to server and recieve back all players information
-        balls, players, game_time = server.send(data)
+            # send data to server and recieve back all players information
+            balls, players, game_time = server.send(data)
 
         for event in pygame.event.get():
             # if user hits red x button close window
@@ -853,6 +854,44 @@ def rungame(name):
             map.drawMapBackground()
             #DRAW IN ALL OBSTACLES AND TASKS FOR GAME WITH redraw_MAP
             redraw_MAP(players, balls, game_time, player["score"], current_id, map)
+
+            if keys[pygame.K_LEFT]:
+                if player["x"] - vel - PLAYER_RADIUS - player["score"] >= 0:
+                    player["x"] = player["x"] - vel
+                    for wall in map.walls:
+                        playerhitbox = pygame.Rect(player["x"], player["y"], 36, 48)
+                        if playerhitbox.colliderect(wall.rect):
+                            player["x"] = player["x"] + vel
+
+            if keys[pygame.K_RIGHT]:
+                if player["x"] + vel + PLAYER_RADIUS + player["score"] <= W:
+                    player["x"] = player["x"] + vel
+                    for wall in map.walls:
+                        playerhitbox = pygame.Rect(player["x"], player["y"], 36, 48)
+                        if playerhitbox.colliderect(wall.rect):
+                            player["x"] = player["x"] - vel
+
+            if keys[pygame.K_UP]:
+                if player["y"] - vel - PLAYER_RADIUS - player["score"] >= 0:
+                    player["y"] = player["y"] - vel
+                    for wall in map.walls:
+                        playerhitbox = pygame.Rect(player["x"], player["y"], 36, 48)
+                        if playerhitbox.colliderect(wall.rect):
+                            player["y"] = player["y"] + vel
+
+            if keys[pygame.K_DOWN]:
+                if player["y"] + vel + PLAYER_RADIUS + player["score"] <= H:
+                    player["y"] = player["y"] + vel
+                    for wall in map.walls:
+                        playerhitbox = pygame.Rect(player["x"], player["y"], 36, 48)
+                        if playerhitbox.colliderect(wall.rect):
+                            player["y"] = player["y"] - vel
+
+            data = "move " + str(player["x"]) + " " + str(player["y"])
+
+            # send data to server and recieve back all players information
+            balls, players, game_time = server.send(data)
+
             ##Player Input text chat###
             if active:
                 color = color_active
