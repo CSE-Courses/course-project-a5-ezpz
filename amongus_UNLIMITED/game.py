@@ -546,7 +546,7 @@ def redraw_MAP(players, balls, game_time, score, current_id, map):
                 bg_img1 = pygame.transform.scale(bg_img1, (60, 40))
                 map.screen.blit(bg_img1, (800, 400))
 
-                if ((players[1]["x"] == 800 and players[1]["y"] == 400) or (players[0]["x"] == 700 and players[0]["y"] == 300) ):
+                if ((players[1]["x"] > 800 and players[1]["y"] > 400) or (players[0]["x"] > 700 and players[0]["y"] > 300) ):
                     mission += 1
                     break
                 """
@@ -563,7 +563,8 @@ def redraw_MAP(players, balls, game_time, score, current_id, map):
                 """
             if (mission == 6):
                 print("mission: 6")
-                mission_prompt = "Type your favorite beverage in the chat"
+                #mission_prompt = "Type your favorite beverage in the chat"
+                mission_prompt = "Crewmate won the game!"
             if (mission == 7):
                 print("mission: 7")
 
@@ -577,10 +578,7 @@ def redraw_MAP(players, balls, game_time, score, current_id, map):
             mission_text = font.render(mission_prompt, 1, (255, 255, 255))  # player 1 text
             map.getMap().blit(mission_text, (625, 790))
         ############################################
-    if players[0]["role"] == "imposter":
-        bg_img1 = pygame.image.load('Images/gone.png').convert_alpha()
-        bg_img1 = pygame.transform.scale(bg_img1, (300,50))
-        map.screen.blit(bg_img1, (800, 700))
+
 
     # draw scoreboard
     sort_players = list(reversed(sorted(players, key=lambda x: players[x]["score"])))
@@ -883,6 +881,10 @@ def rungame(name):
             if keys[pygame.K_RETURN]:
                 chatText = font.render(p1_input, 1, (255, 255, 255))  # player 1 text
             map.screen.blit(chatText, (90, 780))
+            if players[0]["role"] == "imposter":
+                bg_img1 = pygame.image.load('Images/gone.png').convert_alpha()
+                bg_img1 = pygame.transform.scale(bg_img1, (500, 800))
+                map.screen.blit(bg_img1, (550,50))
             ##Player Input text chat END###
 
 
