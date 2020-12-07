@@ -828,13 +828,13 @@ def rungame(name):
             map.drawMapBackground()
             #DRAW IN ALL OBSTACLES AND TASKS FOR GAME WITH redraw_MAP
             redraw_MAP(players, balls, game_time, player["score"], current_id, map)
-                    if keys[pygame.K_LEFT]:
-            if player["x"] - vel - PLAYER_RADIUS - player["score"] >= 0:
-                player["x"] = player["x"] - vel
-                for wall in map.walls:
-                    playerhitbox = pygame.Rect(player["x"], player["y"], 36, 48)
-                    if playerhitbox.colliderect(wall.rect):
-                        player["x"] = player["x"] + vel
+            if keys[pygame.K_LEFT]:
+                if player["x"] - vel - PLAYER_RADIUS - player["score"] >= 0:
+                    player["x"] = player["x"] - vel
+                    for wall in map.walls:
+                        playerhitbox = pygame.Rect(player["x"], player["y"], 36, 48)
+                        if playerhitbox.colliderect(wall.rect):
+                            player["x"] = player["x"] + vel
 
             if keys[pygame.K_RIGHT]:
                 if player["x"] + vel + PLAYER_RADIUS + player["score"] <= W:
