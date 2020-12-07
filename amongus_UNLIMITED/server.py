@@ -67,8 +67,8 @@ def get_start_location(players):
 		stop = True
 		#x = random.randrange(0,W-30)
 		#y = random.randrange(0,H-30)
-		x = 100
-		y = 100
+		x = 600
+		y = 400
 
 		for player in players:
 			p = players[player]
