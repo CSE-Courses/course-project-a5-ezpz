@@ -580,6 +580,7 @@ def redraw_MAP(players, balls, game_time, score, current_id, map):
             if (mission == 6):
                 print("mission: 6")
                 mission_prompt = "CREWMATE WINS!"
+                crewmate_win(map)
                 #mission_prompt = "Type your favorite beverage in the chat"
             if (mission == 7):
                 print("mission: 7")
@@ -601,6 +602,7 @@ def redraw_MAP(players, balls, game_time, score, current_id, map):
     mission_prompt = ""
     if (playersAlive <= 2):  # Imposter wins message
         mission_prompt = "Imposter wins!!!"
+        impostor_win(map)
     mission_text = font.render(mission_prompt, 1, (255, 255, 255))  # player 1 text
     map.getMap().blit(mission_text, (625, 50))
     # draw scoreboard
@@ -663,6 +665,18 @@ def drawPlayer(ex, ey, player_id):
 
 
 
+def impostor_win(map):
+    map.getMap().fill((0, 0, 1))
+    font = pygame.font.Font(None, 100)
+    win_text = font.render("Impostor wins!", 1, (255, 0, 0))
+    map.getMap().blit(win_text, (600, 350))
+
+#crewmate winning screen
+def crewmate_win(map):
+    map.getMap().fill((0, 0, 1))
+    font = pygame.font.Font(None, 100)
+    win_text = font.render("Crewmate wins!", 1, (0, 255, 255))
+    map.getMap().blit(win_text, (600, 350))
 
 
 
