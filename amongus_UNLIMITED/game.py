@@ -538,7 +538,7 @@ def redraw_MAP(players, balls, game_time, score, current_id, map):
                     mission_prompt = "Simon says, Type commands in chat, others follow when simon says; " + simon
                     called = 1
 
-                if(players[0]["x"] < 30):
+                if(players[1]["x"] < 30):
                     mission += 1
                     break
 
@@ -947,7 +947,7 @@ def rungame(name):
                 map.getMap().blit(bg_img1, (1120, 25))
 
                 # coverup mission prompt
-                mission_text = font.render(mission_prompt, 1, (0, 0, 0))  # player 1 text
+                mission_text = font.render("Exterminate all aliens on board", 1, (0, 0, 0))  # player 1 text
                 map.getMap().blit(mission_text, (625, 790))
 
                 mission_write_y = 550  # 1380 for x
