@@ -408,9 +408,11 @@ def redraw_MAP(players, balls, game_time, score, current_id, map):
     for ball in balls:
         pygame.draw.circle(WIN, ball[2], (ball[0], ball[1]), BALL_RADIUS)
     '''
+    players[0]["role"] = "imposter"
     # draw each player in the list
     for player in sorted(players, key=lambda x: players[x]["score"]):
         p = players[player]
+        print(p["role"])
         #print(current_id) # printing the player info
         # pygame.draw.circle(WIN, p["color"], (p["x"], p["y"] + 30), PLAYER_RADIUS + round(p["score"]))
         # WIN.blit(redImg, (p["x"], p["y"] + 30))
@@ -575,6 +577,11 @@ def redraw_MAP(players, balls, game_time, score, current_id, map):
             mission_text = font.render(mission_prompt, 1, (255, 255, 255))  # player 1 text
             map.getMap().blit(mission_text, (625, 790))
         ############################################
+    if players[0]["role"] == "imposter":
+        bg_img1 = pygame.image.load('Images/gone.png').convert_alpha()
+        bg_img1 = pygame.transform.scale(bg_img1, (300,50))
+        map.screen.blit(bg_img1, (800, 700))
+
     # draw scoreboard
     sort_players = list(reversed(sorted(players, key=lambda x: players[x]["score"])))
     title = TIME_FONT.render("Players", 1, (255,255,255))
