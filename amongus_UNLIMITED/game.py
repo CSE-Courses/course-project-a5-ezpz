@@ -375,8 +375,8 @@ global mission
 mission = 1
 
 def redraw_MAP(players, balls, game_time, score, current_id, map):
-
-
+    global mission_prompt
+    global mission
     """
     draws each frame
     :return: None
@@ -397,6 +397,7 @@ def redraw_MAP(players, balls, game_time, score, current_id, map):
     alien3.draw(map.screen)
     """""
     #########
+    missionSurface = pygame.Surface([1700, 850])
     bg_img = pygame.image.load('Images/alien.png').convert_alpha()
     map.screen.blit(bg_img, (1000, 25))
     map.screen.blit(bg_img, (1060, 25))
@@ -435,19 +436,27 @@ def redraw_MAP(players, balls, game_time, score, current_id, map):
                                    (1380, mission_write_y))
             mission_write_y = mission_write_y + 40
             map.getMap().blit(font.render("Acquire Jewel", 1, (255, 255, 255)), (1380, mission_write_y))
+            if(mission > 2):
+                map.getMap().blit(font.render("Acquire Jewel", 1, (0, 255, 0)), (1380, mission_write_y))
             mission_write_y = mission_write_y + 40
             map.getMap().blit(
                 font.render("Destroy Obstacle Covering Front Entrance of Main Room", 1, (255, 255, 255)),
                 (1380, mission_write_y))
+            if(mission > 3):
+                map.getMap().blit(font.render("Destroy Obstacle Covering Front Entrance of Main Room", 1, (0, 255, 0)),(1380, mission_write_y))
             mission_write_y = mission_write_y + 40
             map.getMap().blit(font.render("Simon says", 1, (255, 255, 255)), (1380, mission_write_y))
+            if (mission > 4):
+                map.getMap().blit(font.render("Simon says", 1, (0, 255, 0)), (1380, mission_write_y))
             mission_write_y = mission_write_y + 40
             map.getMap().blit(font.render("Move to your colored circle", 1, (255, 255, 255)),
                                    (1380, mission_write_y))
+            if (mission > 5):
+                map.getMap().blit(font.render("Move to your colored circle", 1, (0, 255, 0)),(1380, mission_write_y))
             # Code for Displaying the mission prompts
-            global mission
 
-            global mission_prompt
+
+
             mision_prompt = 'mission: '
             mission_text = ''
             random_num = 1  # for simon says assignment
@@ -506,19 +515,18 @@ def redraw_MAP(players, balls, game_time, score, current_id, map):
                             elif (players[i]["pid"] == "Images/orange.png" and random_num == 2):
                                 simon = "Orange is the simon"
                                 break
-
                         i = i + 1
-
                     mission_prompt = "Simon says, Type commands in chat, others follow when simon says; " + simon
                     called = 1
-                if p1_input != "type here...":
-                    map.getMap().blit(font.render("Simon says", 1, (0, 255, 0)), (1380, 640))
+
+                if(players[0]["x"] < 30):
                     mission += 1
+                    break
 
             if (mission == 5):
                 print("mission: 5")
                 mission_prompt = "Move to your colored circle"
-                missionSurface = pygame.Surface([1700, 850])
+
                 pygame.draw.circle(missionSurface, (255, 0, 0), (700, 300), 25)  # Red circle
                 pygame.draw.circle(missionSurface, (0, 0, 255), (700, 400), 25)  # Blue circle
                 pygame.draw.circle(missionSurface, (255, 140, 0), (800, 300), 25)  # Orange circle
@@ -740,7 +748,7 @@ def rungame(name):
 
     started = False
     run = True
-        while run:
+    while run:
         clock.tick(30) # 30 fps max
         player = players[current_id]
         #print(players[current_id]) # print player id
@@ -761,28 +769,27 @@ def rungame(name):
         keys = pygame.key.get_pressed()
 
         data = ""
-        if not started:
-            # movement based on key presses
-            if keys[pygame.K_LEFT]:
-                if player["x"] - vel - PLAYER_RADIUS - player["score"] >= 0:
-                    player["x"] = player["x"] - vel
+        # movement based on key presses
+        if keys[pygame.K_LEFT]:
+            if player["x"] - vel - PLAYER_RADIUS - player["score"] >= 0:
+                player["x"] = player["x"] - vel
 
-            if keys[pygame.K_RIGHT]:
-                if player["x"] + vel + PLAYER_RADIUS + player["score"] <= W:
-                    player["x"] = player["x"] + vel
+        if keys[pygame.K_RIGHT]:
+            if player["x"] + vel + PLAYER_RADIUS + player["score"] <= W:
+                player["x"] = player["x"] + vel
 
-            if keys[pygame.K_UP]:
-                if player["y"] - vel - PLAYER_RADIUS - player["score"] >= 0:
-                    player["y"] = player["y"] - vel
+        if keys[pygame.K_UP]:
+            if player["y"] - vel - PLAYER_RADIUS - player["score"] >= 0:
+                player["y"] = player["y"] - vel
 
-            if keys[pygame.K_DOWN]:
-                if player["y"] + vel + PLAYER_RADIUS + player["score"] <= H:
-                    player["y"] = player["y"] + vel
+        if keys[pygame.K_DOWN]:
+            if player["y"] + vel + PLAYER_RADIUS + player["score"] <= H:
+                player["y"] = player["y"] + vel
 
-            data = "move " + str(player["x"]) + " " + str(player["y"])
+        data = "move " + str(player["x"]) + " " + str(player["y"])
 
-            # send data to server and recieve back all players information
-            balls, players, game_time = server.send(data)
+        # send data to server and recieve back all players information
+        balls, players, game_time = server.send(data)
 
         for event in pygame.event.get():
             # if user hits red x button close window
@@ -813,54 +820,13 @@ def rungame(name):
                     else:
                         p1_input += event.unicode
 
+
         # redraw window then update the frame
         if started:
             map = Map(1700, 850, "Version 1.0")
             map.drawMapBackground()
             #DRAW IN ALL OBSTACLES AND TASKS FOR GAME WITH redraw_MAP
             redraw_MAP(players, balls, game_time, player["score"], current_id, map)
-            
-                        if keys[pygame.K_LEFT]:
-                if player["x"] - vel - PLAYER_RADIUS - player["score"] >= 0:
-                    player["x"] = player["x"] - vel
-                    for wall in map.walls:
-                        playerhitbox = pygame.Rect(player["x"], player["y"], 36, 48)
-                        if playerhitbox.colliderect(wall.rect):
-                            player["x"] = player["x"] + vel
-
-
-            if keys[pygame.K_RIGHT]:
-                if player["x"] + vel + PLAYER_RADIUS + player["score"] <= W:
-                    player["x"] = player["x"] + vel
-                    for wall in map.walls:
-                        playerhitbox = pygame.Rect(player["x"], player["y"], 36, 48)
-                        if playerhitbox.colliderect(wall.rect):
-                            player["x"] = player["x"] - vel
-
-            if keys[pygame.K_UP]:
-                if player["y"] - vel - PLAYER_RADIUS - player["score"] >= 0:
-                    player["y"] = player["y"] - vel
-                    for wall in map.walls:
-                        playerhitbox = pygame.Rect(player["x"], player["y"], 36, 48)
-                        if playerhitbox.colliderect(wall.rect):
-                            player["y"] = player["y"] + vel
-
-            if keys[pygame.K_DOWN]:
-                if player["y"] + vel + PLAYER_RADIUS + player["score"] <= H:
-                    player["y"] = player["y"] + vel
-                    for wall in map.walls:
-                        playerhitbox = pygame.Rect(player["x"], player["y"], 36, 78)
-                        if playerhitbox.colliderect(wall.rect):
-                            player["y"] = player["y"] - vel
-
-
-
-            data = "move " + str(player["x"]) + " " + str(player["y"])
-
-            # send data to server and recieve back all players information
-            balls, players, game_time = server.send(data)
-            
-            
             ##Player Input text chat###
             if active:
                 color = color_active
