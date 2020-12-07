@@ -418,11 +418,11 @@ def redraw_MAP(players, balls, game_time, score, current_id, map):
     '''
     players[0]["role"] = "imposter"
     # draw each player in the list
+    global playersAlive
     for player in sorted(players, key=lambda x: players[x]["score"]):
         p = players[player]
-        playersAlive =0
-        if(p["alive"] == 10):
-            playersAlive += 1
+
+
         print(p["role"])
         #print(current_id) # printing the player info
         # pygame.draw.circle(WIN, p["color"], (p["x"], p["y"] + 30), PLAYER_RADIUS + round(p["score"]))
@@ -590,13 +590,17 @@ def redraw_MAP(players, balls, game_time, score, current_id, map):
             if (mission == 9):
                 print("mission: 9")
                 mission_prompt = "Go to the left of the screen and race to the right of the screen"
-            if(playersAlive <= 2): # Imposter wins message
-                mission_prompt = "Imposter wins!!!"
+            print(playersAlive)
+
 
             mission_text = font.render(mission_prompt, 1, (255, 255, 255))  # player 1 text
             map.getMap().blit(mission_text, (625, 790))
         ############################################
-
+    mission_prompt = ""
+    if (playersAlive <= 2):  # Imposter wins message
+        mission_prompt = "Imposter wins!!!"
+    mission_text = font.render(mission_prompt, 1, (255, 255, 255))  # player 1 text
+    map.getMap().blit(mission_text, (625, 50))
     # draw scoreboard
     sort_players = list(reversed(sorted(players, key=lambda x: players[x]["score"])))
     title = TIME_FONT.render("Players", 1, (255,255,255))
@@ -617,37 +621,42 @@ def redraw_MAP(players, balls, game_time, score, current_id, map):
     # WIN.blit(text,(10,15 + text.get_height()))
 
 
-
-
+global playersAlive
+playersAlive =4
 def drawPlayer(ex, ey, player_id):
     global redStatusImg
     global cyanStatusImg
     global orangeStatusImg
     global blueStatusImg
+    global playersAlive
     keys = pygame.key.get_pressed()
     if(player_id == 0):
         WIN.blit(redStatusImg, (ex, ey))
         if keys[pygame.K_r]:
             redStatusImg = redImg[1]
             players[0]["alive"] = 1
-            print(players[0]["alive"])
+            playersAlive -=1
+            #print(players[0]["alive"])
 
     elif(player_id == 1):
         WIN.blit(cyanStatusImg, (ex, ey))
         if keys[pygame.K_c]:
             cyanStatusImg = cyanImg[1]
             players[1]["alive"] = 1
+            playersAlive -= 1
 
     elif (player_id == 2):
         WIN.blit(orangeStatusImg, (ex, ey))
         if keys[pygame.K_o]:
             orangeStatusImg = orangeImg[1]
             players[2]["alive"] = 1
+            playersAlive -= 1
     else:
         WIN.blit(blueStatusImg, (ex, ey))
         if keys[pygame.K_b]:
             blueStatusImg = blueImg[1]
             players[3]["alive"] = 1
+            playersAlive -= 1
     # pygame.draw.circle(WIN, p["color"], (p["x"], p["y"]), PLAYER_RADIUS + round(p["score"]))
 
 
@@ -738,7 +747,7 @@ def playerInput():
         lobby.getLobby().blit(enterLabel, (400, 500))
         # Player labels
         font = pygame.font.Font(None, 50)
-        player1 = font.render("PLAYER 1 NAME: ", 1, (255, 255, 255))
+        player1 = font.render("PLAYER NAME: ", 1, (255, 255, 255))
         lobby.getLobby().blit(player1, (200, 200))
 
 
@@ -932,6 +941,15 @@ def rungame(name):
 
             # Imposter Mission Cover UP
             if player["role"] == "imposter":
+                bg_img1 = pygame.image.load('Images/gone.png')
+                map.getMap().blit(bg_img1, (1000, 25))
+                map.getMap().blit(bg_img1, (1060, 25))
+                map.getMap().blit(bg_img1, (1120, 25))
+
+                # coverup mission prompt
+                mission_text = font.render(mission_prompt, 1, (0, 0, 0))  # player 1 text
+                map.getMap().blit(mission_text, (625, 790))
+
                 mission_write_y = 550  # 1380 for x
                 map.getMap().blit(font.render("Exterminate all aliens on board", 1, (0, 0, 0)), (1380, mission_write_y))
                 mission_write_y = mission_write_y + 40
