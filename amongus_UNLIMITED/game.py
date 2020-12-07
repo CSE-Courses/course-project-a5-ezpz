@@ -342,7 +342,7 @@ def redraw_LOBBY(players, balls, game_time, score, current_id):
         #print(current_id) # printing the player info
         # pygame.draw.circle(WIN, p["color"], (p["x"], p["y"] + 30), PLAYER_RADIUS + round(p["score"]))
         # WIN.blit(redImg, (p["x"], p["y"] + 30))
-        why = p["y"] + 30
+        why = p["y"] + 5
         drawPlayer(p["x"], why, p["pid"])
         # render and draw name for each player
         text = NAME_FONT.render(p["name"], 1, (255,255,255))
@@ -371,7 +371,8 @@ def redraw_LOBBY(players, balls, game_time, score, current_id):
 
 
 
-
+global mission
+mission = 1
 
 def redraw_MAP(players, balls, game_time, score, current_id, map):
 
@@ -400,8 +401,8 @@ def redraw_MAP(players, balls, game_time, score, current_id, map):
     map.screen.blit(bg_img, (1000, 25))
     map.screen.blit(bg_img, (1060, 25))
     map.screen.blit(bg_img, (1120, 25))
-    bg_img1 = pygame.image.load('Images/boulder.png').convert_alpha()
-    map.screen.blit(bg_img1, (550, 200))
+    #bg_img1 = pygame.image.load('Images/boulder.png').convert_alpha()
+    #map.screen.blit(bg_img1, (550, 200))
     bg_img1 = pygame.image.load('Images/jewel.png').convert_alpha()
     map.screen.blit(bg_img1, (50, 375))
 
@@ -417,12 +418,133 @@ def redraw_MAP(players, balls, game_time, score, current_id, map):
         #print(current_id) # printing the player info
         # pygame.draw.circle(WIN, p["color"], (p["x"], p["y"] + 30), PLAYER_RADIUS + round(p["score"]))
         # WIN.blit(redImg, (p["x"], p["y"] + 30))
-        why = p["y"] + 30
+        why = p["y"] + 5
         drawPlayer(p["x"], why, p["pid"])
         # render and draw name for each player
         text = NAME_FONT.render(p["name"], 1, (255,255,255))
         map.screen.blit(text, (p["x"] - text.get_width()/2, p["y"] - text.get_height()/2))
 
+        if p["role"] == "crewmate":
+            # Full List of missions on side of screen
+            font = pygame.font.Font(None, 30)
+            missions_word = font.render("Missions:", 1, (255, 255, 255))
+            map.getMap().blit(missions_word, (1470, 500))
+            mission_write_y = 550  # 1380 for x
+
+            map.getMap().blit(font.render("Exterminate all aliens on board", 1, (255, 255, 255)),
+                                   (1380, mission_write_y))
+            mission_write_y = mission_write_y + 40
+            map.getMap().blit(font.render("Acquire Jewel", 1, (255, 255, 255)), (1380, mission_write_y))
+            mission_write_y = mission_write_y + 40
+            map.getMap().blit(
+                font.render("Destroy Obstacle Covering Front Entrance of Main Room", 1, (255, 255, 255)),
+                (1380, mission_write_y))
+            mission_write_y = mission_write_y + 40
+            map.getMap().blit(font.render("Simon says", 1, (255, 255, 255)), (1380, mission_write_y))
+            mission_write_y = mission_write_y + 40
+            map.getMap().blit(font.render("Move to your colored circle", 1, (255, 255, 255)),
+                                   (1380, mission_write_y))
+            # Code for Displaying the mission prompts
+            global mission
+
+            global mission_prompt
+            mision_prompt = 'mission: '
+            mission_text = ''
+            random_num = 1  # for simon says assignment
+            if (mission == 1):
+                # print("mission: 1")
+                mission_prompt = "Exterminate all aliens on board"
+
+                mission += 1
+
+            if (mission == 2):
+                print("mission: 2")
+                mission_prompt = "Acquire Jewel"
+                mission += 1
+
+            if (mission == 3):
+                boulderGone = False
+                print("mission: 3")
+                mission_prompt = "Destroy Obstacle Covering Front Entrance of Main Room"
+                bg_img1 = pygame.image.load('Images/boulder.png').convert_alpha()
+                map.screen.blit(bg_img1, (550, 200))
+                # Destroy boulder obstacle
+                keys = pygame.key.get_pressed()
+                for event in pygame.event.get():
+                    if keys[pygame.K_x]:
+                        bg_img1 = pygame.image.load('Images/gone.png').convert_alpha()
+                        map.screen.blit(bg_img1, (550, 200))
+                        mission +=1
+
+                        # Increment mission to move onto to next mission
+
+                        map.getMap().blit(
+                            font.render("Destroy Obstacle Covering Front Entrance of Main Room", 1, (0, 255, 0)),
+                            (1380, 600))
+                    if(boulderGone):
+                        break
+                    #mission += 1
+
+            if (mission == 4):
+                print("mission: 4")
+                called =0
+                simon = ""
+                #print("called = " + str(called))
+                if called == 0:
+                    random_num = random.randint(1, 2)
+                    print(random_num)
+                    number_of_players = len(players)
+                    alive_players = 0
+                    i = 0
+                    while (i < number_of_players):
+                        if (players[i]["alive"] == 0 and players[i]["role"] == "crewmate"):
+                            alive_players = alive_players + 1
+                            #print(self.player_list[i].color)
+                            if (players[i]["pid"] == 1 and random_num == 1):
+                                simon = "Cyan is the simon"
+                                break
+                            elif (players[i]["pid"] == "Images/orange.png" and random_num == 2):
+                                simon = "Orange is the simon"
+                                break
+
+                        i = i + 1
+
+                    mission_prompt = "Simon says, Type commands in chat, others follow when simon says; " + simon
+                    called = 1
+                if p1_input != "type here...":
+                    map.getMap().blit(font.render("Simon says", 1, (0, 255, 0)), (1380, 640))
+                    mission += 1
+
+            if (mission == 5):
+                print("mission: 5")
+                mission_prompt = "Move to your colored circle"
+                missionSurface = pygame.Surface([1700, 850])
+                pygame.draw.circle(missionSurface, (255, 0, 0), (700, 300), 25)  # Red circle
+                pygame.draw.circle(missionSurface, (0, 0, 255), (700, 400), 25)  # Blue circle
+                pygame.draw.circle(missionSurface, (255, 140, 0), (800, 300), 25)  # Orange circle
+                pygame.draw.circle(missionSurface, (0, 255, 255), (800, 400), 25)  # cyan circle
+                """
+                if player1.rect.x > 790 and self.player1.rect.x < 810:
+                    if self.player1.rect.y > 390 and self.player1.rect.y < 410:
+                        self.map.getMap().blit(font.render("Move to your colored circle", 1, (0, 255, 0)), (1380, 680))
+                        mission += 1
+                """
+            if (mission == 6):
+                print("mission: 6")
+                mission_prompt = "Type your favorite beverage in the chat"
+            if (mission == 7):
+                print("mission: 7")
+
+            if (mission == 8):
+                print("mission: 8")
+                mission_prompt = "Stand in a line"
+            if (mission == 9):
+                print("mission: 9")
+                mission_prompt = "Go to the left of the screen and race to the right of the screen"
+
+            mission_text = font.render(mission_prompt, 1, (255, 255, 255))  # player 1 text
+            map.getMap().blit(mission_text, (625, 790))
+        ############################################
     # draw scoreboard
     sort_players = list(reversed(sorted(players, key=lambda x: players[x]["score"])))
     title = TIME_FONT.render("Players", 1, (255,255,255))
@@ -436,8 +558,8 @@ def redraw_MAP(players, balls, game_time, score, current_id, map):
         map.screen.blit(text, (x, start_y + count * 20))
 
     # draw time
-    text = TIME_FONT.render("Time: " + convert_time(game_time), 1, (255,255,255))
-    map.screen.blit(text,(10,10))
+    #text = TIME_FONT.render("Time: " + convert_time(game_time), 1, (255,255,255))
+    #map.screen.blit(text,(10,10))
     # draw score
     # text = TIME_FONT.render("Score: " + str(round(score)),1,(0,0,0))
     # WIN.blit(text,(10,15 + text.get_height()))
@@ -765,7 +887,7 @@ def rungame(name):
                 vote += 1
             time_diff = "timer: " + str(diff)
             timer_text = font.render(time_diff, 1, (255, 255, 255))  # player 1 text
-            map.screen.blit(timer_text, (1500, 500))
+            map.screen.blit(timer_text, (1500, 475))
 
         else:
             redraw_LOBBY(players, balls, game_time, player["score"], current_id)
